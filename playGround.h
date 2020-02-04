@@ -1,6 +1,6 @@
 #pragma once
 #include "gameNode.h"
-#include "Size_Library.h" // 사이즈 관련 라이브러리
+#include "sceneChanger.h"
 
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
@@ -17,6 +17,8 @@ struct _tagPlayer
 class playGround : public gameNode
 {
 private:
+	sceneChanger* _sceneChanger;	// 씬 전환을 담당한다.
+	
 	image*	bg[3];
 
 	HDC		_worDC;

@@ -13,6 +13,9 @@ HRESULT playGround::init()
 {
 	gameNode::init(true);
 
+	_sceneChanger = new sceneChanger;	// 동적할당	
+	_sceneChanger->init();				// 기본 셋팅 초기화
+
 	bg[0] = IMAGEMANAGER->addImage("tutorial_BG_0", "./image/mapTool/backGround/tutorial/tutorial_BG_0.bmp", 2160, 1800, false, RGB(0, 0, 0));
 	bg[1] = IMAGEMANAGER->addImage("tutorial_BG_1", "./image/mapTool/backGround/tutorial/tutorial_BG_1.bmp", 2160, 1800, true, RGB(255, 0, 255));
 	bg[2] = IMAGEMANAGER->addImage("tutorial_BG_2", "./image/mapTool/backGround/tutorial/tutorial_BG_2.bmp", 2160, 1800, true, RGB(255, 0, 255));
@@ -46,12 +49,15 @@ HRESULT playGround::init()
 void playGround::release()
 {
 	gameNode::release();
+	_sceneChanger->release();	
 }
 
 
 void playGround::update()
 {
 	gameNode::update();
+
+	_sceneChanger->update();	// 씬 체인저 업데이트
 
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 	{
@@ -88,6 +94,8 @@ void playGround::render()
 {
 	//PatBlt(getMemDC(), 0, 0, worSizeX, worSizeY, WHITENESS);
 	//==========================================================	
+
+	_sceneChanger->render();
 
 	for (int i = 0; i < 3; ++i)
 	{

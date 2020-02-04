@@ -52,6 +52,12 @@
     <Filter Include="2DGameFramework\action">
       <UniqueIdentifier>{a505733a-b5f1-416e-941e-fb290e7b22a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\Scene">
+      <UniqueIdentifier>{810edbe3-8eb7-4fa4-bd39-babfbc100168}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\mapTool">
+      <UniqueIdentifier>{2376c2bd-eca4-4732-800d-57bd6f1a7a33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -129,8 +135,17 @@
     <ClInclude Include="keyAniManager.h">
       <Filter>2DGameFramework\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Size_Library.h">
-      <Filter>playGround</Filter>
+    <ClInclude Include="sceneChanger.h">
+      <Filter>playGround\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene_Library.h">
+      <Filter>playGround\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="mapTool.h">
+      <Filter>playGround\mapTool</Filter>
+    </ClInclude>
+    <ClInclude Include="mapTool_Library.h">
+      <Filter>playGround\mapTool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +208,12 @@
     </ClCompile>
     <ClCompile Include="keyAniManager.cpp">
       <Filter>2DGameFramework\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="sceneChanger.cpp">
+      <Filter>playGround\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="mapTool.cpp">
+      <Filter>playGround\mapTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
