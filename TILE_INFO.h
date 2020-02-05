@@ -1,8 +1,8 @@
 #pragma once
 
 // 타일의 갯수
-#define TILE_COUNT_X 200
-#define TILE_COUNT_Y 200
+#define TILE_COUNT_X 30
+#define TILE_COUNT_Y 30
 #define TILE_TOTAL TILE_COUNT_X * TILE_COUNT_Y
 
 // 한 타일의 사이즈

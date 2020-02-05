@@ -68,3 +68,79 @@ public:
 	tag_U_INT get_Tile_Range() { return range; }			// 출력 타일 범위를 받아온다.
 
 };
+
+
+// 카메라의 변수를 모아둔다.
+struct tag_Camera_INFO
+{
+	tag_U_INT		_world_Size;							// 월드 사이즈
+	tag_U_INT		_camera_Size;							// 카메라 사이즈
+
+	POINTFLOAT      _cameraXY;								// 카메라 x, y 좌표
+
+	tag_FindTile*			 _Find_Tile;		// 출력을 해야 하는 타일을 찾아준다.
+
+	// 기본 베이스 세팅 함수
+	void setting_Func()
+	{
+		// 카메라의 베이스 좌표를 만들어준다. (초기 셋팅)
+		set_CameraXY(WINSIZEX / 2.f, WINSIZEY / 2.f, true);
+
+		// 타일 찾는 클래스(카메라 범위만)
+		_Find_Tile = new tag_FindTile;
+		_Find_Tile->init();
+
+		// 월드 사이즈를 저장한다. (타일 갯수 * 타일 사이즈)
+		_world_Size.x = IMAGEMANAGER->findImage("tutorial_BG_0")->getWidth();
+		_world_Size.y = IMAGEMANAGER->findImage("tutorial_BG_0")->getHeight();
+
+		// 카메라 사이즈를 저장한다.
+		_camera_Size.x = WINSIZEX;
+		_camera_Size.y = WINSIZEY;
+	}
+
+
+
+	// 카메라 설정 함수
+	void set_World_Size(unsigned int x, unsigned int y) { _world_Size.x = x; _world_Size.y = y; }		// 월드 사이즈를 저장한다.
+	void set_Camera_Size(unsigned int x, unsigned int y) { _camera_Size.x = x; _camera_Size.y = y; }	// 카메라 사이즈를 저장한다.
+	void set_CameraX(float x) { _cameraXY.x = x; camera_Correction(); }									// 카메라 x를 수정한다.
+	void set_CameraY(float y) { _cameraXY.y = y; camera_Correction(); }									// 카메라 y를 수정한다.
+	void set_CameraXY(float x, float y, bool noCorrection)												// true를 넣으면 예외처리를 제외하고 세팅한다.
+	{
+		// 매개변수를 이용하여 카메라 x, y를 구한다.
+		_cameraXY.x = x - (_camera_Size.x / 2);
+		_cameraXY.y = y - (_camera_Size.y / 2);
+
+		// true를 넣었다면 예외처리
+		if (noCorrection)	camera_Correction();
+	};
+
+
+
+	// 카메라 겟터 함수	
+	tag_U_INT get_World_Size() { return _world_Size; }						// 월드 사이즈를 받아온다.
+	tag_U_INT get_Camera_Size() { return _camera_Size; }					// 카메라 사이즈를 받아온다.
+	POINTFLOAT get_CameraXY() { return _cameraXY; }							// 카메라의 x, y 좌표를 받아온다.
+	tag_FindTile* get_Find_Tile() { return _Find_Tile; }
+
+
+
+	// 카메라 기능 함수
+	void camera_Correction()												// 카메라 위치 보정
+	{
+		// 카메라 x, y가 맵을 넘어 갔을 경우 보정
+		if (_cameraXY.x < 0) _cameraXY.x = 0;
+		if (_cameraXY.y < 0) _cameraXY.y = 0;
+		if (_cameraXY.x + _camera_Size.x > _world_Size.x) _cameraXY.x = _world_Size.x - _camera_Size.x;
+		if (_cameraXY.y + _camera_Size.y > _world_Size.y) _cameraXY.y = _world_Size.y - _camera_Size.y;
+	};
+		
+	void find_Tile()														// 출력을 해야 하는 타일을 찾는다.
+	{
+		// 카메라의 좌표를 이용하여 시작과 끝의 인덱스를 찾아낸다.
+		_Find_Tile->Find_startIndex(_cameraXY.x, _cameraXY.y);
+		_Find_Tile->Find_endIndex(_cameraXY.x, _cameraXY.y);
+		_Find_Tile->Find_Tile_Range();
+	};
+};

@@ -88,3 +88,40 @@ struct tagPallets
 	tagPallet_INFO Hit_Object_Pallet;		// 파괴 오브젝트 팔렛트
 	tagPallet_INFO Item_Bar;				// 아이템 팔렛트
 };
+
+// 맵툴 함수
+class mapTool_Func
+{
+
+public:
+	void make_Base_TileList(vector<tagTileInfo*>* tileList)
+	{
+		// 타일의 기본 렉트를 만들어 준다.
+		for (int i = 0; i < TILE_TOTAL; ++i)
+		{
+			tagTileInfo* new_Tile = new tagTileInfo;
+			new_Tile->reset_Tile();						// 타일에 쓰레기 값을 비워주는 함수.
+			new_Tile->idx = i % TILE_COUNT_X;
+			new_Tile->idy = i / TILE_COUNT_Y;
+			new_Tile->rc = RectMake(new_Tile->idx * TILE_SIZE_X, new_Tile->idy * TILE_SIZE_Y, TILE_SIZE_X, TILE_SIZE_Y);
+			new_Tile->center.x = (new_Tile->rc.left + new_Tile->rc.right) / 2.f;
+			new_Tile->center.y = (new_Tile->rc.top + new_Tile->rc.bottom) / 2.f;
+
+			(*tileList).push_back(new_Tile);
+		}
+	}
+
+};
+
+// 루프랜더용 변수
+struct tagLoop_Variable
+{
+	int LoopX_BG_0;		// 맨 뒤에 있는 백 그라운드 루프용 변수
+	int LoopX_BG_1;		// 그 앞에 백 그라운드 루프용 변수
+	int LoopX_BG_2;		// 맨 앞에 있는 백 그라운드 루프용 변수
+
+	void reset_Func()
+	{
+		LoopX_BG_0 = LoopX_BG_1 = LoopX_BG_2 = 0;
+	}
+};

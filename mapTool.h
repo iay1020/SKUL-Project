@@ -11,6 +11,10 @@ private:
 	tagPalletBar			_pallet_Bar;		// 팔렛트 이동에 쓰일 팔렛트 바
 	tagPallets				_pallets;			// 각종 팔렛트의 정보를 담는다.
 
+	mapTool_Func			_mapTool_Func;		// 맵툴 함수
+
+	tagLoop_Variable		_loopX;				// 루프용 변수
+
 public:
 	mapTool();
 	~mapTool();
