@@ -26,7 +26,6 @@ using namespace std;
 #include "soundManager.h"
 #include "sceneManager.h"
 #include "keyAniManager.h"
-#include "camera_Library.h"
 
 using namespace SEVENTEEN_UTIL;
 
@@ -50,6 +49,7 @@ using namespace SEVENTEEN_UTIL;
 #define SOUNDMANAGER soundManager::getSingleton()
 #define SCENEMANAGER sceneManager::getSingleton()
 #define KEYANIMANAGER keyAniManager::getSingleton()
+#define CAMERAMANAGER cameraManager::getSingleton()
 
 
 #define SAFE_DELETE(p) {if(p) {delete(p); (p)=NULL;}}
@@ -63,3 +63,8 @@ extern HINSTANCE	_hInstance;
 extern HWND			_hWnd;
 extern POINT		_ptMouse;
 extern BOOL			_leftButtonDown;
+
+// 내가 만든 라이브러리
+#include "TILE_INFO.h"
+#include "cameraManager.h"
+#include "camera_Library.h"

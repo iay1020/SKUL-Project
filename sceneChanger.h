@@ -1,6 +1,6 @@
 #pragma once
 #include "gameNode.h"
-#include "scene_Library.h" // 씬 관련 정보들이 저장 된 라이브러리
+#include "scene_Library.h"
 
 class sceneChanger : public gameNode
 {

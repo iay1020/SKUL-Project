@@ -1,13 +1,5 @@
 #pragma once
-
-// 타일의 갯수
-#define TILE_COUNT_X 100
-#define TILE_COUNT_Y 100
-#define TILE_TOTAL TILE_COUNT_X * TILE_COUNT_Y
-
-// 한 타일의 사이즈
-#define TILE_SIZE_X 64
-#define TILE_SIZE_Y 64
+#include "stdafx.h"
 
 // 타일의 타입
 enum class TILE_TYPE
@@ -15,11 +7,11 @@ enum class TILE_TYPE
 	EMPTY,									// NULL
 	PLAYER,									// 플레이어
 	ENEMY,									// 에너미
-	START_DOOR,								// 스타트 지점	
-	EXIT_DOOR,								// 탈출 지점
+	DOOR,									// 도어	
 	GROUND,									// 땅
 	DECORATION,								// 데코레이션 오브젝트
 	HIT_OBJECT,								// 타격 가능한 오브젝트
+	TRAP,									// 함정 타일
 	ITEM									// 아이템 오브젝트
 
 };
@@ -65,4 +57,34 @@ struct tagTileInfo
 		tile_Type = TILE_TYPE::EMPTY;
 		ground = GROUND_TYPE::EMPTY_GROUND;
 	}
+};
+
+// 팔렛트 이동에 쓰일 렉트
+struct tagPalletBar
+{
+	RECT Character_Pallet_Bar;				// 캐릭터 팔렛트 바
+	RECT Door_Pallet_Bar;					// 도어 팔렛트 바
+	RECT Ground_Pallet_Bar;					// 바닥 팔렛트 바
+	RECT Dcoration_Pallet_Bar;				// 데코 팔렛트 바
+	RECT Hit_Object_Bar;					// 파괴 오브젝트 바
+	RECT Item_Bar;							// 아이템 오브젝트 바
+};
+
+// 팔렛트의 정보를 담는다.
+struct tagPallet_INFO
+{
+	tag_U_INT	index;						// 인덱스의 정보를 담는다. (unsigned int형)
+	RECT		rc;							// 렉트의 정보를 담는다.
+	tag_U_INT	frame;						// 프레임 x, y를 담는다.
+};
+
+// 팔렛트의 종류를 담는다.
+struct tagPallets
+{
+	tagPallet_INFO Character_Pallet;		// 캐릭터 팔렛트
+	tagPallet_INFO Door_Pallet;				// 도어 팔렛트
+	tagPallet_INFO Ground_Pallet;			// 지형 팔렛트
+	tagPallet_INFO Dcoration_Pallet;		// 장식 팔렛트
+	tagPallet_INFO Hit_Object_Pallet;		// 파괴 오브젝트 팔렛트
+	tagPallet_INFO Item_Bar;				// 아이템 팔렛트
 };

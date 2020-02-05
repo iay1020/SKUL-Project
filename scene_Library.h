@@ -1,6 +1,5 @@
 #pragma once
 #include "stdafx.h"
-
 #include "mapTool.h"
 
 class tagSceneFunc	// scene 함수를 모아둔 클래스

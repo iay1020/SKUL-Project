@@ -8,27 +8,10 @@
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #endif
 
-struct _tagPlayer
-{
-	POINTFLOAT center;
-	RECT	   rc;
-};
-
 class playGround : public gameNode
 {
 private:
 	sceneChanger* _sceneChanger;	// 씬 전환을 담당한다.
-	
-	image*	bg[3];
-
-	HDC		_worDC;
-	image*	_worImg;
-
-	_tagPlayer _player;
-
-	int worSizeX, worSizeY;
-
-	float cameraX, cameraY;
 	
 public:
 	playGround();
