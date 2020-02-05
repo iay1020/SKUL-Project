@@ -99,7 +99,7 @@ void playGround::render()
 
 	for (int i = 0; i < 3; ++i)
 	{
-		bg[i]->render(_worDC, 0, 0);
+		bg[i]->render(_worDC, cameraX, cameraY, cameraX, cameraY, WINSIZEX, WINSIZEY);
 	}
 
 	//bg[0]->render(_worDC, 0, 0);

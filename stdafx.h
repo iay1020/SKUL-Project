@@ -26,6 +26,7 @@ using namespace std;
 #include "soundManager.h"
 #include "sceneManager.h"
 #include "keyAniManager.h"
+#include "camera_Library.h"
 
 using namespace SEVENTEEN_UTIL;
 

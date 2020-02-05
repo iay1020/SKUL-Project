@@ -5,6 +5,7 @@
 class mapTool : public gameNode
 {
 private:
+	vector<tagTileInfo*> _vTileList;
 
 public:
 	mapTool();
