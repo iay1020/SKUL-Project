@@ -58,6 +58,9 @@
     <Filter Include="playGround\mapTool">
       <UniqueIdentifier>{2376c2bd-eca4-4732-800d-57bd6f1a7a33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\addImage">
+      <UniqueIdentifier>{773ae3f0-d11f-489d-bb99-623149287c5b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -155,6 +158,9 @@
     </ClInclude>
     <ClInclude Include="TILE_INFO.h">
       <Filter>playGround</Filter>
+    </ClInclude>
+    <ClInclude Include="addImage.h">
+      <Filter>playGround\addImage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

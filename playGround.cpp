@@ -13,6 +13,8 @@ HRESULT playGround::init()
 {
 	gameNode::init(true);
 
+	_addImage.addImage_Func();			// 이미지를 추가한다. (나중에 로딩씬에서 처리 해야한다.)
+
 	_sceneChanger = new sceneChanger;	// 동적할당	
 	_sceneChanger->init();				// 기본 셋팅 초기화
 

@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="action.h" />
+    <ClInclude Include="addImage.h" />
     <ClInclude Include="animation.h" />
     <ClInclude Include="button.h" />
     <ClInclude Include="cameraManager.h" />
