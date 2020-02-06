@@ -19,5 +19,14 @@ struct tagAddImage
 	
 		// tile Rect Image
 		IMAGEMANAGER->addImage("tile_Rect", "./image/Tile_Rect.bmp", 64, 64, true, RGB(255, 0, 255));
+
+		// mapTool Icon
+		IMAGEMANAGER->addImage("save_Icon", "./image/mapTool/icon/BT_Save.bmp", 52, 52, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("load_Icon", "./image/mapTool/icon/BT_Load.bmp", 52, 52, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("eraser_Icon", "./image/mapTool/icon/BT_Erase.bmp", 52, 52, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("ground_Icon", "./image/mapTool/icon/BT_Ground.bmp", 52, 52, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("ground_E_Icon", "./image/mapTool/icon/BT_Gound_E.bmp", 52, 52, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("trap_Icon", "./image/mapTool/icon/BT_Trap.bmp", 52, 52, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("Trap_E_Icon", "./image/mapTool/icon/BT_Trap_E.bmp", 52, 52, true, RGB(255, 0, 255));
 	}
 };
