@@ -45,6 +45,7 @@ bool keyManager::isOnceKeyDown(int key)
 }
 
 bool keyManager::isOnceKeyUp(int key)
+
 {
 	if (GetAsyncKeyState(key) & 0x8000) this->setKeyUp(key, true);
 	else
