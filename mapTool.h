@@ -6,10 +6,11 @@
 class mapTool : public gameNode
 {
 private:
-	tagMapInfo*				_mapInfo;			// 맵 정보 저장
-	vector<tagTileInfo*>	_vTileList;			// 전체 타일 리스트
+	tagMapInfo				_mapInfo;			// 맵 정보 저장
 
-	tagPallets*				_pallet;			// 각종 팔렛트의 정보를 담는다.
+	vector<tagTileInfo>		_vTileList;			// 전체 타일 리스트
+
+	tagPallets				_pallet;			// 각종 팔렛트의 정보를 담는다.
 
 	tagButton_Info			_button;			// 버튼 정보를 담는다.
 
@@ -25,5 +26,6 @@ public:
 	virtual void render();
 
 	void testMove();							// 테스트 카메라 이동 함수
+	void Find_Worker();							// 버튼에 따라 실행 해야 하는 함수를 호출한다.
 };
 

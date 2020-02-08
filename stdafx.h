@@ -50,6 +50,7 @@ using namespace SEVENTEEN_UTIL;
 #define SCENEMANAGER sceneManager::getSingleton()
 #define KEYANIMANAGER keyAniManager::getSingleton()
 #define CAMERAMANAGER cameraManager::getSingleton()
+#define DATAMANAGER DataManager::getSingleton()
 
 
 #define SAFE_DELETE(p) {if(p) {delete(p); (p)=NULL;}}
@@ -68,3 +69,4 @@ extern BOOL			_leftButtonDown;
 #include "TILE_INFO.h"
 #include "cameraManager.h"
 #include "camera_Library.h"
+#include "DataManager.h"

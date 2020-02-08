@@ -12,7 +12,7 @@
 
 // 땅(지형) 이미지의 갯수
 #define GROUND_SIZEX 9
-#define GROUND_SIZEY 4
+#define GROUND_SIZEY 5
 
 // 오브젝트 이미지의 갯수
 

@@ -38,6 +38,7 @@ HRESULT gameNode::init(bool managerInit)
 		SCENEMANAGER->init();
 		KEYANIMANAGER->init();
 		CAMERAMANAGER->init();
+		DATAMANAGER->init();
 	}
 
 	return S_OK;
