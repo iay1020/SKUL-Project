@@ -14,9 +14,9 @@ HRESULT mapTool::init()
 	_mapInfo.reset_MapInfo();						// 맵정보 초기화
 
 	////////////////////////////////////////////////////////////////////
-	_mapInfo.add_BackGround("tutorial_BG_0");		// 맵 추가 (테스트용)
-	_mapInfo.add_BackGround("tutorial_BG_1");
-	_mapInfo.add_BackGround("tutorial_BG_2");
+	//_mapInfo.add_BackGround("tutorial_BG_0");		// 맵 추가 (테스트용)
+	//_mapInfo.add_BackGround("tutorial_BG_1");
+	//_mapInfo.add_BackGround("tutorial_BG_2");
 	////////////////////////////////////////////////////////////////////
 
 	_mapTool_Func.make_Base_TileList(&_vTileList);	// 타일의 기본 렉트를 만들어 준다.
@@ -47,16 +47,17 @@ void mapTool::update()
 	_pallet.click_PalletInfo_Save((BUTTON_TYPE)_button.BT_Type, _button.BT_ImgNumber, &_button.BT_start_Draw, &_button.BT_FindNoTile);		// 이미지 선택
 
 	if(!_button.BT_FindNoTile)
-		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, _mapInfo, &_button.BT_start_Draw);								// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
+		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, &_mapInfo, &_button.BT_start_Draw);								// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
 
 
 }
 
 void mapTool::render()
 {
-	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, WHITENESS);		// 전체 화면 갱신용
+	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, BLACKNESS);		// 전체 화면 갱신용
 
-	_mapTool_Func.show_BackImg(&_mapInfo, getMemDC());				// 백그라운드 배경을 출력한다.
+	//_mapTool_Func.show_BackImg(&_mapInfo, getMemDC());					// 백그라운드 배경을 출력한다.
+	IMAGEMANAGER->findImage("base_MapTool_BG")->render(getMemDC(), 0, 0);	// 맵툴 기본 배경
 
 	// 타일 렉트 출력 (테스트용)
 	if (KEYMANAGER->isToggleKey(VK_NUMPAD1))

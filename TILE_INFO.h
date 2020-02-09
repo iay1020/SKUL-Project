@@ -20,6 +20,10 @@
 // 캐릭터 이미지의 갯수
 
 // 백그라운드 가로 세로 크기
+#define BACKGROUND_COUNTX 3
+#define BACKGROUND_COUNTY 3
 #define BACKGROUND_BACKCOUNT	3	 // 백그라운드 백이미지 수량
 #define BACKGROUND_CENTERCOUNT	3	 // 백그라운드 센터이미지 수량
-#define BACKKROUND_FRONTCOUNT	3	 // 백그라운드 앞 이미지 수량
+#define BACKGROUND_FRONTCOUNT	3	 // 백그라운드 앞 이미지 수량
+#define BACKGROUND_SIZEX 200
+#define BACKGROUND_SIZEY 200
