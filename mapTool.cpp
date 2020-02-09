@@ -21,9 +21,9 @@ HRESULT mapTool::init()
 
 	_mapTool_Func.make_Base_TileList(&_vTileList);	// 타일의 기본 렉트를 만들어 준다.
 
-	_button.reset();								// 버튼 초기화
+	_button.reset();								// 버튼 위치 초기화
 
-	_pallet.setting();
+	_pallet.reset();								// 팔렛트 변수 초기화
 
 	return S_OK;
 }
@@ -34,18 +34,22 @@ void mapTool::release()
 
 void mapTool::update()
 {
-	testMove();
+	testMove();																																// 테스트용 카메라 이동 함수
 
-	_button.click_Button();																					// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
+	_button.click_Button();																													// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
 
-	Find_Worker();
+	_pallet.setting_Pallet(_button.BT_Type, _button.BT_ImgNumber);																			// 팔렛트 위치 갱신
 
-	_button.reset_Next_Prev_Pos(_pallet.pallet);															// 다음, 이전 버튼 위치 갱신 함수
+	Find_Worker();																															// 클릭 한 버튼에 따라 함수 호출
+
+	_button.reset_Next_Prev_Pos(_pallet.pallet);																							// 다음, 이전 버튼 위치 갱신 함수
 	
-	_pallet.click_PalletInfo_Save((BUTTON_TYPE)_button.BT_Type);											// 이미지 선택
+	_pallet.click_PalletInfo_Save((BUTTON_TYPE)_button.BT_Type, _button.BT_ImgNumber, &_button.BT_start_Draw, &_button.BT_FindNoTile);		// 이미지 선택
 
-	if(_mapTool_Func.find_NoTile(_pallet, _button))
-		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button);	// 타일에 이미지를 그린다. (다른 렉트에 충돌 되지 않는다면 그린다)
+	if(!_button.BT_FindNoTile)
+		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, _mapInfo, &_button.BT_start_Draw);								// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
+
+
 }
 
 void mapTool::render()
@@ -61,7 +65,7 @@ void mapTool::render()
 		_mapTool_Func.show_Camera_In_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Size().x, CAMERAMANAGER->Use_Func()->get_Camera_Size().y, getMemDC(), &_vTileList);
 	}
 
-	_mapTool_Func.show_TileImg(getMemDC(), &_vTileList);
+	_mapTool_Func.show_TileImg(getMemDC(), &_vTileList, _mapInfo);
 
 	_button.show_Button(getMemDC());
 
@@ -122,7 +126,7 @@ void mapTool::Find_Worker()
 				ptMouse.y = _ptMouse.y + CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 
 				// 이 상태일때는 클릭하는 모든 타일의 속성을 초기화 시켜줘야한다.
-				if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+				if (KEYMANAGER->isStayKeyDown(VK_LBUTTON))
 				{
 					for (int i = 0; i < _vTileList.size(); ++i)
 					{

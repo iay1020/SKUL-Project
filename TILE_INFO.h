@@ -10,10 +10,16 @@
 #define TILE_SIZE_X 64
 #define TILE_SIZE_Y 64
 
-// 땅(지형) 이미지의 갯수
+// 땅(지형) 가로 세로 크기
 #define GROUND_SIZEX 9
 #define GROUND_SIZEY 5
+#define GROUND_IMAGE_CONUT 5	 // 땅(지형) 이미지 수량
 
 // 오브젝트 이미지의 갯수
 
 // 캐릭터 이미지의 갯수
+
+// 백그라운드 가로 세로 크기
+#define BACKGROUND_BACKCOUNT	3	 // 백그라운드 백이미지 수량
+#define BACKGROUND_CENTERCOUNT	3	 // 백그라운드 센터이미지 수량
+#define BACKKROUND_FRONTCOUNT	3	 // 백그라운드 앞 이미지 수량
