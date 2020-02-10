@@ -162,18 +162,14 @@ struct tagLoop_Variable
 // 맵의 정보를 저장 할 구조체
 struct tagMapInfo
 {
-	string				mapName;					// 맵의 이름을 저장한다.
-	tag_U_Short			tile_Size;					// 타일 사이즈를 저장한다.
-	tag_U_Short			tile_Count;					// 타일의 갯수를 저장한다.
-	
-	char				backGround_Count;			// 배경의 갯수 (최대 갯수가 3개니까 char으로)
-	string				backImgName;				// 맨 뒤의 배경 이미지 키값
-	string				centerImgName;				// 중간 배경 이미지 키값
-	string				frontImgName;				// 앞의 배경 이미지 키값
+	string						mapName;					// 맵의 이름을 저장한다.
+	tag_U_Short					tile_Size;					// 타일 사이즈를 저장한다.
+	tag_U_Short					tile_Count;					// 타일의 갯수를 저장한다.
 
-	tagLoop_Variable*	loop;						// 루프에서 사용할 변수
+	tagLoop_Variable*			loop;						// 루프에서 사용할 변수
 
-	vector<tagSaveBackGround> _vBackGround_Info;	// 백그라운드 정보를 저장한다.
+	tagSaveBackGround			_saveVInfo[10];				// 백그라운드 벡터를 세이브
+	short						_vSize;						// 백터 사이즈를 담는다.
 		
 	// 맵 정보 초기화
 	void reset_MapInfo()
@@ -184,66 +180,11 @@ struct tagMapInfo
 		tile_Count.x = TILE_COUNT_X;	// 베이스 타일의 갯수를 저장한다.
 		tile_Count.y = TILE_COUNT_Y;	// 베이스 타일의 갯수를 저장한다.
 
-		backGround_Count = 0;
-		backImgName = {};
-		centerImgName = {};
-		frontImgName = {};
-
 		loop = new tagLoop_Variable;
 		loop->reset_Func();
+
+		_vSize = 0;
 	}
-
-	// 맵 배경 추가
-	void add_BackGround(string mapName)
-	{
-		// 카운트 값이 비정상적일 경우에는 함수를 빠져나간다.
-		if (backGround_Count == 4) return;
-
-		backGround_Count++;	// 한장을 추가 했때마다 증가한다.
-
-		if (backGround_Count == ONE)
-		{
-			backImgName = mapName;		// 맵의 이름을 넣어준다.
-		}
-
-		if (backGround_Count == TWO)
-		{
-			centerImgName = mapName;	// 맵의 이름을 넣어준다.
-		}
-
-		if (backGround_Count == THREE)
-		{
-			frontImgName = mapName;		// 맵의 이름을 넣어준다.
-		}
-
-	}
-
-	// 맵 배경 교체
-	void change_BackGround(string mapName, signed short num)
-	{
-		// 교체하기 원하는 맵 이름과, 교체 하려는 위치를 받아온다.
-		if (num > 0 && num <= 3)
-		{
-			switch (num)
-			{
-				case ONE:
-					backImgName = mapName;
-		
-					break;
-
-				case TWO:
-					centerImgName = mapName;
-		
-					break;
-
-				case THREE:
-					frontImgName = mapName;
-
-					break;
-			}
-		}
-	}
-
 
 };
 
@@ -858,8 +799,26 @@ struct tagButton_Info
 // 맵툴 함수
 class mapTool_Func
 {
+private:
+	// 연산에 쓰일 함수
+	bool	draw_Ready_BG;									// 백그라운드 그리기 준비
+	short	draw_Cnt_BG;									// 백그라운드 그리기 인터벌
+	vector<tagSaveBackGround>	_vBackGround_Info;			// 백그라운드 정보를 저장한다.
 
 public:
+	vector<tagSaveBackGround> get_VBackGround_Info() { return _vBackGround_Info; }
+	vector<tagSaveBackGround>* get_VBackGround_Info_Address() { return &_vBackGround_Info; }
+	
+
+public:
+	// 사용하기 전에 변수 초기화
+	void reset()
+	{
+		draw_Ready_BG = false;
+		draw_Cnt_BG = 0;
+	}
+
+
 	// 기본 타일을 만들어 준다.
 	void make_Base_TileList(vector<tagTileInfo>* tileList)
 	{
@@ -912,43 +871,7 @@ public:
 
 	}
 
-	// 배경을 출력 한다.
-	void show_BackImg(tagMapInfo* mapInfo, HDC getMemDC)
-	{
-		// 카메라의 정보를 복사한다. (연산할때 간단하게 사용하기 위해서)
-		POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
-
-		// 배경을 담을 렉트 크기를 정한다.
-		RECT camera_Rc = RectMake(0, 0, IMAGEMANAGER->findImage(mapInfo->backImgName)->getWidth(), IMAGEMANAGER->findImage(mapInfo->backImgName)->getHeight());	
-
-		camera.x > 560 ? camera.x = 560 : camera.x;
-		camera.y > 890 ? camera.y = 890 : camera.y;
-
-		camera_Rc.left -= camera.x;
-		camera_Rc.right -= camera.x;
-		camera_Rc.top -= camera.y;
-		camera_Rc.bottom -= camera.y;
-
-		// 배경 갯수에 따라 출력이 다르다.
-		if (mapInfo->backGround_Count >= 1)			// 배경 갯수가 3개 이하
-		{
-			IMAGEMANAGER->findImage(mapInfo->backImgName)->loopRender(getMemDC,
-				&camera_Rc, mapInfo->loop->LoopX_BG_0, 0);
-		}
-
-		if (mapInfo->backGround_Count >= 2)			// 배경 갯수가 2개 이하
-		{
-			IMAGEMANAGER->findImage(mapInfo->centerImgName)->loopRender(getMemDC,
-				&camera_Rc, mapInfo->loop->LoopX_BG_1, 0);
-		}
-
-		if (mapInfo->backGround_Count >= 3)			// 배경 갯수가 1개 이하
-		{
-
-		}IMAGEMANAGER->findImage(mapInfo->frontImgName)->loopRender(getMemDC,
-			&camera_Rc, mapInfo->loop->LoopX_BG_2, 0);
-
-	}
+	
 
 	// 팔렛트를 출력 한다.
 	void show_Pallet(HDC getMemDC, BUTTON_TYPE button, tagPallets* pallet)
@@ -1057,22 +980,35 @@ public:
 					case BUTTON_TYPE::BACKGROUND:
 						for (int i = 0; i < mapInfo->tile_Count.x * mapInfo->tile_Count.y; ++i)
 						{
-							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2))
+							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2) && !draw_Ready_BG)
 							{
-								(*TileList)[i].frame.backGround = pallet.frame;
-								(*TileList)[i].tile_Type = TILE_TYPE::BACKGROUND;
-								(*TileList)[i].tileName.backGroundImgName = pallet.imageName.backGroundImgName;	// 그려지는 이미지 키값을 넣는다. (샘플 X)
-								(*TileList)[i].useTile = true;	// 이 타일은 사용중이라는 뜻
+								//(*TileList)[i].frame.backGround = pallet.frame;
+								//(*TileList)[i].tile_Type = TILE_TYPE::BACKGROUND;
+								//(*TileList)[i].tileName.backGroundImgName = pallet.imageName.backGroundImgName;	// 그려지는 이미지 키값을 넣는다. (샘플 X)
+								//(*TileList)[i].useTile = true;	// 이 타일은 사용중이라는 뜻
 
 								// 그 타일의 좌표를 얻어서 그냥 그려버리는건 어떨까?
 								// 그 좌표를 벡터에 저장하고 이미지 정보도 가지고 있는 벡터
 								// 지울때는 뒤에서부터 하나씩 지우는것으로 
 								// 클릭할때마다 늘어나기만 하고 
+								// 한번씩만 클릭하게 바꿔야함
+								draw_Ready_BG = true;
 
-								//tagSaveBackGround BG_Info;
-								//BG_Info.imageName = pallet.imageName.backGroundImgName;
-								//BG_Info.rc = (*TileList)[i].rc;	// 배경이 뿌려질 좌표
-								//mapInfo->_vBackGround_Info.push_back(BG_Info);
+								tagSaveBackGround BG_Info;
+								BG_Info.imageName = pallet.imageName.backGroundImgName;
+								BG_Info.rc = (*TileList)[i].rc;	// 배경이 뿌려질 좌표
+								_vBackGround_Info.push_back(BG_Info);
+								break;
+							}
+						}
+
+						if (draw_Ready_BG)
+						{
+							draw_Cnt_BG++;
+							if (draw_Cnt_BG > 10)
+							{
+								draw_Cnt_BG = 0;
+								draw_Ready_BG = false;
 							}
 						}
 						break;
@@ -1091,12 +1027,20 @@ public:
 	{
 		CAMERAMANAGER->Use_Func()->find_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X, CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_Y);	// 카메라 안에 들어온 타일을 찾아서 저장한다.
 
+	
 		// 백그라운드를 그려준다.
-		//for (int i = 0; i < mapInfo._vBackGround_Info.size();++i)
-		//{
-		//	IMAGEMANAGER->findImage(mapInfo._vBackGround_Info[i].imageName)->render(getMemDC, mapInfo._vBackGround_Info[i].rc.left, mapInfo._vBackGround_Info[i].rc.top);
-		//}
-
+		if (_vBackGround_Info.size() > 0)
+		{
+			for (int i = 0; i < _vBackGround_Info.size();++i)
+			{
+				RECT rc = _vBackGround_Info[i].rc;
+				rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+				rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+				IMAGEMANAGER->findImage(_vBackGround_Info[i].imageName)->render(getMemDC, rc.left, rc.top);
+			}
+		}
 
 		// 마우스가 클릭한 타일을 찾아준다. (내 화면에 있는 타일만 찾아서)
 		for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
@@ -1115,14 +1059,14 @@ public:
 				if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
 				{
 					// 백 그라운드를 그려준다.
-					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::BACKGROUND)
-					{
-						if ((*_vTileList)[y * mapInfo.tile_Count.x + x].useTile)
-						{
-							IMAGEMANAGER->findImage((*_vTileList)[y * mapInfo.tile_Count.x + x].tileName.backGroundImgName)->render(getMemDC, rc.left, rc.top);
-							
-						}
-					}
+					//if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::BACKGROUND)
+					//{
+					//	if ((*_vTileList)[y * mapInfo.tile_Count.x + x].useTile)
+					//	{
+					//		IMAGEMANAGER->findImage((*_vTileList)[y * mapInfo.tile_Count.x + x].tileName.backGroundImgName)->render(getMemDC, rc.left, rc.top);
+					//		
+					//	}
+					//}
 
 					// 지형을 그려준다.
 					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)

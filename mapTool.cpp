@@ -20,11 +20,12 @@ HRESULT mapTool::init()
 	////////////////////////////////////////////////////////////////////
 
 	_mapTool_Func.make_Base_TileList(&_vTileList);	// 타일의 기본 렉트를 만들어 준다.
+	_mapTool_Func.reset();
 
 	_button.reset();								// 버튼 위치 초기화
 
 	_pallet.reset();								// 팔렛트 변수 초기화
-
+	
 	return S_OK;
 }
 
@@ -47,14 +48,13 @@ void mapTool::update()
 	_pallet.click_PalletInfo_Save((BUTTON_TYPE)_button.BT_Type, _button.BT_ImgNumber, &_button.BT_start_Draw, &_button.BT_FindNoTile);		// 이미지 선택
 
 	if(!_button.BT_FindNoTile)
-		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, &_mapInfo, &_button.BT_start_Draw);								// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
-
+		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, &_mapInfo, &_button.BT_start_Draw);			// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
 
 }
 
 void mapTool::render()
 {
-	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, BLACKNESS);		// 전체 화면 갱신용
+	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, BLACKNESS);				// 전체 화면 갱신용
 
 	//_mapTool_Func.show_BackImg(&_mapInfo, getMemDC());					// 백그라운드 배경을 출력한다.
 	IMAGEMANAGER->findImage("base_MapTool_BG")->render(getMemDC(), 0, 0);	// 맵툴 기본 배경
@@ -110,13 +110,11 @@ void mapTool::Find_Worker()
 	switch ((BUTTON_TYPE)_button.BT_Type)
 	{
 		case BUTTON_TYPE::SAVE:
-			DATAMANAGER->map_Save(_vTileList, &_mapInfo);
-
+			DATAMANAGER->map_Save(_vTileList, &_mapInfo, _mapTool_Func.get_VBackGround_Info());
 			break;
 
 		case BUTTON_TYPE::LOAD:
-			DATAMANAGER->map_Load(&_vTileList, &_mapInfo);
-
+			DATAMANAGER->map_Load(&_vTileList, &_mapInfo, _mapTool_Func.get_VBackGround_Info_Address());
 			break;
 
 		case BUTTON_TYPE::ERASER:
