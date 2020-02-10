@@ -168,6 +168,9 @@
     <ClInclude Include="DataManager.h">
       <Filter>playGround\DataManager</Filter>
     </ClInclude>
+    <ClInclude Include="WorkList.h">
+      <Filter>playGround</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

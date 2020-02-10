@@ -181,6 +181,7 @@
     <ClInclude Include="txtData.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="windowAPI.h" />
+    <ClInclude Include="WorkList.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="action.cpp" />

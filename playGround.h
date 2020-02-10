@@ -28,6 +28,6 @@ public:
 };
 
 // WINSIZEX = 1600		// 윈도우 사이즈
-// WINSIZEY = 900
+// WINSIZEY = 960
 // WORLDSIZE = 4800		// 월드 사이즈
 // WORLDSIZE = 3600

@@ -61,7 +61,18 @@ enum class BUTTON_TYPE
 	CHARACTER,						// 캐릭터 버튼을 눌렀다면
 	ITEM,							// 아이템 버튼을 눌렀다면
 	TRAP,							// 트랩 버튼을 눌렀다면
-	BACKGROUND						// 백 그라운드 버튼을 눌렀다면
+	BACKGROUND,						// 백 그라운드 버튼을 눌렀다면
+	TEST
+};
+
+// 백 그라운드 레이어 이미지 위치 렉트
+struct tagBackGroundLayerPos
+{
+	RECT Layer_0;		// 맨 뒤 레이어
+	RECT Layer_1;
+	RECT Layer_2;
+	RECT Layer_3;
+	RECT Layer_4;		// 맨 앞 레이어
 };
 
 // 배경을 저장할 구조체
@@ -162,14 +173,15 @@ struct tagLoop_Variable
 // 맵의 정보를 저장 할 구조체
 struct tagMapInfo
 {
-	string						mapName;					// 맵의 이름을 저장한다.
-	tag_U_Short					tile_Size;					// 타일 사이즈를 저장한다.
-	tag_U_Short					tile_Count;					// 타일의 갯수를 저장한다.
+	string						mapName;											// 맵의 이름을 저장한다.
+	tag_U_Short					tile_Size;											// 타일 사이즈를 저장한다.
+	tag_U_Short					tile_Count;											// 타일의 갯수를 저장한다.
 
-	tagLoop_Variable*			loop;						// 루프에서 사용할 변수
+	tagLoop_Variable*			loop;												// 루프에서 사용할 변수
 
-	tagSaveBackGround			_saveVInfo[10];				// 백그라운드 벡터를 세이브
-	short						_vSize;						// 백터 사이즈를 담는다.
+	tagSaveBackGround			_saveVInfo[BACKGROUND_LAYER_COUNT][10];				// 백그라운드 벡터를 세이브
+	short						_layer_Cnt;											// 레이어 카운터
+	short						_vSize;												// 백터 사이즈를 담는다.
 		
 	// 맵 정보 초기화
 	void reset_MapInfo()
@@ -184,6 +196,7 @@ struct tagMapInfo
 		loop->reset_Func();
 
 		_vSize = 0;
+		_layer_Cnt = 0;
 	}
 
 };
@@ -230,6 +243,8 @@ struct tagPallets
 	tagPalletKinds	pallet;												// 팔렛트
 	tagPallet_INFO	current;											// 클릭 한 이미지 정보
 	string			ImgName;											// 이미지 이름
+
+	
 
 	// 사용할 변수 초기화
 	void reset()
@@ -567,6 +582,8 @@ struct tagButton_Info
 	RECT			BT_Eraser;			// 지우개 버튼
 	RECT			BT_Next;			// 다음 버튼
 	RECT			BT_Prev;			// 이전 버튼
+	RECT			BT_Up;				// 위 버튼 (새로 생성 수정 했으면 이 주석 삭제)
+	RECT			BT_Down;			// 다운 버튼 (새로 생성 수정 했으면 이 주석 삭제)
 
 	// 팔렛트 버튼
 	RECT			BT_Ground;			// 지형 이미지 버튼
@@ -672,6 +689,13 @@ struct tagButton_Info
 			// next 버튼 위치
 			BT_Next = RectMake(pallet.back_Ground_Pallet[BACKGROUND_COUNTX * BACKGROUND_COUNTY - 1].rc.left + 33, pallet.back_Ground_Pallet[BACKGROUND_COUNTX * BACKGROUND_COUNTY - 1].rc.bottom,
 				32, 30);
+
+			// up 버튼 위치
+			BT_Up = RectMake(pallet.back_Ground_Pallet[0].rc.left - 32, pallet.back_Ground_Pallet[0].rc.top, 32, 30);
+
+			// down 버튼 위치
+			BT_Down = RectMake(pallet.back_Ground_Pallet[0].rc.left - 32, pallet.back_Ground_Pallet[0].rc.top + 30, 32, 30);
+
 			break;
 		}
 	}
@@ -695,6 +719,8 @@ struct tagButton_Info
 			Rectangle(getDC, BT_BackGround);
 			Rectangle(getDC, BT_Next);
 			Rectangle(getDC, BT_Prev); 
+			Rectangle(getDC, BT_Up);
+			Rectangle(getDC, BT_Down);
 		}
 
 		// 버튼 이미지 출력
@@ -733,10 +759,16 @@ struct tagButton_Info
 			IMAGEMANAGER->findImage("next_Icon")->render(getDC, BT_Next.left, BT_Next.top);
 			IMAGEMANAGER->findImage("prev_Icon")->render(getDC, BT_Prev.left, BT_Prev.top);
 		}
+
+		if (BT_Type == BUTTON_TYPE::BACKGROUND)
+		{
+			IMAGEMANAGER->findImage("up_Icon")->render(getDC, BT_Up.left, BT_Up.top);
+			IMAGEMANAGER->findImage("down_Icon")->render(getDC, BT_Down.left, BT_Down.top);
+		}
 	}
 
 	// 버튼 클릭 함수
-	void click_Button()
+	void click_Button(tagMapInfo* mapInfo)
 	{
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		{
@@ -779,6 +811,27 @@ struct tagButton_Info
 				BT_ImgNumber = (IMAGE_COUNT)ImgNumber;
 				BT_FindNoTile = true;
 			}
+
+			// 업 버튼을 눌렀다면
+			if (PtInRect(&BT_Up, _ptMouse) && BT_Type == BUTTON_TYPE::BACKGROUND && !next_Prev_Push_Okay)
+			{
+				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
+
+				// 백그라운드 레이어 카운트가 바뀐다.
+				mapInfo->_layer_Cnt++;
+				if (mapInfo->_layer_Cnt == BACKGROUND_LAYER_COUNT)	mapInfo->_layer_Cnt = 0;	// 만약 카운트가 최대가 된다면 0으로 되돌아간다.
+			}
+
+			// 다운 버튼을 눌렀다면
+			if (PtInRect(&BT_Down, _ptMouse) && BT_Type == BUTTON_TYPE::BACKGROUND && !next_Prev_Push_Okay)
+			{
+				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
+
+				// 백그라운드 레이어 카운트가 바뀐다.
+				mapInfo->_layer_Cnt--;
+				if (mapInfo->_layer_Cnt < 0) mapInfo->_layer_Cnt = BACKGROUND_LAYER_COUNT - 1;	// 만약 카운트가 0 이하로 된다면 카운트 최대치로 바꿔준다.
+
+			}
 		
 			KEYMANAGER->setKeyDown(VK_LBUTTON, false);	// 키 씹히는걸 방지하기 위해
 		}	
@@ -801,13 +854,12 @@ class mapTool_Func
 {
 private:
 	// 연산에 쓰일 함수
-	bool	draw_Ready_BG;									// 백그라운드 그리기 준비
-	short	draw_Cnt_BG;									// 백그라운드 그리기 인터벌
-	vector<tagSaveBackGround>	_vBackGround_Info;			// 백그라운드 정보를 저장한다.
+	bool	draw_Ready_BG;													// 백그라운드 그리기 준비
+	short	draw_Cnt_BG;													// 백그라운드 그리기 인터벌
+	vector<tagSaveBackGround>	_vBackGround_Info[BACKGROUND_LAYER_COUNT];	// 백그라운드 정보를 저장한다.
 
 public:
-	vector<tagSaveBackGround> get_VBackGround_Info() { return _vBackGround_Info; }
-	vector<tagSaveBackGround>* get_VBackGround_Info_Address() { return &_vBackGround_Info; }
+	vector<tagSaveBackGround>* get_VBackGround_Info_Address() { return _vBackGround_Info; }
 	
 
 public:
@@ -982,10 +1034,6 @@ public:
 						{
 							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2) && !draw_Ready_BG)
 							{
-								//(*TileList)[i].frame.backGround = pallet.frame;
-								//(*TileList)[i].tile_Type = TILE_TYPE::BACKGROUND;
-								//(*TileList)[i].tileName.backGroundImgName = pallet.imageName.backGroundImgName;	// 그려지는 이미지 키값을 넣는다. (샘플 X)
-								//(*TileList)[i].useTile = true;	// 이 타일은 사용중이라는 뜻
 
 								// 그 타일의 좌표를 얻어서 그냥 그려버리는건 어떨까?
 								// 그 좌표를 벡터에 저장하고 이미지 정보도 가지고 있는 벡터
@@ -997,7 +1045,7 @@ public:
 								tagSaveBackGround BG_Info;
 								BG_Info.imageName = pallet.imageName.backGroundImgName;
 								BG_Info.rc = (*TileList)[i].rc;	// 배경이 뿌려질 좌표
-								_vBackGround_Info.push_back(BG_Info);
+								_vBackGround_Info[mapInfo->_layer_Cnt].push_back(BG_Info);
 								break;
 							}
 						}
@@ -1027,20 +1075,35 @@ public:
 	{
 		CAMERAMANAGER->Use_Func()->find_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X, CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_Y);	// 카메라 안에 들어온 타일을 찾아서 저장한다.
 
-	
 		// 백그라운드를 그려준다.
-		if (_vBackGround_Info.size() > 0)
+		for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
 		{
-			for (int i = 0; i < _vBackGround_Info.size();++i)
+			if (_vBackGround_Info[i].size() > 0)	// 해당 벡터가 0이상이여야만 들어간다.
 			{
-				RECT rc = _vBackGround_Info[i].rc;
-				rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-				rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-				rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-				rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-				IMAGEMANAGER->findImage(_vBackGround_Info[i].imageName)->render(getMemDC, rc.left, rc.top);
+				for (int j = 0; j < _vBackGround_Info[i].size(); ++j)
+				{
+					RECT rc = (_vBackGround_Info[i])[j].rc;
+					rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+					rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+					rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+					rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+					IMAGEMANAGER->findImage((_vBackGround_Info[i])[j].imageName)->render(getMemDC, rc.left, rc.top);
+				}
 			}
 		}
+
+		//if (_vBackGround_Info->size() > 0)
+		//{
+		//	for (int i = 0; i < _vBackGround_Info->size();++i)
+		//	{
+		//		RECT rc = (_vBackGround_Info[0])[i].rc;
+		//		rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+		//		rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+		//		rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+		//		rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+		//		IMAGEMANAGER->findImage((_vBackGround_Info[0])[i].imageName)->render(getMemDC, rc.left, rc.top);
+		//	}
+		//}
 
 		// 마우스가 클릭한 타일을 찾아준다. (내 화면에 있는 타일만 찾아서)
 		for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)

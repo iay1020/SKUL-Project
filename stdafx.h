@@ -37,7 +37,7 @@ using namespace SEVENTEEN_UTIL;
 #define WINSTARTX 50
 #define WINSTARTY 50
 #define WINSIZEX 1600
-#define WINSIZEY 900
+#define WINSIZEY 960
 #define WINSTYLE WS_CAPTION | WS_SYSMENU
 
 #define RND randomFunction::getSingleton()

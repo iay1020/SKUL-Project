@@ -13,12 +13,6 @@ HRESULT mapTool::init()
 {
 	_mapInfo.reset_MapInfo();						// 맵정보 초기화
 
-	////////////////////////////////////////////////////////////////////
-	//_mapInfo.add_BackGround("tutorial_BG_0");		// 맵 추가 (테스트용)
-	//_mapInfo.add_BackGround("tutorial_BG_1");
-	//_mapInfo.add_BackGround("tutorial_BG_2");
-	////////////////////////////////////////////////////////////////////
-
 	_mapTool_Func.make_Base_TileList(&_vTileList);	// 타일의 기본 렉트를 만들어 준다.
 	_mapTool_Func.reset();
 
@@ -37,7 +31,7 @@ void mapTool::update()
 {
 	testMove();																																// 테스트용 카메라 이동 함수
 
-	_button.click_Button();																													// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
+	_button.click_Button(&_mapInfo);																										// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
 
 	_pallet.setting_Pallet(_button.BT_Type, _button.BT_ImgNumber);																			// 팔렛트 위치 갱신
 
@@ -48,7 +42,7 @@ void mapTool::update()
 	_pallet.click_PalletInfo_Save((BUTTON_TYPE)_button.BT_Type, _button.BT_ImgNumber, &_button.BT_start_Draw, &_button.BT_FindNoTile);		// 이미지 선택
 
 	if(!_button.BT_FindNoTile)
-		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, &_mapInfo, &_button.BT_start_Draw);			// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
+		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, &_mapInfo, &_button.BT_start_Draw);							// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
 
 }
 
@@ -80,25 +74,21 @@ void mapTool::testMove()
 
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 	{
-		CAMERAMANAGER->Use_Func()->set_CameraX(CAMERAMANAGER->Use_Func()->get_CameraXY().x - 10);
-		_mapInfo.loop->LoopX_BG_0 -= 6; 
-		_mapInfo.loop->LoopX_BG_1 -= 4;
-		_mapInfo.loop->LoopX_BG_2 -= 2;
+		CAMERAMANAGER->Use_Func()->set_CameraX(CAMERAMANAGER->Use_Func()->get_CameraXY().x - 20);
+
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_UP))
 	{
-		CAMERAMANAGER->Use_Func()->set_CameraY(CAMERAMANAGER->Use_Func()->get_CameraXY().y - 10);
+		CAMERAMANAGER->Use_Func()->set_CameraY(CAMERAMANAGER->Use_Func()->get_CameraXY().y - 20);
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 	{
-		CAMERAMANAGER->Use_Func()->set_CameraX(CAMERAMANAGER->Use_Func()->get_CameraXY().x + 10);
-		_mapInfo.loop->LoopX_BG_0 += 6;
-		_mapInfo.loop->LoopX_BG_1 += 4;
-		_mapInfo.loop->LoopX_BG_2 += 2;
+		CAMERAMANAGER->Use_Func()->set_CameraX(CAMERAMANAGER->Use_Func()->get_CameraXY().x + 20);
+	
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
 	{
-		CAMERAMANAGER->Use_Func()->set_CameraY(CAMERAMANAGER->Use_Func()->get_CameraXY().y + 10);
+		CAMERAMANAGER->Use_Func()->set_CameraY(CAMERAMANAGER->Use_Func()->get_CameraXY().y + 20);
 	}
 
 	CAMERAMANAGER->Use_Func()->find_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X, CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_Y);
@@ -110,7 +100,7 @@ void mapTool::Find_Worker()
 	switch ((BUTTON_TYPE)_button.BT_Type)
 	{
 		case BUTTON_TYPE::SAVE:
-			DATAMANAGER->map_Save(_vTileList, &_mapInfo, _mapTool_Func.get_VBackGround_Info());
+			DATAMANAGER->map_Save(_vTileList, &_mapInfo, _mapTool_Func.get_VBackGround_Info_Address());
 			break;
 
 		case BUTTON_TYPE::LOAD:
