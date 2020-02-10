@@ -65,16 +65,6 @@ enum class BUTTON_TYPE
 	TEST
 };
 
-// 백 그라운드 레이어 이미지 위치 렉트
-struct tagBackGroundLayerPos
-{
-	RECT Layer_0;		// 맨 뒤 레이어
-	RECT Layer_1;
-	RECT Layer_2;
-	RECT Layer_3;
-	RECT Layer_4;		// 맨 앞 레이어
-};
-
 // 배경을 저장할 구조체
 struct tagSaveBackGround
 {
@@ -181,7 +171,7 @@ struct tagMapInfo
 
 	tagSaveBackGround			_saveVInfo[BACKGROUND_LAYER_COUNT][10];				// 백그라운드 벡터를 세이브
 	short						_layer_Cnt;											// 레이어 카운터
-	short						_vSize;												// 백터 사이즈를 담는다.
+	short						_vSize[BACKGROUND_LAYER_COUNT];						// 백터 사이즈를 담는다.
 		
 	// 맵 정보 초기화
 	void reset_MapInfo()
@@ -195,7 +185,8 @@ struct tagMapInfo
 		loop = new tagLoop_Variable;
 		loop->reset_Func();
 
-		_vSize = 0;
+		for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)	_vSize[i] = 0;
+
 		_layer_Cnt = 0;
 	}
 
@@ -239,11 +230,11 @@ struct tagTileInfo
 // 팔렛트의 종류를 담는다.
 struct tagPallets
 {
-	tagPalletBar	palletBar;											// 팔렛트 바
-	tagPalletKinds	pallet;												// 팔렛트
-	tagPallet_INFO	current;											// 클릭 한 이미지 정보
-	string			ImgName;											// 이미지 이름
-
+	tagPalletBar			palletBar;						// 팔렛트 바
+	tagPalletKinds			pallet;							// 팔렛트
+	tagPallet_INFO			current;						// 클릭 한 이미지 정보
+	string					ImgName;						// 이미지 이름
+	RECT					Layer[5];						// 백 그라운드 레이어 이미지 렉트
 	
 
 	// 사용할 변수 초기화
@@ -360,7 +351,7 @@ struct tagPallets
 	}
 
 	// 팔렛트 기본 셋팅
-	void setting_Pallet(BUTTON_TYPE type, IMAGE_COUNT imgNum)
+	void setting_Pallet(BUTTON_TYPE type, IMAGE_COUNT imgNum, RECT* minus_Button)
 	{
 		findImg(type, imgNum);	// 번호에 맞는 이미지 이름을 찾는다.
 
@@ -427,6 +418,16 @@ struct tagPallets
 						pallet.back_Ground_Pallet[x + y * BACKGROUND_COUNTX].imageName.backGroundName = ImgName;
 					}
 				}
+
+				// 백그라운드 팔렛트 왼쪽에 레이어의 위치를 표시하는 이미지 위치를 잡아준다.
+				Layer[0] = RectMake(pallet.back_Ground_Pallet[0].rc.left - 32, pallet.back_Ground_Pallet[0].rc.top + 32 * 2, 32, 32);
+				Layer[1] = RectMake(Layer[0].left, Layer[0].top + 32 * 1, 32, 32);
+				Layer[2] = RectMake(Layer[0].left, Layer[0].top + 32 * 2, 32, 32);
+				Layer[3] = RectMake(Layer[0].left, Layer[0].top + 32 * 3, 32, 32);
+				Layer[4] = RectMake(Layer[0].left, Layer[0].top + 32 * 4, 32, 32);
+
+				// 레이어 삭제 버튼 위치를 만든다.
+				*minus_Button = RectMake(Layer[0].left, Layer[0].top + 32 * 5 + 3, 32, 30);
 
 				break;
 		}
@@ -584,6 +585,7 @@ struct tagButton_Info
 	RECT			BT_Prev;			// 이전 버튼
 	RECT			BT_Up;				// 위 버튼 (새로 생성 수정 했으면 이 주석 삭제)
 	RECT			BT_Down;			// 다운 버튼 (새로 생성 수정 했으면 이 주석 삭제)
+	RECT			BT_Minus;			// 레이어 삭제 버튼
 
 	// 팔렛트 버튼
 	RECT			BT_Ground;			// 지형 이미지 버튼
@@ -764,11 +766,12 @@ struct tagButton_Info
 		{
 			IMAGEMANAGER->findImage("up_Icon")->render(getDC, BT_Up.left, BT_Up.top);
 			IMAGEMANAGER->findImage("down_Icon")->render(getDC, BT_Down.left, BT_Down.top);
+			IMAGEMANAGER->findImage("minus_Icon")->render(getDC, BT_Minus.left, BT_Minus.top);
 		}
 	}
 
 	// 버튼 클릭 함수
-	void click_Button(tagMapInfo* mapInfo)
+	void click_Button(tagMapInfo* mapInfo, vector<tagSaveBackGround>* vBackGround)
 	{
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		{
@@ -818,8 +821,10 @@ struct tagButton_Info
 				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
 
 				// 백그라운드 레이어 카운트가 바뀐다.
-				mapInfo->_layer_Cnt++;
-				if (mapInfo->_layer_Cnt == BACKGROUND_LAYER_COUNT)	mapInfo->_layer_Cnt = 0;	// 만약 카운트가 최대가 된다면 0으로 되돌아간다.
+				mapInfo->_layer_Cnt--;
+				if (mapInfo->_layer_Cnt < 0) mapInfo->_layer_Cnt = BACKGROUND_LAYER_COUNT - 1;	// 만약 카운트가 0 이하로 된다면 카운트 최대치로 바꿔준다.
+
+				BT_FindNoTile = true;
 			}
 
 			// 다운 버튼을 눌렀다면
@@ -828,10 +833,23 @@ struct tagButton_Info
 				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
 
 				// 백그라운드 레이어 카운트가 바뀐다.
-				mapInfo->_layer_Cnt--;
-				if (mapInfo->_layer_Cnt < 0) mapInfo->_layer_Cnt = BACKGROUND_LAYER_COUNT - 1;	// 만약 카운트가 0 이하로 된다면 카운트 최대치로 바꿔준다.
+				mapInfo->_layer_Cnt++;
+				if (mapInfo->_layer_Cnt == BACKGROUND_LAYER_COUNT)	mapInfo->_layer_Cnt = 0;	// 만약 카운트가 최대가 된다면 0으로 되돌아간다.
 
+				BT_FindNoTile = true;
 			}
+
+			// 레이어 마이너스 버튼을 눌렀다면
+			if (PtInRect(&BT_Minus, _ptMouse) && BT_Type == BUTTON_TYPE::BACKGROUND && !next_Prev_Push_Okay)
+			{
+				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
+
+				// 현재 레이어 카운트에 있는 벡터를 한개 지워준다. (벡터 사이즈가 0 이상일때만)
+				if (vBackGround[mapInfo->_layer_Cnt].size() > 0) vBackGround[mapInfo->_layer_Cnt].erase(vBackGround[mapInfo->_layer_Cnt].end()-1);
+
+				BT_FindNoTile = true;
+			}
+
 		
 			KEYMANAGER->setKeyDown(VK_LBUTTON, false);	// 키 씹히는걸 방지하기 위해
 		}	
@@ -926,7 +944,7 @@ public:
 	
 
 	// 팔렛트를 출력 한다.
-	void show_Pallet(HDC getMemDC, BUTTON_TYPE button, tagPallets* pallet)
+	void show_Pallet(HDC getMemDC, BUTTON_TYPE button, tagPallets* pallet, short layerCnt)
 	{
 		switch (button)
 		{
@@ -970,6 +988,20 @@ public:
 				// 렉트 출력
 				IMAGEMANAGER->findImage("tile_Rect_200")->render(getMemDC, pallet->pallet.back_Ground_Pallet[i].rc.left, pallet->pallet.back_Ground_Pallet[i].rc.top);
 			}
+
+			// 레이어 위치 출력
+			for (int i = 0; i < 5; ++i)
+			{
+				// 레이어 위치 렉트
+				//Rectangle(getMemDC, pallet->Layer[i]);
+
+				// 레이어 이미지 출력
+				if (i == layerCnt)	IMAGEMANAGER->findImage("back_Ground_Select_Pointer")->render(getMemDC, pallet->Layer[i].left, pallet->Layer[i].top);
+				else				IMAGEMANAGER->findImage("back_Ground_Select")->render(getMemDC, pallet->Layer[i].left, pallet->Layer[i].top);
+			}
+
+
+
 			break;
 		}
 	}
@@ -1032,6 +1064,7 @@ public:
 					case BUTTON_TYPE::BACKGROUND:
 						for (int i = 0; i < mapInfo->tile_Count.x * mapInfo->tile_Count.y; ++i)
 						{
+							if (PtInRect(&button.BT_Up, _ptMouse) || PtInRect(&button.BT_Down, _ptMouse) || PtInRect(&button.BT_Minus, _ptMouse)) continue;
 							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2) && !draw_Ready_BG)
 							{
 

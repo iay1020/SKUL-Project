@@ -31,9 +31,9 @@ void mapTool::update()
 {
 	testMove();																																// 테스트용 카메라 이동 함수
 
-	_button.click_Button(&_mapInfo);																										// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
+	_button.click_Button(&_mapInfo, _mapTool_Func.get_VBackGround_Info_Address());																										// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
 
-	_pallet.setting_Pallet(_button.BT_Type, _button.BT_ImgNumber);																			// 팔렛트 위치 갱신
+	_pallet.setting_Pallet(_button.BT_Type, _button.BT_ImgNumber, &_button.BT_Minus);																			// 팔렛트 위치 갱신
 
 	Find_Worker();																															// 클릭 한 버튼에 따라 함수 호출
 
@@ -44,6 +44,13 @@ void mapTool::update()
 	if(!_button.BT_FindNoTile)
 		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, &_mapInfo, &_button.BT_start_Draw);							// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
 
+	//cout << "======================================================" << endl;
+	//cout << _mapTool_Func.get_VBackGround_Info_Address()[0].size() << endl;
+	//cout << _mapTool_Func.get_VBackGround_Info_Address()[1].size() << endl;
+	//cout << _mapTool_Func.get_VBackGround_Info_Address()[2].size() << endl;
+	//cout << _mapTool_Func.get_VBackGround_Info_Address()[3].size() << endl;
+	//cout << _mapTool_Func.get_VBackGround_Info_Address()[4].size() << endl;
+	//cout << "======================================================" << endl;
 }
 
 void mapTool::render()
@@ -64,7 +71,7 @@ void mapTool::render()
 
 	_button.show_Button(getMemDC());
 
-	_mapTool_Func.show_Pallet(getMemDC(), (BUTTON_TYPE)_button.BT_Type, &_pallet);
+	_mapTool_Func.show_Pallet(getMemDC(), (BUTTON_TYPE)_button.BT_Type, &_pallet, _mapInfo._layer_Cnt);
 
 }
 
@@ -101,10 +108,12 @@ void mapTool::Find_Worker()
 	{
 		case BUTTON_TYPE::SAVE:
 			DATAMANAGER->map_Save(_vTileList, &_mapInfo, _mapTool_Func.get_VBackGround_Info_Address());
+			_button.BT_Type = BUTTON_TYPE::NONE;
 			break;
 
 		case BUTTON_TYPE::LOAD:
 			DATAMANAGER->map_Load(&_vTileList, &_mapInfo, _mapTool_Func.get_VBackGround_Info_Address());
+			_button.BT_Type = BUTTON_TYPE::NONE;
 			break;
 
 		case BUTTON_TYPE::ERASER:

@@ -41,12 +41,14 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 
 
 	// 백그라운드 정보를 맥 정보 배열에 옴겨 담는다.
-	for (int i = 0; i < (vMapInfo[0]).size(); ++i)
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
 	{
-		mapInfo->_saveVInfo[0][i] = (vMapInfo[0])[i];
+		for (int j = 0; j < (vMapInfo[i]).size(); ++j)
+		{
+			mapInfo->_saveVInfo[i][j] = (vMapInfo[i])[j];
+		}
+		mapInfo->_vSize[i] = (vMapInfo[i]).size();	// 불러올때 벡터를 재생성 하기 위해 현재 사이즈를 저장한다.
 	}
-
-	mapInfo->_vSize = (vMapInfo[0]).size();	// 불러올때 벡터를 재생성 하기 위해 현재 사이즈를 저장한다.
 	
 	// 맵의 정보를 저장한다. (맵에 대한 정보 여러가지 있다. 이후에 여기에 저장 되어 있는 맵 이름을 가지고 만들어야 함)
 	file = CreateFile("tutorial_Info.map", GENERIC_WRITE, 0, NULL,
@@ -70,22 +72,33 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 
 	CloseHandle(file);
 
-	
-	// 배열에 있던 정보를 벡터에 옴겨담는다.
-	vector<tagSaveBackGround>	_moveData;
 
-	// 저장되어 있던 사이즈만큼 반복한다.
-	for (int i = 0; i < mapInfo->_vSize; ++i)
+	// 기존에 있던 벡터는 비워준다. (새로운 정보를 넣기 위해)
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
 	{
-		tagSaveBackGround new_Data;
-		new_Data.imageName = mapInfo->_saveVInfo[0][i].imageName;
-		new_Data.rc = mapInfo->_saveVInfo[0][i].rc;
-		_moveData.push_back(new_Data);
+		for (int j = 0; j < vMapInfo[i].size();)
+		{
+			vMapInfo[i].erase(vMapInfo[i].begin());
+		}
 	}
 
 	// 기존 벡터에 정보를 옴겨준다.
-	*vMapInfo = _moveData;
+	//(*vMapInfo)[i] = (*_moveData)[i];
+	
+	// 배열에 있던 정보를 벡터에 옴겨담는다.
+	vector<tagSaveBackGround>	_moveData[BACKGROUND_LAYER_COUNT];
 
+	// 저장되어 있던 사이즈만큼 반복한다.
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
+	{
+		for (int j = 0; j < mapInfo->_vSize[i]; ++j)
+		{
+			tagSaveBackGround new_Data;
+			new_Data.imageName = mapInfo->_saveVInfo[i][j].imageName;
+			new_Data.rc = mapInfo->_saveVInfo[i][j].rc;
+			vMapInfo[i].push_back(new_Data);
+		}
+	}
 
 	// 맵을 받아 올 변수를 만든다.
 	tagTileInfo* tile;
