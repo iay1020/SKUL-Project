@@ -31,9 +31,10 @@ void mapTool::update()
 {
 	testMove();																																// 테스트용 카메라 이동 함수
 
-	_button.click_Button(&_mapInfo, _mapTool_Func.get_VBackGround_Info_Address());																										// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
+	_button.click_Button(&_mapInfo, _mapTool_Func.get_VBackGround_Info_Address(), &_vTileList);																										// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수
 
-	_pallet.setting_Pallet(_button.BT_Type, _button.BT_ImgNumber, &_button.BT_Minus);																			// 팔렛트 위치 갱신
+	_pallet.setting_Pallet(_button.BT_Type, _button.BT_ImgNumber, 
+		&_button.BT_Prev, &_button.BT_Next, &_button.BT_Up, &_button.BT_Down, &_button.BT_RectPlus, &_button.BT_Minus);															// 팔렛트 위치 갱신
 
 	Find_Worker();																															// 클릭 한 버튼에 따라 함수 호출
 
@@ -60,6 +61,8 @@ void mapTool::render()
 	//_mapTool_Func.show_BackImg(&_mapInfo, getMemDC());					// 백그라운드 배경을 출력한다.
 	IMAGEMANAGER->findImage("base_MapTool_BG")->render(getMemDC(), 0, 0);	// 맵툴 기본 배경
 
+	_mapTool_Func.show_TileImg(getMemDC(), &_vTileList, _mapInfo);
+
 	// 타일 렉트 출력 (테스트용)
 	if (KEYMANAGER->isToggleKey(VK_NUMPAD1))
 	{
@@ -67,12 +70,9 @@ void mapTool::render()
 		_mapTool_Func.show_Camera_In_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Size().x, CAMERAMANAGER->Use_Func()->get_Camera_Size().y, getMemDC(), &_vTileList);
 	}
 
-	_mapTool_Func.show_TileImg(getMemDC(), &_vTileList, _mapInfo);
-
 	_button.show_Button(getMemDC());
 
 	_mapTool_Func.show_Pallet(getMemDC(), (BUTTON_TYPE)_button.BT_Type, &_pallet, _mapInfo._layer_Cnt);
-
 }
 
 void mapTool::testMove()

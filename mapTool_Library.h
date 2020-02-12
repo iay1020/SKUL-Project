@@ -62,7 +62,8 @@ enum class BUTTON_TYPE
 	ITEM,							// 아이템 버튼을 눌렀다면
 	TRAP,							// 트랩 버튼을 눌렀다면
 	BACKGROUND,						// 백 그라운드 버튼을 눌렀다면
-	TEST
+	RECT_ADD_OR_MINUS				// 렉트 추가 삭제 버튼
+				
 };
 
 // 배경을 저장할 구조체
@@ -351,10 +352,10 @@ struct tagPallets
 	}
 
 	// 팔렛트 기본 셋팅
-	void setting_Pallet(BUTTON_TYPE type, IMAGE_COUNT imgNum, RECT* minus_Button)
+	void setting_Pallet(BUTTON_TYPE type, IMAGE_COUNT imgNum, RECT* BT_Prev, RECT* BT_Next, RECT* BT_Up, RECT* BT_Down, RECT* BT_RectPlus, RECT* BT_Minus)
 	{
 		findImg(type, imgNum);	// 번호에 맞는 이미지 이름을 찾는다.
-
+	
 		switch (type)
 		{
 			case BUTTON_TYPE::GROUND:
@@ -427,7 +428,17 @@ struct tagPallets
 				Layer[4] = RectMake(Layer[0].left, Layer[0].top + 32 * 4, 32, 32);
 
 				// 레이어 삭제 버튼 위치를 만든다.
-				*minus_Button = RectMake(Layer[0].left, Layer[0].top + 32 * 5 + 3, 32, 30);
+				*BT_Minus = RectMake(Layer[0].left, Layer[0].top + 32 * 5 + 3, 32, 30);
+				
+				break;
+
+			case BUTTON_TYPE::RECT_ADD_OR_MINUS:
+
+				// 왼,오,아,위 버튼의 위치를 다시 만들어준다. (렉트 추가 버튼 아래에?)
+				*BT_Prev = RectMake(BT_RectPlus->left - 32, BT_RectPlus->bottom, 32, 30);
+				*BT_Next = RectMake(BT_Prev->right, BT_RectPlus->bottom, 32, 30);
+				*BT_Up = RectMake(BT_Next->right, BT_RectPlus->bottom, 32, 30);
+				*BT_Down = RectMake(BT_Up->right, BT_RectPlus->bottom, 32, 30);
 
 				break;
 		}
@@ -573,7 +584,6 @@ struct tagPallets
 
 
 
-
 // 버튼 정보를 담는 구조체
 struct tagButton_Info
 {
@@ -586,6 +596,7 @@ struct tagButton_Info
 	RECT			BT_Up;				// 위 버튼 (새로 생성 수정 했으면 이 주석 삭제)
 	RECT			BT_Down;			// 다운 버튼 (새로 생성 수정 했으면 이 주석 삭제)
 	RECT			BT_Minus;			// 레이어 삭제 버튼
+	RECT			BT_RectPlus;		// 렉트 추가 버튼
 
 	// 팔렛트 버튼
 	RECT			BT_Ground;			// 지형 이미지 버튼
@@ -642,6 +653,7 @@ struct tagButton_Info
 		BT_Character = RectMake(start_Pos * 9 + button_Size * 8, 10, 52, 52);
 		BT_Item = RectMake(start_Pos * 10 + button_Size * 9, 10, 52, 52);
 		BT_BackGround = RectMake(start_Pos * 11 + button_Size * 10, 10, 52, 52);
+		BT_RectPlus = RectMake(start_Pos * 12 + button_Size * 11, 10, 52, 52);
 	}
 
 	// 다음, 이전 버튼의 위치를 갱신 해준다.
@@ -723,12 +735,14 @@ struct tagButton_Info
 			Rectangle(getDC, BT_Prev); 
 			Rectangle(getDC, BT_Up);
 			Rectangle(getDC, BT_Down);
+			Rectangle(getDC, BT_RectPlus);
 		}
 
 		// 버튼 이미지 출력
 		IMAGEMANAGER->findImage("save_Icon")->render(getDC, BT_Save.left, BT_Save.top);
 		IMAGEMANAGER->findImage("load_Icon")->render(getDC, BT_Load.left, BT_Load.top);
 		IMAGEMANAGER->findImage("eraser_Icon")->render(getDC, BT_Eraser.left, BT_Eraser.top);
+		IMAGEMANAGER->findImage("rect_Plus_Icon")->render(getDC, BT_RectPlus.left, BT_RectPlus.top);
 
 		// 지우개 버튼을 클릭 하지 않았을때
 		if (!BT_Click_Eraser)
@@ -768,10 +782,18 @@ struct tagButton_Info
 			IMAGEMANAGER->findImage("down_Icon")->render(getDC, BT_Down.left, BT_Down.top);
 			IMAGEMANAGER->findImage("minus_Icon")->render(getDC, BT_Minus.left, BT_Minus.top);
 		}
+
+		if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
+		{
+			IMAGEMANAGER->findImage("next_Icon")->render(getDC, BT_Next.left, BT_Next.top);
+			IMAGEMANAGER->findImage("prev_Icon")->render(getDC, BT_Prev.left, BT_Prev.top);
+			IMAGEMANAGER->findImage("up_Icon")->render(getDC, BT_Up.left, BT_Up.top);
+			IMAGEMANAGER->findImage("down_Icon")->render(getDC, BT_Down.left, BT_Down.top);
+		}
 	}
 
 	// 버튼 클릭 함수
-	void click_Button(tagMapInfo* mapInfo, vector<tagSaveBackGround>* vBackGround)
+	void click_Button(tagMapInfo* mapInfo, vector<tagSaveBackGround>* vBackGround, vector<tagTileInfo>* _vTileList)
 	{
 		if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 		{
@@ -794,14 +816,49 @@ struct tagButton_Info
 			if (PtInRect(&BT_Item, _ptMouse)) { BT_Type = BUTTON_TYPE::ITEM; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_Trap, _ptMouse)) { BT_Type = BUTTON_TYPE::TRAP; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_BackGround, _ptMouse)) { BT_Type = BUTTON_TYPE::BACKGROUND; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
+			if (PtInRect(&BT_RectPlus, _ptMouse)) { BT_Type = BUTTON_TYPE::RECT_ADD_OR_MINUS; BT_FindNoTile = true; }
+
 
 			// 다음 버튼을 눌렀다면 새로 갱신
 			if (PtInRect(&BT_Next, _ptMouse) && !next_Prev_Push_Okay)
 			{
 				next_Prev_Push_Okay = true;
-				ImgNumber++;
-				if (ImgNumber > ImgCnt) ImgNumber = (int)IMAGE_COUNT::Zero_Img;
-				BT_ImgNumber = (IMAGE_COUNT)ImgNumber;
+
+				// 렉트 추가 버튼을 누르지 않았을때
+				if (BT_Type != BUTTON_TYPE::RECT_ADD_OR_MINUS)
+				{
+					ImgNumber++;
+					if (ImgNumber > ImgCnt) ImgNumber = (int)IMAGE_COUNT::Zero_Img;
+					BT_ImgNumber = (IMAGE_COUNT)ImgNumber;
+				}
+
+				// 렉트 추가 버튼을 눌렀을때
+				if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
+				{
+					// 타일 렉트의 x 갯수가 1개 늘어난다.
+
+					// x의 마지막 벡터 뒤에 새 타일 정보를 추가해준다. 
+					for (int y = 0; y < mapInfo->tile_Count.y; ++y)
+					{
+						tagTileInfo add_Tile;
+						add_Tile.reset_Tile();
+						add_Tile.index.x = mapInfo->tile_Count.x;
+						add_Tile.index.y = y;
+						add_Tile.rc = RectMake(add_Tile.index.x * TILE_SIZE_X, add_Tile.index.y * TILE_SIZE_Y, TILE_SIZE_X, TILE_SIZE_Y);
+						add_Tile.center.x = (add_Tile.rc.left + add_Tile.rc.right) / 2.f;
+						add_Tile.center.y = (add_Tile.rc.top + add_Tile.rc.bottom) / 2.f;
+
+						(*_vTileList).insert(_vTileList->begin() + (mapInfo->tile_Count.x + (y * (mapInfo->tile_Count.x + 1))), add_Tile);
+					}
+					
+					mapInfo->tile_Count.x++;
+
+					CAMERAMANAGER->Use_Func()->set_Tile_CountX(mapInfo->tile_Count.x);
+					CAMERAMANAGER->Use_Func()->set_World_Size(mapInfo->tile_Count.x * TILE_SIZE_X, mapInfo->tile_Count.y * TILE_SIZE_Y);
+				}
+
+
+
 				BT_FindNoTile = true;
 			}
 
@@ -809,9 +866,21 @@ struct tagButton_Info
 			if (PtInRect(&BT_Prev, _ptMouse) && !next_Prev_Push_Okay)
 			{
 				next_Prev_Push_Okay = true;
-				ImgNumber--;
-				if (ImgNumber < (int)IMAGE_COUNT::Zero_Img) ImgNumber = ImgCnt;
-				BT_ImgNumber = (IMAGE_COUNT)ImgNumber;
+
+				// 렉트 추가 버튼을 누르지 않았을때
+				if (BT_Type != BUTTON_TYPE::RECT_ADD_OR_MINUS)
+				{
+					ImgNumber--;
+					if (ImgNumber < (int)IMAGE_COUNT::Zero_Img) ImgNumber = ImgCnt;
+					BT_ImgNumber = (IMAGE_COUNT)ImgNumber;
+				}
+
+				// 렉트 추가 버튼을 눌렀을때
+				if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
+				{
+					// 타일 렉트의 x 갯수가 1개 줄어든다.
+				}
+
 				BT_FindNoTile = true;
 			}
 
@@ -820,9 +889,19 @@ struct tagButton_Info
 			{
 				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
 
-				// 백그라운드 레이어 카운트가 바뀐다.
-				mapInfo->_layer_Cnt--;
-				if (mapInfo->_layer_Cnt < 0) mapInfo->_layer_Cnt = BACKGROUND_LAYER_COUNT - 1;	// 만약 카운트가 0 이하로 된다면 카운트 최대치로 바꿔준다.
+				// 백그라운드 버튼을 눌렀을때 연산
+				if (BT_Type == BUTTON_TYPE::BACKGROUND)
+				{
+					// 백그라운드 레이어 카운트가 바뀐다.
+					mapInfo->_layer_Cnt--;
+					if (mapInfo->_layer_Cnt < 0) mapInfo->_layer_Cnt = BACKGROUND_LAYER_COUNT - 1;	// 만약 카운트가 0 이하로 된다면 카운트 최대치로 바꿔준다.
+				}
+
+				// 렉트 삭제 버튼을 눌렀을때 연산
+				if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
+				{
+					// 타일 렉트의 y 갯수가 1개 줄어든다.
+				}
 
 				BT_FindNoTile = true;
 			}
@@ -832,9 +911,19 @@ struct tagButton_Info
 			{
 				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
 
-				// 백그라운드 레이어 카운트가 바뀐다.
-				mapInfo->_layer_Cnt++;
-				if (mapInfo->_layer_Cnt == BACKGROUND_LAYER_COUNT)	mapInfo->_layer_Cnt = 0;	// 만약 카운트가 최대가 된다면 0으로 되돌아간다.
+				// 백그라운드 버튼을 눌렀을때 연산
+				if (BT_Type == BUTTON_TYPE::BACKGROUND)
+				{
+					// 백그라운드 레이어 카운트가 바뀐다.
+					mapInfo->_layer_Cnt++;
+					if (mapInfo->_layer_Cnt == BACKGROUND_LAYER_COUNT)	mapInfo->_layer_Cnt = 0;	// 만약 카운트가 최대가 된다면 0으로 되돌아간다.
+				}
+
+				// 렉트 추가 버튼을 눌렀을때 연산
+				if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
+				{
+					// 타일 렉트의 y 갯수가 1개 늘어난다.
+				}
 
 				BT_FindNoTile = true;
 			}
@@ -922,12 +1011,14 @@ public:
 		// 카메라의 정보를 복사한다. (연산할때 간단하게 사용하기 위해서)
 		POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
 
+		char testNum[100];
+
 		// 렉트를 출력한다.
 		for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
 		{
 			for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
 			{
-				RECT rc = (*_vTileList)[y * TILE_COUNT_X + x].rc;
+				RECT rc = (*_vTileList)[y * CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X + x].rc;
 
 				rc.left -= camera.x;
 				rc.right -= camera.x;
@@ -936,6 +1027,10 @@ public:
 
 				//Rectangle(getMemDC, rc);
 				IMAGEMANAGER->findImage("tile_Rect")->render(getMemDC, rc.left, rc.top);
+
+				int a = (y * CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X + x);
+				sprintf_s(testNum, 100, "%d", a);
+				TextOut(getMemDC, rc.left, rc.top, testNum, strlen(testNum));
 			}
 		}
 
