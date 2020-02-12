@@ -35,7 +35,6 @@ void playGround::update()
 	gameNode::update();
 
 	_sceneChanger->update();	// 씬 체인저 업데이트
-
 }
 
 void playGround::render()

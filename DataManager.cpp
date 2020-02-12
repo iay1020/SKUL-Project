@@ -20,6 +20,17 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	HANDLE file;
 	DWORD write;
 
+	// 타일 갯수가 추가 되면서 인덱스가 바뀐 타일들을 다시 갱신 시켜준다.
+	for (int y = 0; y < mapInfo->tile_Count.y; ++y)
+	{
+		for (int x = 0; x < mapInfo->tile_Count.x; ++x)
+		{
+			tileList[x + y * mapInfo->tile_Count.x].index.x = x;
+			tileList[x + y * mapInfo->tile_Count.x].index.y = y;
+			cout << x << ", " << y << ":" << tileList[x + y * mapInfo->tile_Count.x].index.x << ", " << tileList[x + y * mapInfo->tile_Count.x].index.y << endl;
+		}
+	}
+
 	// 벡터의 정보를 배열로 옴겨 담는다. (데이터를 세이브 하려면 직렬화 시켜야하는데, 벡터 자체로는 안됐다)
 	tagTileInfo* tile;
 	tile = new tagTileInfo[mapInfo->tile_Count.x * mapInfo->tile_Count.y];	// 타일의 크기만큼 할당 받는다.
@@ -71,7 +82,6 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 	ReadFile(file, mapInfo, sizeof(tagMapInfo), &read, NULL);						// 맵 정보를 먼저 받아 온 이유는 맵을 받아올때 맵의 크기 정보가 필요하기 때문에
 
 	CloseHandle(file);
-
 
 	// 기존에 있던 벡터는 비워준다. (새로운 정보를 넣기 위해)
 	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)

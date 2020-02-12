@@ -1,6 +1,7 @@
 #pragma once
 #include "stdafx.h"
 #include "mapTool.h"
+#include "test_Room.h"
 
 class tagSceneFunc	// scene 함수를 모아둔 클래스
 {
@@ -9,6 +10,7 @@ public:
 	void addScene()
 	{
 		SCENEMANAGER->addScene("mapTool", new mapTool);
+		SCENEMANAGER->addScene("testRoom", new test_Room);
 	}
 
 	// 씬 체인지를 해주는 함수
@@ -26,6 +28,12 @@ public:
 		{
 			// 맵툴 씬으로 이동한다.
 			SCENEMANAGER->changeScene("mapTool");
+		}
+
+		if (KEYMANAGER->isOnceKeyDown(VK_F2))
+		{
+			// 맵툴 씬으로 이동한다.
+			SCENEMANAGER->changeScene("testRoom");
 		}
 	}
 };

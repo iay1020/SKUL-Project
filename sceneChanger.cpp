@@ -23,6 +23,7 @@ void sceneChanger::release()
 
 void sceneChanger::update()
 {
+	_sceneFunc.TEST_SceneChange();
 	SCENEMANAGER->update();
 }
 

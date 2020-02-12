@@ -878,14 +878,32 @@ struct tagButton_Info
 				// 렉트 추가 버튼을 눌렀을때
 				if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
 				{
-					// 타일 렉트의 x 갯수가 1개 줄어든다.
+
+					if (mapInfo->tile_Count.x > TILE_COUNT_X)
+					{
+
+						int delete_Tile_Index = mapInfo->tile_Count.x * mapInfo->tile_Count.y - 1;	// 타일의 최대 수량 - 1을 하면 제일 마지막 인덱스를 알 수 있다.
+
+						// 타일 렉트의 x 갯수가 1개 줄어든다.
+						// x의 마지막 벡터를 y 갯수만큼 삭제한다.
+						for (int y = 0; y < mapInfo->tile_Count.y; ++y)
+						{
+							(*_vTileList).erase((*_vTileList).begin() + delete_Tile_Index);			// 마지막 인덱스 삭제
+							delete_Tile_Index -= mapInfo->tile_Count.x;								// 마지막 인덱스에서 가로 갯수를 빼면 바로 위의 인덱스가 나온다.
+						}
+
+						mapInfo->tile_Count.x--;													// 한줄이 모두 사라졌으면 가로 타일 갯수를 하나 줄여준다.
+
+						CAMERAMANAGER->Use_Func()->set_Tile_CountX(mapInfo->tile_Count.x);
+						CAMERAMANAGER->Use_Func()->set_World_Size(mapInfo->tile_Count.x * TILE_SIZE_X, mapInfo->tile_Count.y * TILE_SIZE_Y);
+					}
 				}
 
 				BT_FindNoTile = true;
 			}
 
 			// 업 버튼을 눌렀다면
-			if (PtInRect(&BT_Up, _ptMouse) && BT_Type == BUTTON_TYPE::BACKGROUND && !next_Prev_Push_Okay)
+			if (PtInRect(&BT_Up, _ptMouse) && !next_Prev_Push_Okay)
 			{
 				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
 
@@ -900,14 +918,29 @@ struct tagButton_Info
 				// 렉트 삭제 버튼을 눌렀을때 연산
 				if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
 				{
-					// 타일 렉트의 y 갯수가 1개 줄어든다.
+
+					if (mapInfo->tile_Count.y > TILE_COUNT_Y)
+					{
+						// 타일 렉트의 y 갯수가 1개 줄어든다.
+
+						// y열을 감소
+						for (int x = 0; x < mapInfo->tile_Count.x; ++x)
+						{
+							_vTileList->erase(_vTileList->begin() + (_vTileList->size() - 1));
+						}
+
+						mapInfo->tile_Count.y--;
+
+						CAMERAMANAGER->Use_Func()->set_Tile_CountY(mapInfo->tile_Count.y);
+						CAMERAMANAGER->Use_Func()->set_World_Size(mapInfo->tile_Count.x * TILE_SIZE_X, mapInfo->tile_Count.y * TILE_SIZE_Y);
+					}
 				}
 
 				BT_FindNoTile = true;
 			}
 
 			// 다운 버튼을 눌렀다면
-			if (PtInRect(&BT_Down, _ptMouse) && BT_Type == BUTTON_TYPE::BACKGROUND && !next_Prev_Push_Okay)
+			if (PtInRect(&BT_Down, _ptMouse) && !next_Prev_Push_Okay)
 			{
 				next_Prev_Push_Okay = true; // 중복 클릭 방지 인터벌
 
@@ -923,6 +956,25 @@ struct tagButton_Info
 				if (BT_Type == BUTTON_TYPE::RECT_ADD_OR_MINUS)
 				{
 					// 타일 렉트의 y 갯수가 1개 늘어난다.
+
+					// y열을 추가시켜준다.
+					for (int x = 0; x < mapInfo->tile_Count.x; ++x)
+					{
+						tagTileInfo add_Tile;
+						add_Tile.reset_Tile();
+						add_Tile.index.x = x;
+						add_Tile.index.y = mapInfo->tile_Count.y;
+						add_Tile.rc = RectMake(add_Tile.index.x * TILE_SIZE_X, add_Tile.index.y * TILE_SIZE_Y, TILE_SIZE_X, TILE_SIZE_Y);
+						add_Tile.center.x = (add_Tile.rc.left + add_Tile.rc.right) / 2.f;
+						add_Tile.center.y = (add_Tile.rc.top + add_Tile.rc.bottom) / 2.f;
+
+						_vTileList->push_back(add_Tile);
+					}
+
+					mapInfo->tile_Count.y++;
+
+					CAMERAMANAGER->Use_Func()->set_Tile_CountY(mapInfo->tile_Count.y);
+					CAMERAMANAGER->Use_Func()->set_World_Size(mapInfo->tile_Count.x * TILE_SIZE_X, mapInfo->tile_Count.y * TILE_SIZE_Y);
 				}
 
 				BT_FindNoTile = true;
@@ -1238,6 +1290,8 @@ public:
 		{
 			for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
 			{
+				//cout << y * mapInfo.tile_Count.x + x << ":" << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.x << "," << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.y << endl;
+
 				RECT rc = (*_vTileList)[y * mapInfo.tile_Count.x + x].rc;
 				POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
 

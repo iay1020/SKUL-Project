@@ -128,7 +128,7 @@ struct tag_Camera_INFO
 		if (noCorrection)	camera_Correction();
 	};
 	void set_Tile_CountX(int tileCountX) { _operation._TILE_COUNT_X = tileCountX; }
-	void set_Tile_CountY(int tileCountY) { _operation._TILE_COUNT_X = tileCountY; }
+	void set_Tile_CountY(int tileCountY) { _operation._TILE_COUNT_Y = tileCountY; }
 	
 
 
