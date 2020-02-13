@@ -19,9 +19,11 @@ struct tagAddImage
 		IMAGEMANAGER->addImage("intro_BG_1", "./image/mapTool/backGround/intro/intro_BG_1.bmp", 3392, 960, true, RGB(255, 0, 255));
 		IMAGEMANAGER->addImage("intro_BG_2", "./image/mapTool/backGround/intro/intro_BG_2.bmp", 3392, 960, true, RGB(255, 0, 255));
 	
+
 		// tile Rect Image
 		IMAGEMANAGER->addImage("tile_Rect", "./image/Tile_Rect.bmp", 64, 64, true, RGB(255, 0, 255));
 		IMAGEMANAGER->addImage("tile_Rect_200", "./image/Tile_Rect_200.bmp", 200, 200, true, RGB(255, 0, 255));
+
 
 		// mapTool Icon
 		IMAGEMANAGER->addImage("save_Icon", "./image/mapTool/icon/BT_Save.bmp", 52, 52, true, RGB(255, 0, 255));									// 세이브 아이콘
@@ -60,8 +62,39 @@ struct tagAddImage
 		IMAGEMANAGER->addFrameImage("stage3_Tile", "./image/mapTool/tile/terrain_Tile/Stage3_Tile.bmp", 512, 320, 8, 5, true, RGB(255, 0, 255));
 		IMAGEMANAGER->addFrameImage("startPoint_Tile", "./image/mapTool/tile/terrain_Tile/StartPoint_Tile.bmp", 512, 128, 8, 2, true, RGB(255, 0, 255));
 
+
 		// mapTool <backGround Pallet>
 		IMAGEMANAGER->addFrameImage("backGround_Pallet_0", "./image/mapTool/backGround/backGround_Img_0.bmp", 600, 600, 3, 3, true, RGB(255, 0, 255));
+
+
+		//■■■■■■■■ Skul Image ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+		// <Idle>
+		IMAGEMANAGER->addFrameImage("skul_Idle_NoWeapon", "./image/skul/Idle/skul_Idle_NoWeapon.bmp", 224, 132, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Idle_HaveWeapon_NoHead", "./image/skul/Idle/skul_Idle_HaveWeapon_NoHead.bmp", 304, 100, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Idle_HaveWeapon", "./image/skul/Idle/skul_Idle_HaveWeapon.bmp", 304, 132, 4, 4, true, RGB(255, 0, 255));
+
+		// <Walk>
+
+		// <Dash>
+		IMAGEMANAGER->addImage("skul_Dash", "./image/skul/Dash/skul_Dash.bmp", 84, 56, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("skul_Dash_NoHead", "./image/skul/Dash/skul_Dash_NoHead.bmp", 70, 48, true, RGB(255, 0, 255));
+
+		// <Jump>
+		IMAGEMANAGER->addFrameImage("skul_Jump", "./image/skul/Jump/skul_Jump.bmp", 72, 128, 2, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Jump_NoHead", "./image/skul/Jump/skul_Jump_NoHead.bmp", 72, 96, 2, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Jump_Attack", "./image/skul/Jump/skul_Jump_Attack.bmp", 456, 216, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Jump_NoHead_Attack", "./image/skul/Jump/skul_Jump_NoHead_Attack.bmp", 456, 214, 4, 4, true, RGB(255, 0, 255));
+
+		// <Fall>
+		IMAGEMANAGER->addFrameImage("skul_Fall", "./image/skul/Fall/skul_Fall.bmp", 360, 148, 5, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Fall_NoHead", "./image/skul/Fall/skul_Fall_NoHead.bmp", 360, 152, 5, 2, true, RGB(255, 0, 255));
+
+		// <Loading Skul>
+
+		// <Skul Parts>
+
+		//■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
 
 		// 메롱
 	}

@@ -2,14 +2,25 @@
 #include "gameNode.h"
 #include "DataManager.h"
 
+struct playerInfo
+{
+	POINTFLOAT	center;
+	RECT		rc;
+	float		speed;
+	image*		img;
+	animation*	ani;
+};
+
 class test_Room : public gameNode
 {
 private:
 
-	DataManager	_DM;
-	vector<tagTileInfo>			tileList;	// 타일맵 정보를 담는다.
-	tagMapInfo					mapInfo;	// 맵의 정보를 담는다.
-	vector<tagSaveBackGround>	vMapInfo;	// 맵의 배경을 담는다.
+	vector<tagTileInfo>			tileList;							// 타일맵 정보를 담는다.
+	tagMapInfo					mapInfo;							// 맵의 정보를 담는다.
+	vector<tagSaveBackGround>	vMapInfo[BACKGROUND_LAYER_COUNT];	// 맵의 배경을 담는다.
+
+	playerInfo					testP;
+	short						loopSpeed[5];
 
 public:
 	test_Room();
@@ -19,5 +30,9 @@ public:
 	void release();
 	void update();
 	void render();
+
+	void testControl();
+	void testSetting_Player();
+
 };
 
