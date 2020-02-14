@@ -45,16 +45,16 @@ void MoveState::Idle(Player * player)
 
 void MoveState::Move(Player * player, InputKey Key)
 {
-	*inputKey = Key;
+	inputKey = Key;
 }
 
 void MoveState::update(Player * player)
 {
-	if (*inputKey == PRESS_LEFT)   cout << "Left : 이동" << endl;
-	if (*inputKey == PRESS_RIGHT)  cout << "Right : 이동" << endl;
-	if (*inputKey == PRESS_EMPTY)  cout << "값이 사라졌다" << endl;
+	if (inputKey == PRESS_LEFT)   cout << "Left : 이동" << endl;
+	if (inputKey == PRESS_RIGHT)  cout << "Right : 이동" << endl;
+	if (inputKey == PRESS_EMPTY)  cout << "값이 사라졌다" << endl;
 
-	*inputKey = PRESS_EMPTY;
+	inputKey = PRESS_EMPTY;
 
 	player->set_State(IdleState::getInstance());
 }

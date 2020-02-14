@@ -10,6 +10,9 @@ public:
 	virtual void update(Player* player) = 0;
 
 protected:
+	InputKey inputKey;
+
+protected:
 	void set_PlayerState(Player* player, CharacterState* state)
 	{
 		player->set_State(state);

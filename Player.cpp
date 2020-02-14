@@ -5,7 +5,7 @@
 
 Player::Player()
 {
-	state->init();
+	//state->init();
 	state = IdleState::getInstance();
 }
 
