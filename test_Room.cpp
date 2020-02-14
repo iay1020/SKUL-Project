@@ -30,6 +30,8 @@ HRESULT test_Room::init()
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
 	CAMERAMANAGER->Use_Func()->set_CameraXY(testP.center.x, testP.center.y, true);	// 기본 카메라 위치 설정 (플레이어 중점으로)
 
+	_player = new Player();
+
 	return S_OK;
 }
 
@@ -40,6 +42,10 @@ void test_Room::release()
 void test_Room::update()
 {
 	testControl(); // 테스트용 이동키
+
+
+	_player->update();
+
 }
 
 void test_Room::render()

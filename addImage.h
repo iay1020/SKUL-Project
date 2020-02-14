@@ -69,25 +69,35 @@ struct tagAddImage
 
 		//¡á¡á¡á¡á¡á¡á¡á¡á Skul Image ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 		// <Idle>
-		IMAGEMANAGER->addFrameImage("skul_Idle_NoWeapon", "./image/skul/Idle/skul_Idle_NoWeapon.bmp", 224, 132, 4, 4, true, RGB(255, 0, 255));
-		IMAGEMANAGER->addFrameImage("skul_Idle_HaveWeapon_NoHead", "./image/skul/Idle/skul_Idle_HaveWeapon_NoHead.bmp", 304, 100, 4, 4, true, RGB(255, 0, 255));
-		IMAGEMANAGER->addFrameImage("skul_Idle_HaveWeapon", "./image/skul/Idle/skul_Idle_HaveWeapon.bmp", 304, 132, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Idle_NoWeapon", "./image/skul/Idle/skul_Idle_NoWeapon.bmp", 640, 238, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Idle_HaveWeapon_NoHead", "./image/skul/Idle/skul_Idle_HaveWeapon_NoHead.bmp", 640, 238, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Idle_HaveWeapon", "./image/skul/Idle/skul_Idle_HaveWeapon.bmp", 640, 238, 4, 4, true, RGB(255, 0, 255));
 
 		// <Walk>
+		IMAGEMANAGER->addFrameImage("skul_Walk_NoWeapon", "./image/skul/Walk/skul_Walk_NoWeapon.bmp", 1280, 238, 8, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Walk_Weapon", "./image/skul/Walk/skul_Walk_Weapon.bmp", 1280, 238, 8, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Walk_NoHead_Weapon", "./image/skul/Walk/skul_Walk_NoHead_Weapon.bmp", 1280, 238, 8, 2, true, RGB(255, 0, 255));
 
 		// <Dash>
-		IMAGEMANAGER->addImage("skul_Dash", "./image/skul/Dash/skul_Dash.bmp", 84, 56, true, RGB(255, 0, 255));
-		IMAGEMANAGER->addImage("skul_Dash_NoHead", "./image/skul/Dash/skul_Dash_NoHead.bmp", 70, 48, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Dash", "./image/skul/Dash/skul_Dash.bmp", 160, 238, 1, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Dash_NoHead", "./image/skul/Dash/skul_Dash_NoHead.bmp", 1, 2, 160, 238, true, RGB(255, 0, 255));
 
 		// <Jump>
-		IMAGEMANAGER->addFrameImage("skul_Jump", "./image/skul/Jump/skul_Jump.bmp", 72, 128, 2, 2, true, RGB(255, 0, 255));
-		IMAGEMANAGER->addFrameImage("skul_Jump_NoHead", "./image/skul/Jump/skul_Jump_NoHead.bmp", 72, 96, 2, 2, true, RGB(255, 0, 255));
-		IMAGEMANAGER->addFrameImage("skul_Jump_Attack", "./image/skul/Jump/skul_Jump_Attack.bmp", 456, 216, 4, 4, true, RGB(255, 0, 255));
-		IMAGEMANAGER->addFrameImage("skul_Jump_NoHead_Attack", "./image/skul/Jump/skul_Jump_NoHead_Attack.bmp", 456, 214, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Jump", "./image/skul/Jump/skul_Jump.bmp", 320, 238, 2, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Jump_NoHead", "./image/skul/Jump/skul_Jump_NoHead.bmp", 320, 238, 2, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Jump_Attack", "./image/skul/Jump/skul_Jump_Attack.bmp", 640, 238, 4, 4, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Jump_NoHead_Attack", "./image/skul/Jump/skul_Jump_NoHead_Attack.bmp", 640, 238, 4, 4, true, RGB(255, 0, 255));
 
 		// <Fall>
-		IMAGEMANAGER->addFrameImage("skul_Fall", "./image/skul/Fall/skul_Fall.bmp", 360, 148, 5, 2, true, RGB(255, 0, 255));
-		IMAGEMANAGER->addFrameImage("skul_Fall_NoHead", "./image/skul/Fall/skul_Fall_NoHead.bmp", 360, 152, 5, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Fall", "./image/skul/Fall/skul_Fall.bmp", 800, 238, 5, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Fall_NoHead", "./image/skul/Fall/skul_Fall_NoHead.bmp", 800, 238, 5, 2, true, RGB(255, 0, 255));
+
+		// <Attack>
+		IMAGEMANAGER->addFrameImage("skul_Attack", "./image/skul/Attack/skul_Attack.bmp", 1440, 238, 9, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Attack_NoHead", "./image/skul/Attack/skul_Attack_NoHead.bmp", 1440, 238, 9, 2, true, RGB(255, 0, 255));
+
+		// <Skill>
+		IMAGEMANAGER->addFrameImage("skul_Skill", "./image/skul/Skill/skul_Skill.bmp", 640, 238, 4, 2, true, RGB(255, 0, 255));
 
 		// <Loading Skul>
 

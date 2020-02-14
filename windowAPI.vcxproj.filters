@@ -67,6 +67,12 @@
     <Filter Include="playGround\_Test_Room">
       <UniqueIdentifier>{2dc9b92d-d6e7-445d-8111-a460f047650d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\CharacterState">
+      <UniqueIdentifier>{956b9a0d-1ac7-447b-b06c-a37a1f2130bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\Player">
+      <UniqueIdentifier>{8a480303-b561-485d-b3ee-2cbcd04ba25b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -177,6 +183,18 @@
     <ClInclude Include="test_Room.h">
       <Filter>playGround\_Test_Room</Filter>
     </ClInclude>
+    <ClInclude Include="CharacterState.h">
+      <Filter>playGround\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>playGround\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Data_Library.h">
+      <Filter>playGround\DataManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterState_Library.h">
+      <Filter>playGround\CharacterState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -253,6 +271,12 @@
     </ClCompile>
     <ClCompile Include="test_Room.cpp">
       <Filter>playGround\_Test_Room</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterState.cpp">
+      <Filter>playGround\CharacterState</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>playGround\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

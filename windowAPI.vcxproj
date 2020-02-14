@@ -153,8 +153,11 @@
     <ClInclude Include="button.h" />
     <ClInclude Include="cameraManager.h" />
     <ClInclude Include="camera_Library.h" />
+    <ClInclude Include="CharacterState.h" />
+    <ClInclude Include="CharacterState_Library.h" />
     <ClInclude Include="commonMacroFunction.h" />
     <ClInclude Include="DataManager.h" />
+    <ClInclude Include="Data_Library.h" />
     <ClInclude Include="effect.h" />
     <ClInclude Include="effectManager.h" />
     <ClInclude Include="gameNode.h" />
@@ -164,6 +167,7 @@
     <ClInclude Include="keyManager.h" />
     <ClInclude Include="mapTool.h" />
     <ClInclude Include="mapTool_Library.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="playGround.h" />
     <ClInclude Include="progressBar.h" />
     <ClInclude Include="randomFunction.h" />
@@ -189,6 +193,7 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="cameraManager.cpp" />
+    <ClCompile Include="CharacterState.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="effect.cpp" />
     <ClCompile Include="effectManager.cpp" />
@@ -198,6 +203,7 @@
     <ClCompile Include="keyAniManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="mapTool.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="playGround.cpp" />
     <ClCompile Include="progressBar.cpp" />
     <ClCompile Include="sceneChanger.cpp" />

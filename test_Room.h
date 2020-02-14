@@ -1,6 +1,8 @@
 #pragma once
 #include "gameNode.h"
 #include "DataManager.h"
+#include "CharacterState.h"
+#include "Player.h"
 
 struct playerInfo
 {
@@ -21,6 +23,8 @@ private:
 
 	playerInfo					testP;
 	short						loopSpeed[5];
+
+	Player*	_player;
 
 public:
 	test_Room();
