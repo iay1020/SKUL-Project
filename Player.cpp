@@ -31,35 +31,6 @@ void Player::init()
 
 void Player::update()
 {
-	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-	{
-		info.status.direction = DIRECTION_LEFT;		// 캐릭터의 방향을 저장한다.
-
-		inputKey = PRESS_LEFT;						// 입력한 키를 저장한다.
-		state->Move(this);							// 상태를 Move로 바꿔준다.
-	}
-
-	if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
-	{
-		info.status.direction = DIRECTION_RIGHT;	// 캐릭터의 방향을 저장한다.
-
-		inputKey = PRESS_LEFT;						// 입력한 키를 저장한다.
-		state->Idle(this);							// 상태를 Idle로 바꿔준다.
-	}
-
-	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-	{
-
-		inputKey = PRESS_RIGHT;						// 입력한 키를 저장한다.
-		state->Move(this);							// 상태를 Move로 바꿔준다.
-	}
-
-	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-	{
-		inputKey = PRESS_RIGHT;						// 입력한 키를 저장한다.
-		state->Idle(this);							// 상태를 Idle로 바꿔준다.
-	}
-
 	state->update(this);							// 상태 업데이트
 }
 

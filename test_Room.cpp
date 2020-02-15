@@ -41,9 +41,7 @@ void test_Room::update()
 {
 	testControl(); // 테스트용 이동키
 
-
 	_player->update();
-
 }
 
 void test_Room::render()

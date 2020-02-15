@@ -32,7 +32,7 @@ enum CharacterDirection
 #define PLAYER_GRAVITY		0.5f
 
 // 캐릭터 점프 파워
-#define PLAYER_JUMPPOWER    20
+#define PLAYER_JUMPPOWER    15
 
 
 // 캐릭터 좌표 구조체
@@ -67,9 +67,14 @@ struct CharacterStatus
 // 캐릭터의 bool
 struct CharacterBool
 {
-	bool				idle_Cheack;	// 캐릭터의 idle 이미지 교체가 있었는지
-	bool				walk_Cheack;	// 캐릭터의 walk 이미지 교체가 있었는지
-	bool				jump_Cheack;
+	bool				idle_Cheack;		// 캐릭터의 idle 이미지 교체가 있었는지
+	bool				walk_Cheack;		// 캐릭터의 walk 이미지 교체가 있었는지
+	bool				jump_Cheack;		// 캐릭터의 jump 이미지 교체가 있었는지
+	bool				fall_Cheack;		// 캐릭터의 fall 이미지 교체가 있었는지
+
+	bool				walking_Cheack;		// 캐릭터가 이동중인지 체크하는 변수
+	bool				jumping_Cheack;		// 캐릭터가 점프중인지 체크하는 변수
+	bool				falling_Cheack;		// 캐릭터가 추락중인지 체크하는 변수
 };
 
 // 캐릭터의 점프 구조체
@@ -110,6 +115,12 @@ struct CharacterInfo
 		// bool 초기화
 		bool_V.idle_Cheack = false;
 		bool_V.walk_Cheack = false;
+		bool_V.jump_Cheack = false;
+		bool_V.fall_Cheack = false;
+
+		bool_V.walking_Cheack = false;
+		bool_V.jumping_Cheack = false;
+		bool_V.falling_Cheack = false;
 
 		// 점프 초기화
 		jump.jump_Value = 0;
