@@ -4,19 +4,31 @@ class CharacterState;
 
 class Player
 {
-private:
-	CharacterState* state;
+protected:
+	CharacterState* state;		// 플레이어 상태
+	InputKey		inputKey;	// 플레이어 입력 키
+	CharacterInfo	info;		// 플레이어 스테이터스
 
 public:
 	Player();
 
+	// ■■■■■■■■■■■■■■■ Set ■■■■■■■■■■■■■■■■■
+	// IdleState, WalkState, JumpState, FallState
 	void set_State(CharacterState* state);
+	void set_InputKey(InputKey key);
+	CharacterInfo* set_Info() { return &info; }
+	void update_Rect(short sizeX, short sizeY) { info.update_Rect(sizeX, sizeY); }
+	void update_Ani_Rect() { info.update_Ani_Rect(); }
+
+	// ■■■■■■■■■■■■■■■ Get ■■■■■■■■■■■■■■■■■
+	CharacterState* get_State() { return state; }
+	InputKey get_InputKey() { return inputKey; }
+	CharacterInfo get_Info() { return info; }
+
 	void init();
 	void update();
 	void release();
 
-
-	
 };
 
 

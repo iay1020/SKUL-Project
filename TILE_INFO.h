@@ -28,3 +28,19 @@
 #define BACKGROUND_SIZEX 200
 #define BACKGROUND_SIZEY 200
 #define BACKGROUND_LAYER_COUNT 5		// 백그라운드 레이어 갯수
+
+
+// 타일의 타입
+enum class TILE_TYPE
+{
+	EMPTY,									// NULL
+	PLAYER,									// 플레이어
+	ENEMY,									// 에너미
+	DOOR,									// 도어	
+	GROUND,									// 땅
+	DECORATION,								// 데코레이션 오브젝트
+	HIT_OBJECT,								// 타격 가능한 오브젝트
+	ITEM,									// 아이템 오브젝트
+	TRAP,									// 함정 타일
+	BACKGROUND								// 백그라운드 타일
+};
