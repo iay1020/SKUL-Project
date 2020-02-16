@@ -3,6 +3,7 @@
 
 DataManager::DataManager()
 {
+	_mapInfo.reset_MapInfo();
 }
 
 DataManager::~DataManager()
@@ -13,6 +14,15 @@ HRESULT DataManager::init()
 {
 
 	return S_OK;
+}
+
+void DataManager::release()
+{
+}
+
+void DataManager::update()
+{
+	_skul->update();
 }
 
 void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo)
@@ -142,6 +152,100 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 		tileList->push_back(tile[i]);
 	}
 	
+}
+
+void DataManager::map_Load_Datamanager(string mapName, string mapInfoName)
+{
+	// string을 char 배열로 옴겨 담았다.
+	char* strMapName;
+	strMapName = new char[mapName.size()];
+
+	for (int i = 0; i <= mapName.size(); ++i)
+	{
+		strMapName[i] = mapName[i];
+
+		if (i == mapName.size())
+		{
+			strMapName[i] = NULL;
+		}
+	}
+
+	char* strMapInfoName;
+	strMapInfoName = new char[mapName.size()];
+
+	for (int i = 0; i <= mapInfoName.size(); ++i)
+	{
+		strMapInfoName[i] = mapInfoName[i];
+
+		if (i == mapName.size())
+		{
+			strMapName[i] = NULL;
+		}
+	}
+
+	HANDLE file;
+	DWORD read;
+	
+	file = CreateFile(strMapInfoName, GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	
+	ReadFile(file, &_mapInfo, sizeof(tagMapInfo), &read, NULL);						// 맵 정보를 먼저 받아 온 이유는 맵을 받아올때 맵의 크기 정보가 필요하기 때문에
+	
+	CloseHandle(file);
+	
+	// 새로 맵을 불러오면 타일 갯수, 월드 사이즈를 갱신해준다.
+	CAMERAMANAGER->Use_Func()->set_Tile_CountX(_mapInfo.tile_Count.x);															// 가로 사이즈 설정 (맵마다 가로세로가 다르니까)
+	CAMERAMANAGER->Use_Func()->set_Tile_CountY(_mapInfo.tile_Count.y);															// 세로 사이즈 설정
+	CAMERAMANAGER->Use_Func()->set_World_Size(_mapInfo.tile_Count.x * TILE_SIZE_X, _mapInfo.tile_Count.y * TILE_SIZE_Y);		// 가로세로에 맞게 월드 사이즈 설정
+	
+	
+	// 기존에 있던 벡터는 비워준다. (새로운 정보를 넣기 위해)
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
+	{
+		if (_vMapInfo[i].size() > 0)
+		{
+			for (int j = 0; j < _vMapInfo[i].size();)
+			{
+				_vMapInfo[i].clear();
+			}
+		}
+	}
+	
+	// 배열에 있던 정보를 벡터에 옴겨담는다.
+	vector<tagSaveBackGround>	_moveData[BACKGROUND_LAYER_COUNT];
+
+	
+	// 저장되어 있던 사이즈만큼 반복한다.
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
+	{
+		for (int j = 0; j < _mapInfo._vSize[i]; ++j)
+		{
+			tagSaveBackGround new_Data;
+			new_Data.imageName = _mapInfo._saveVInfo[i][j].imageName;
+			new_Data.rc = _mapInfo._saveVInfo[i][j].rc;
+			_vMapInfo[i].push_back(new_Data);
+		}
+	}
+	
+	// 맵을 받아 올 변수를 만든다.
+	tagTileInfo* tile;
+	tile = new tagTileInfo[_mapInfo.tile_Count.x * _mapInfo.tile_Count.y];			//	타일의 크기만큼 할당 받는다.
+	
+	file = CreateFile("tutorial.map", GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	
+	ReadFile(file, tile, sizeof(tagTileInfo) * _mapInfo.tile_Count.x * _mapInfo.tile_Count.y, &read, NULL);
+	
+	CloseHandle(file);
+	
+	_tileList.clear();
+	
+	// 맵이 들어있는 타일을 벡터에 넣어준다.
+	for (int i = 0; i < _mapInfo.tile_Count.x * _mapInfo.tile_Count.y; ++i)
+	{
+		_tileList.push_back(tile[i]);
+	}
+
 }
 
 void DataManager::map_Render(HDC getMemDC, vector<tagTileInfo>* tileList, tagMapInfo mapInfo, vector<tagSaveBackGround>* vMapInfo)
@@ -276,4 +380,165 @@ void DataManager::map_Render(HDC getMemDC, vector<tagTileInfo>* tileList, tagMap
 			}
 		}
 	}
+}
+
+void DataManager::map_Render_Datamanager(HDC getMemDC)
+{
+	CAMERAMANAGER->Use_Func()->find_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X, CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_Y);	// 카메라 안에 들어온 타일을 찾아서 저장한다.
+
+		// 백그라운드를 그려준다.
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
+	{
+		if (_vMapInfo[i].size() > 0)	// 해당 벡터가 0이상이여야만 들어간다.
+		{
+			for (int j = 0; j < _vMapInfo[i].size(); ++j)
+			{
+				RECT rc = (_vMapInfo[i])[j].rc;
+				rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+				rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+				IMAGEMANAGER->findImage((_vMapInfo[i])[j].imageName)->render(getMemDC, rc.left, rc.top);
+			}
+		}
+	}
+
+	// 마우스가 클릭한 타일을 찾아준다. (내 화면에 있는 타일만 찾아서)
+	for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
+	{
+		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
+		{
+			//cout << y * mapInfo.tile_Count.x + x << ":" << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.x << "," << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.y << endl;
+
+			RECT rc = _tileList[y * _mapInfo.tile_Count.x + x].rc;
+			POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
+
+			rc.left -= camera.x;
+			rc.right -= camera.x;
+			rc.top -= camera.y;
+			rc.bottom -= camera.y;
+
+			// 안 쓰는 타입은 제외한다.
+			if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
+			{
+
+				// 지형을 그려준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
+				{
+					if (_tileList[y * _mapInfo.tile_Count.x + x].useTile)
+					{
+
+						IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+							_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+					}
+				}
+
+				// 데코를 그려준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::DECORATION)
+				{
+
+				}
+			}
+		}
+	}
+}
+
+void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
+{
+	CAMERAMANAGER->Use_Func()->find_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X, CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_Y);	// 카메라 안에 들어온 타일을 찾아서 저장한다.
+
+	short loopSpeed[5];
+
+	for (int i = 0; i < 5; ++i)
+	{
+		loopSpeed[i] = loopSpd[i];
+	}
+
+	// 맨날 치킨 먹는다면서 치킨 안먹는 사람 
+	// 저요 저요!
+
+	// 백그라운드를 그려준다.
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
+	{
+		if (_vMapInfo[i].size() > 0)	// 해당 벡터가 0이상이여야만 들어간다.
+		{
+			for (int j = 0; j < _vMapInfo[i].size(); ++j)
+			{
+				RECT rc = RectMake((_vMapInfo[i])[j].rc.left, (_vMapInfo[i])[j].rc.top,
+					IMAGEMANAGER->findImage((_vMapInfo[i])[j].imageName)->getWidth(), IMAGEMANAGER->findImage((_vMapInfo[i])[j].imageName)->getHeight());
+				rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+				rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+				IMAGEMANAGER->findImage((_vMapInfo[i])[j].imageName)->loopRender(getMemDC, &rc, loopSpeed[i], 0);
+			}
+		}
+	}
+
+	// 마우스가 클릭한 타일을 찾아준다. (내 화면에 있는 타일만 찾아서)
+	for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
+	{
+		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
+		{
+			//cout << y * mapInfo.tile_Count.x + x << ":" << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.x << "," << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.y << endl;
+
+			RECT rc = _tileList[y * _mapInfo.tile_Count.x + x].rc;
+			POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
+
+			rc.left -= camera.x;
+			rc.right -= camera.x;
+			rc.top -= camera.y;
+			rc.bottom -= camera.y;
+
+			// 안 쓰는 타입은 제외한다.
+			if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
+			{
+
+				// 지형을 그려준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
+				{
+					if (_tileList[y * _mapInfo.tile_Count.x + x].useTile)
+					{
+
+						IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+							_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+					}
+				}
+
+				// 데코를 그려준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::DECORATION)
+				{
+
+				}
+			}
+		}
+	}
+}
+
+void DataManager::Rect_Render_Datamanager(HDC getMemDC)
+{
+	//  테스트용 렉트 출력
+	
+	RECT testRc;
+
+	for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
+	{
+		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
+		{
+			testRc = _tileList[y * _mapInfo.tile_Count.x + x].rc;
+			testRc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			testRc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			testRc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+			testRc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+			IMAGEMANAGER->findImage("tile_Rect")->render(getMemDC, testRc.left, testRc.top);
+		}
+	}
+}
+
+void DataManager::create_Skul()
+{
+	// 스컬 기본 셋팅
+	_skul = new Player();
 }

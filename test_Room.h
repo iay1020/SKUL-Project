@@ -1,20 +1,15 @@
 #pragma once
 #include "gameNode.h"
 #include "DataManager.h"
-#include "CharacterState.h"
-#include "Player.h"
+//#include "CharacterState.h"
+//#include "Player.h"
 
 class test_Room : public gameNode
 {
 private:
+	short				loopSpeed[5];
 
-	vector<tagTileInfo>			tileList;							// 타일맵 정보를 담는다.
-	tagMapInfo					mapInfo;							// 맵의 정보를 담는다.
-	vector<tagSaveBackGround>	vMapInfo[BACKGROUND_LAYER_COUNT];	// 맵의 배경을 담는다.
-
-	short						loopSpeed[5];
-
-	Player*	_player;
+	Player*				_skul;
 
 public:
 	test_Room();
@@ -26,7 +21,8 @@ public:
 	void render();
 
 	void testControl();
-	void testShowRect();
+
+	void showRect(HDC getMemDC);
 
 };
 

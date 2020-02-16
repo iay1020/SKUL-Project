@@ -11,24 +11,19 @@ test_Room::~test_Room()
 
 HRESULT test_Room::init()
 {
-	mapInfo.reset_MapInfo();	// 기본 맵 정보 초기화
-
-	// 로드에 필요한것 변수
-	// vector<tagTileInfo>			자료형 변수								타일 정보를 담는다.
-	// tagMapInfo					자료형 변수								맵의 정보를 담는다.
-	// vector<tagSaveBackGround>	자료형 변수[BACKGROUND_LAYER_COUNT]개		배경의 정보를 담는다.
-
-	DATAMANAGER->map_Load(&tileList, &mapInfo, vMapInfo);	// 맵을 불러온다. (불러오면서 맵의 정보를 카메라매니저에 갱신)
+	DATAMANAGER->map_Load_Datamanager("tutorial.map", "tutorial_Info.map");
 
 	for (int i = 0; i < 5; ++i)	// 루프랜더용 변수
 	{
 		loopSpeed[i] = 0;
 	}
 
-	_player = new Player();
+	DATAMANAGER->create_Skul();				// 스컬 생성
+	_skul = DATAMANAGER->skul_Address();	// 스컬 데이터 연결
 
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
-	CAMERAMANAGER->Use_Func()->set_CameraXY(_player->get_Info().pos.center.x, _player->get_Info().pos.center.y, true);	// 기본 카메라 위치 설정 (플레이어 중점으로)
+	// 기본 카메라 위치 설정 (플레이어 중점으로)
+	CAMERAMANAGER->Use_Func()->set_CameraXY(_skul->get_Info().pos.center.x, _skul->get_Info().pos.center.y, true);
 
 	return S_OK;
 }
@@ -41,22 +36,25 @@ void test_Room::update()
 {
 	testControl(); // 테스트용 이동키
 
-	_player->update();
+	// 플레이어 연산
+	DATAMANAGER->update();
 	
 	// 캐릭터 타일 위치
-	cout << "x : " << (int)(_player->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_player->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
+	//cout << "x : " << (int)(_player->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_player->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
 }
 
 void test_Room::render()
 {
 	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
 
-	DATAMANAGER->map_Render(getMemDC(), &tileList, mapInfo, vMapInfo, loopSpeed); // 루프스피드는 5개를 넣어줘야 한다.
+	// 맵 출력
+	DATAMANAGER->map_Render_Datamanager(getMemDC(), loopSpeed);
 
-	testShowRect();	// 테스트 렉트 출력
+	showRect(getMemDC());	// 테스트용 렉트
 
-	IMAGEMANAGER->findImage(_player->get_Info().img.imgName)->aniRender(getMemDC(), 
-		_player->get_Info().img.img_Rc.left, _player->get_Info().img.img_Rc.top, _player->get_Info().img.ani);
+	// 플레이어 출력
+	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
+		_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
 }
 
 void test_Room::testControl()
@@ -71,7 +69,7 @@ void test_Room::testControl()
 
 	if (KEYMANAGER->isStayKeyDown(VK_UP))
 	{
-		_player->set_Info()->pos.center.y -= 10;
+		_skul->set_Info()->pos.center.y -= 10;
 	}
 
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
@@ -84,36 +82,28 @@ void test_Room::testControl()
 
 	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
 	{
-		_player->set_Info()->pos.center.y += 10;
+		_skul->set_Info()->pos.center.y += 10;
 	}
 }
 
-void test_Room::testShowRect()
+void test_Room::showRect(HDC getMemDC)
 {
-	//  테스트용 렉트 출력
 	if (KEYMANAGER->isToggleKey(VK_NUMPAD9))
 	{
-		RECT testRc;
+		DATAMANAGER->Rect_Render_Datamanager(getMemDC);
+	}
 
-		for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
-		{
-			for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
-			{
-				testRc = tileList[y * mapInfo.tile_Count.x + x].rc;
-				testRc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-				testRc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-				testRc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-				testRc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-
-				IMAGEMANAGER->findImage("tile_Rect")->render(getMemDC(), testRc.left, testRc.top);
-			}
-		}
-
+	if (KEYMANAGER->isToggleKey(VK_NUMPAD7))
+	{
 		// 플레이어 이미지 렉트
-		Rectangle(getMemDC(), _player->get_Info().img.img_Rc.left, _player->get_Info().img.img_Rc.top, _player->get_Info().img.img_Rc.right, _player->get_Info().img.img_Rc.bottom);
+		Rectangle(getMemDC, _skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.img_Rc.right, _skul->get_Info().img.img_Rc.bottom);
+	}
 
+	if (KEYMANAGER->isToggleKey(VK_NUMPAD8))
+	{
 		// 플레이어 피격 렉트
-		Rectangle(getMemDC(), _player->get_Info().pos.rc.left, _player->get_Info().pos.rc.top, _player->get_Info().pos.rc.right, _player->get_Info().pos.rc.bottom);
+		Rectangle(getMemDC, _skul->get_Info().pos.rc.left, _skul->get_Info().pos.rc.top, _skul->get_Info().pos.rc.right, _skul->get_Info().pos.rc.bottom);
 	}
 }
+
 
