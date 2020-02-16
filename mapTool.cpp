@@ -44,14 +44,6 @@ void mapTool::update()
 
 	if(!_button.BT_FindNoTile)
 		_mapTool_Func.setting_TileImg(&_vTileList, _pallet.current, _button, &_mapInfo, &_button.BT_start_Draw);							// 타일에 이미지를 셋팅한다. (다른 렉트에 충돌 되지 않는다면 그린다)
-
-	//cout << "======================================================" << endl;
-	//cout << _mapTool_Func.get_VBackGround_Info_Address()[0].size() << endl;
-	//cout << _mapTool_Func.get_VBackGround_Info_Address()[1].size() << endl;
-	//cout << _mapTool_Func.get_VBackGround_Info_Address()[2].size() << endl;
-	//cout << _mapTool_Func.get_VBackGround_Info_Address()[3].size() << endl;
-	//cout << _mapTool_Func.get_VBackGround_Info_Address()[4].size() << endl;
-	//cout << "======================================================" << endl;
 }
 
 void mapTool::render()

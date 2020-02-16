@@ -91,6 +91,8 @@ struct tagAddImage
 		// <Fall>
 		IMAGEMANAGER->addFrameImage("skul_Fall", "./image/skul/Fall/skul_Fall.bmp", 800, 238, 5, 2, true, RGB(255, 0, 255));
 		IMAGEMANAGER->addFrameImage("skul_Fall_NoHead", "./image/skul/Fall/skul_Fall_NoHead.bmp", 800, 238, 5, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Falling", "./image/skul/Fall/skul_Falling.bmp", 480, 238, 3, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("skul_Falling_NoHead", "./image/skul/Fall/skul_Falling_NoHead.bmp", 480, 238, 3, 2, true, RGB(255, 0, 255));
 
 		// <Attack>
 		IMAGEMANAGER->addFrameImage("skul_Attack", "./image/skul/Attack/skul_Attack.bmp", 1440, 238, 9, 2, true, RGB(255, 0, 255));
@@ -137,8 +139,14 @@ struct tagAddImage
 		int fall_R_NoWeapon[] = { 0, 1, 2, 3, 4 };
 		KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Right_NoWeapon", "skul_Fall", fall_R_NoWeapon, 5, 10, false);
 
-		int fall_L_NoWeapon[] = { 9, 8, 7, 6, 5 };
+		int fall_L_NoWeapon[] = { 5, 6, 7, 8, 9 };
 		KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Left_NoWeapon", "skul_Fall", fall_L_NoWeapon, 5, 10, false);
+
+		int falling_R_NoWeapon[] = { 0, 1, 2 };
+		KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Right_NoWeapon", "skul_Falling", falling_R_NoWeapon, 3, 10, true);
+
+		int falling_L_NoWeapon[] = { 3, 4, 5 };
+		KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Left_NoWeapon", "skul_Falling", falling_L_NoWeapon, 3, 10, true);
 
 		//¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 

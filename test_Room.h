@@ -26,6 +26,7 @@ public:
 	void render();
 
 	void testControl();
+	void testShowRect();
 
 };
 

@@ -42,6 +42,9 @@ void test_Room::update()
 	testControl(); // 테스트용 이동키
 
 	_player->update();
+	
+	// 캐릭터 타일 위치
+	cout << "x : " << (int)(_player->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_player->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
 }
 
 void test_Room::render()
@@ -49,6 +52,8 @@ void test_Room::render()
 	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
 
 	DATAMANAGER->map_Render(getMemDC(), &tileList, mapInfo, vMapInfo, loopSpeed); // 루프스피드는 5개를 넣어줘야 한다.
+
+	testShowRect();	// 테스트 렉트 출력
 
 	IMAGEMANAGER->findImage(_player->get_Info().img.imgName)->aniRender(getMemDC(), 
 		_player->get_Info().img.img_Rc.left, _player->get_Info().img.img_Rc.top, _player->get_Info().img.ani);
@@ -80,6 +85,35 @@ void test_Room::testControl()
 	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
 	{
 		_player->set_Info()->pos.center.y += 10;
+	}
+}
+
+void test_Room::testShowRect()
+{
+	//  테스트용 렉트 출력
+	if (KEYMANAGER->isToggleKey(VK_NUMPAD9))
+	{
+		RECT testRc;
+
+		for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
+		{
+			for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
+			{
+				testRc = tileList[y * mapInfo.tile_Count.x + x].rc;
+				testRc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				testRc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+				testRc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+				testRc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+				IMAGEMANAGER->findImage("tile_Rect")->render(getMemDC(), testRc.left, testRc.top);
+			}
+		}
+
+		// 플레이어 이미지 렉트
+		Rectangle(getMemDC(), _player->get_Info().img.img_Rc.left, _player->get_Info().img.img_Rc.top, _player->get_Info().img.img_Rc.right, _player->get_Info().img.img_Rc.bottom);
+
+		// 플레이어 피격 렉트
+		Rectangle(getMemDC(), _player->get_Info().pos.rc.left, _player->get_Info().pos.rc.top, _player->get_Info().pos.rc.right, _player->get_Info().pos.rc.bottom);
 	}
 }
 

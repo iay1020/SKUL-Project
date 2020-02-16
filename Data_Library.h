@@ -34,6 +34,12 @@ enum CharacterDirection
 // 캐릭터 점프 파워
 #define PLAYER_JUMPPOWER    15
 
+// 캐릭터 최대 추락 속도
+#define PLAYER_MAX_FALL_SPEED -30.0f
+
+// 캐릭터 기본 점프 횟수
+#define PLAYER_JUMP_COUNT	1
+
 
 // 캐릭터 좌표 구조체
 struct CharacterPos
@@ -80,7 +86,9 @@ struct CharacterBool
 // 캐릭터의 점프 구조체
 struct CharacterJump
 {
-	float				jump_Value;		// 점프 수치
+	short				Jump_Count;			// 점프 횟수
+	short				Jump_Count_Save;	// 점프 횟수 저장 (충전 할때 이용)
+	float				jump_Value;			// 점프 수치
 };
 
 // 캐릭터의 정보 구조체
@@ -124,6 +132,8 @@ struct CharacterInfo
 
 		// 점프 초기화
 		jump.jump_Value = 0;
+		jump.Jump_Count = PLAYER_JUMP_COUNT;
+		jump.Jump_Count_Save = 0;
 	}
 
 	// 캐릭터 좌표 셋팅 (매개변수 : 중점x, 중점y, 렉트사이즈x, 렉트사이즈y)
@@ -151,14 +161,17 @@ struct CharacterInfo
 		img.img_Rc = RectMakeCenter(pos.center.x, pos.center.y, img.ani->getFrameWidth(), img.ani->getFrameHeight());
 	}
 
-	// 캐릭터의 스테이터스 셋팅 (매개변수 : 이름, HP, ATK, DEF)
-	void set_Status(string name, short hp, short atk, short def, CharacterDirection direction)
+	// 캐릭터의 스테이터스 셋팅 (매개변수 : 이름, HP, ATK, DEF, 방향, 점프 횟수 추가)
+	void set_Status(string name, short hp, short atk, short def, CharacterDirection direction, short jumpCnt = 0)
 	{
 		status.Name = name;
 		status.HP = hp;
 		status.Atk = atk;
 		status.Def = def;
 		status.direction = direction;
+
+		jump.Jump_Count += jumpCnt;					// 특정 클래스는 점프가 2번
+		jump.Jump_Count_Save = jump.Jump_Count;		// 점프 카운트를 저장한다. 충전할때 이 값을 이용하여 충전
 	}
 
 	// 캐릭터의 렉트를 갱신한다. (매개변수 : 렉트 사이즈x, 렉트 사이즈y)

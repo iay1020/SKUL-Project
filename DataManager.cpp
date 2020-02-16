@@ -216,7 +216,6 @@ void DataManager::map_Render(HDC getMemDC, vector<tagTileInfo>* tileList, tagMap
 		loopSpeed[i] = loopSpd[i];
 	}
 
-
 	// 맨날 치킨 먹는다면서 치킨 안먹는 사람 
 	// 저요 저요!
 

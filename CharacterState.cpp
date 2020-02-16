@@ -57,6 +57,16 @@ void IdleState::Idle(Player * player)
 	// 멈춰있는 상태에서 점프를 눌렀다면 점프 상태로 바꿔준다.
 	if (KEYMANAGER->isOnceKeyDown('C'))
 	{
+		// 점프를 사용 했다면 점프 카운트 감소
+		player->set_Info()->jump.Jump_Count--;
+
+		// 점프 수치를 넣어준다.
+		player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
+
+		// 점프중이라면 ture
+		player->set_Info()->bool_V.jumping_Cheack = true;
+
+		// Jump함수 호출
 		IdleState::Jump(player);
 	}
 
@@ -105,6 +115,7 @@ void IdleState::Move(Player * player)
 
 		// 상태를 무브로 바꿔준다.
 		player->set_State(MoveState::getInstance());
+		player->get_State()->update(player);
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
@@ -122,6 +133,7 @@ void IdleState::Move(Player * player)
 
 		// 상태를 무브로 바꿔준다.
 		player->set_State(MoveState::getInstance());
+		player->get_State()->update(player);
 	}
 }
 
@@ -142,6 +154,7 @@ void IdleState::Jump(Player * player)
 
 	// 상태를 다시 점프 상태로 교체
 	player->set_State(JumpState::getInstance());
+	player->get_State()->update(player);
 }
 
 void IdleState::Fall(Player * player)
@@ -214,11 +227,18 @@ void MoveState::Move(Player * player)
 		// 플레이어가 점프 키를 입력 한다면 점프 함수를 호출한다.
 		if (KEYMANAGER->isOnceKeyDown('C'))
 		{
-			// 점프키를 눌렀다면 true로 바꿔준다.
-			player->set_Info()->bool_V.jumping_Cheack = true;
+			// 점프 횟수가 남아있다면
+			if (player->get_Info().jump.Jump_Count > 0)
+			{
+				// 점프 횟수를 감소 한다.
+				player->set_Info()->jump.Jump_Count--;
 
-			// 점프 애니메이션 교체를 위해 Jump함수 호출
-			MoveState::Jump(player);
+				// 점프키를 눌렀다면 true로 바꿔준다.
+				player->set_Info()->bool_V.jumping_Cheack = true;
+
+				// 점프 애니메이션 교체를 위해 Jump함수 호출
+				MoveState::Jump(player);
+			}
 		}
 
 		// 왼쪽키를 땐다면 대기 상태로 돌아가야한다.
@@ -226,6 +246,7 @@ void MoveState::Move(Player * player)
 		{
 			// 이동이 종료 됐기 때문에 false로 바꿔준다.
 			player->set_Info()->bool_V.walking_Cheack = false;
+			player->set_Info()->bool_V.walk_Cheack = false;
 			player->set_Info()->bool_V.idle_Cheack = false;
 
 			// 대기 이미지로 바꾸기 위해 Idle함수 호출
@@ -241,11 +262,18 @@ void MoveState::Move(Player * player)
 		// 플레이어가 점프 키를 입력 한다면 점프 함수를 호출한다.
 		if (KEYMANAGER->isOnceKeyDown('C'))
 		{
-			// 점프키를 눌렀다면 true로 바꿔준다.
-			player->set_Info()->bool_V.jumping_Cheack = true;
+			// 점프 횟수가 남아있다면
+			if (player->get_Info().jump.Jump_Count > 0)
+			{
+				// 점프 횟수를 감소 한다.
+				player->set_Info()->jump.Jump_Count--;
 
-			// 점프 애니메이션 교체를 위해 Jump함수 호출
-			MoveState::Jump(player);
+				// 점프키를 눌렀다면 true로 바꿔준다.
+				player->set_Info()->bool_V.jumping_Cheack = true;
+
+				// 점프 애니메이션 교체를 위해 Jump함수 호출
+				MoveState::Jump(player);
+			}
 		}
 
 		// 오른쪽키를 땐다면 대기 상태로 돌아가야한다.
@@ -253,6 +281,7 @@ void MoveState::Move(Player * player)
 		{
 			// 이동이 종료 됐기 때문에 false로 바꿔준다.
 			player->set_Info()->bool_V.walking_Cheack = false;
+			player->set_Info()->bool_V.walk_Cheack = false;
 			player->set_Info()->bool_V.idle_Cheack = false;
 
 			// 대기 이미지로 바꾸기 위해 Idle함수 호출
@@ -282,14 +311,17 @@ void MoveState::Jump(Player * player)
 			player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
 
 			// 점프중으로 바꾼다.
+			player->set_Info()->bool_V.jumping_Cheack = true;
+
+			// 점프 애니메이션 교체 했으면 true
 			player->set_Info()->bool_V.jump_Cheack = true;
 		}
 
 		// 만약 방향키에서 손을 땠다면
 		if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
 		{
-			// 만약 점프중에 다른 방향키를 누르면 다른 이미지로 교체해야 하니까 false로
-			player->set_Info()->bool_V.jump_Cheack = false;
+			// 더 이상 이동을 하지 않는다는 뜻
+			player->set_Info()->bool_V.walking_Cheack = false;
 		}
 
 		// 다른 방향키를 눌렀다면
@@ -307,6 +339,7 @@ void MoveState::Jump(Player * player)
 
 		// 점프 상태로 바꿔준다.
 		player->set_State(JumpState::getInstance());
+		player->get_State()->update(player);
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
@@ -327,8 +360,8 @@ void MoveState::Jump(Player * player)
 		// 만약 방향키에서 손을 땠다면
 		if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
 		{
-			// 만약 점프중에 다른 방향키를 누르면 다른 이미지로 교체해야 하니까 false로
-			player->set_Info()->bool_V.jump_Cheack = false;
+			// 더 이상 이동을 하지 않는다는 뜻
+			player->set_Info()->bool_V.walking_Cheack = false;
 		}
 
 		// 다른 방향키를 눌렀다면
@@ -346,6 +379,7 @@ void MoveState::Jump(Player * player)
 
 		// 점프 상태로 바꿔준다.
 		player->set_State(JumpState::getInstance());
+		player->get_State()->update(player);
 	}
 }
 
@@ -380,49 +414,72 @@ void JumpState::Idle(Player * player)
 
 void JumpState::Move(Player * player)
 {
-	// 해당 방향으로 이동한다.
-	if (player->get_InputKey() == PRESS_LEFT)
+	// 이동중일 경우 연산
+	if (player->get_Info().bool_V.walking_Cheack)
 	{
-		player->set_Info()->pos.center.x -= PLAYER_SPEED;
+
+		// 해당 방향으로 이동한다.
+		if (player->get_InputKey() == PRESS_LEFT)
+		{
+			player->set_Info()->pos.center.x -= PLAYER_SPEED;
+		}
+
+		if (player->get_InputKey() == PRESS_RIGHT)
+		{
+			player->set_Info()->pos.center.x += PLAYER_SPEED;
+		}
+
+		// 점프 연산을 해준다.
+		// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
+		if (player->get_Info().jump.jump_Value > 0)
+		{
+			// 점프 수치만큼 캐릭터의 y좌표를 뺀다.
+			player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+
+			// 점프 수치를 중력만큼 뺀다. (최대 추락 속도보다 클때만)
+			if (player->get_Info().jump.jump_Value > PLAYER_MAX_FALL_SPEED)
+			{
+				player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+			}
+		}
+
+		// 점프 수치가 0 이하라면 추락 상태로 바꿔야한다.
+		else
+		{
+			// 점프는 이제 끝이다.
+			player->set_Info()->bool_V.jumping_Cheack = false;
+		
+			// 추락 시작
+			player->set_Info()->bool_V.falling_Cheack = true;
+		
+			// Fall함수 호출
+			JumpState::Fall(player);
+		}
+
+		// 만약 키를 땠다면
+		if (KEYMANAGER->isOnceKeyUp(VK_LEFT) || KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+		{
+			// 더 이상 이동을 못하도록 false 값을 넣어준다.
+			player->set_Info()->bool_V.walking_Cheack = false;
+
+			// 다음 입력때 애니메이션 교체를 위해 flase로 바꿔준다.
+			player->set_Info()->bool_V.jump_Cheack = false;
+
+			// 이동이 끝났다면 다른 연산을 하기 위해 Jump로 돌아간다.
+			Jump(player);
+		}
+
+		// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
+		if (KEYMANAGER->isOnceKeyDown('C'))
+		{
+			if (player->get_Info().jump.Jump_Count > 0)
+			{
+				// 점프 카운트를 감소 시켜주고, 점프 수치 회복
+				player->set_Info()->jump.Jump_Count--;
+				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
+			}
+		}
 	}
-
-	if (player->get_InputKey() == PRESS_RIGHT)
-	{
-		player->set_Info()->pos.center.x += PLAYER_SPEED;
-	}
-
-	// 점프 연산을 해준다.
-	// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
-	if (player->get_Info().jump.jump_Value > 0)
-	{
-		// 점프 수치만큼 캐릭터의 y좌표를 뺀다.
-		player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
-
-		// 점프 수치를 중력만큼 뺀다.
-		player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
-	}
-
-	// 점프 수치가 0 이하라면 추락 상태로 바꿔야한다.
-	else
-	{
-		// 점프는 이제 끝이다.
-		player->set_Info()->bool_V.jumping_Cheack = false;
-
-		// 추락 시작
-		player->set_Info()->bool_V.falling_Cheack = true;
-
-		// Fall함수 호출
-		JumpState::Fall(player);
-	}
-
-	// 만약 키를 땠다면
-	if (KEYMANAGER->isOnceKeyUp(VK_LEFT) || KEYMANAGER->isOnceKeyUp(VK_RIGHT))
-	{
-		// 더 이상 이동을 못하도록 false 값을 넣어준다.
-		player->set_Info()->bool_V.walking_Cheack = false;
-	}
-
-	// 방향키를 바꿨다면 애니메이션 교체 (이미지가 새로 시작하면 안된다. 그대로 유지하게 하는 방법?)
 }
 
 void JumpState::Jump(Player * player)
@@ -430,31 +487,76 @@ void JumpState::Jump(Player * player)
 	// 만약 계속 이동중이라면 true값
 	if (player->get_Info().bool_V.walking_Cheack) Move(player);
 
-
-	// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
-	if (player->get_Info().jump.jump_Value > 0)
+	// 플레이어가 이동중이지 않을때
+	if (!player->get_Info().bool_V.walking_Cheack)
 	{
-		// 점프 수치만큼 캐릭터의 y좌표를 뺀다.
-		player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+		// 만약 방향키를 누르면 애니메이션 교체 후 Jump함수 호출 후 Move로 보내준다.
+		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+		{
+			// 입력키 저장
+			player->set_InputKey(PRESS_LEFT);
 
-		// 점프 수치를 중력만큼 뺀다.
-		player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+			// 방향에 맞는 애니메이션으로 교체
+			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
 
-		// 다시 연산을 위해 처음으로 돌려보낸다.
-		player->set_State(IdleState::getInstance());
-	}
+			// 이동중이라면 true
+			player->set_Info()->bool_V.walking_Cheack = true;
 
-	// 점프 수치가 0 이하라면 추락 상태로 바꿔야한다.
-	else
-	{
-		// 점프는 이제 끝이다.
-		player->set_Info()->bool_V.jumping_Cheack = false;
+			// 이동 + 점프 연산을 위해 Move 호출
+			Move(player);
+		}
 
-		// 추락 시작
-		player->set_Info()->bool_V.falling_Cheack = true;
+		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+		{
+			// 입력키 저장
+			player->set_InputKey(PRESS_RIGHT);
 
-		// Fall함수 호출
-		JumpState::Fall(player);
+			// 방향에 맞는 애니메이션으로 교체
+			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+
+			// 이동중이라면 true
+			player->set_Info()->bool_V.walking_Cheack = true;
+
+			// 이동 + 점프 연산을 위해 Move 호출
+			Move(player);
+		}
+
+		// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
+		if (KEYMANAGER->isOnceKeyDown('C'))
+		{
+			if (player->get_Info().jump.Jump_Count > 0)
+			{
+				// 점프 카운트를 감소 시켜주고, 점프 수치 회복
+				player->set_Info()->jump.Jump_Count--;
+				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
+			}
+		}
+	
+		// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
+		if (player->get_Info().jump.jump_Value > 0)
+		{
+			// 점프 수치만큼 캐릭터의 y좌표를 뺀다.
+			player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+
+			// 점프 수치를 중력만큼 뺀다. (최대 추락 속도보다 클때만)
+			if (player->get_Info().jump.jump_Value > PLAYER_MAX_FALL_SPEED)
+			{
+				player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+			}
+		}
+
+		// 점프 수치가 0 이하라면 추락 상태로 바꿔야한다.
+		else
+		{
+			// 점프는 이제 끝이다.
+			player->set_Info()->bool_V.jumping_Cheack = false;
+		
+			// 추락 시작
+			player->set_Info()->bool_V.falling_Cheack = true;
+		
+			// Fall함수 호출
+			JumpState::Fall(player);
+		}
 	}
 
 	// 카메라 위치 갱신
@@ -482,6 +584,7 @@ void JumpState::Fall(Player * player)
 
 	// 추락 상태로 이동한다.
 	player->set_State(FallState::getInstance());
+	player->get_State()->update(player);
 }
 
 void JumpState::update(Player * player)
@@ -508,6 +611,36 @@ FallState * FallState::getInstance()
 
 void FallState::Idle(Player * player)
 {
+	// 방향에 따라 다른 대기 애니메이션을 넣어준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		if (!player->get_Info().bool_V.idle_Cheack)
+		{
+			// 대기 애니메이션으로 교체
+			player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
+			player->set_Info()->img.ani->start();
+
+			// 교체를 했다면 true
+			player->set_Info()->bool_V.idle_Cheack = true;
+		}
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		if (!player->get_Info().bool_V.idle_Cheack)
+		{
+			// 대기 애니메이션으로 교체
+			player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+			player->set_Info()->img.ani->start();
+
+			// 교체를 했다면 true
+			player->set_Info()->bool_V.idle_Cheack = true;
+		}
+	}
+
+	// 대기 상태로 바꿔준다.
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
 }
 
 void FallState::Move(Player * player)
@@ -523,7 +656,82 @@ void FallState::Move(Player * player)
 		player->set_Info()->pos.center.x += PLAYER_SPEED;
 	}
 
-	// 추락 연산을 끝낸 후 처음으로 보낸다.
+	// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
+	if (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value > CAMERAMANAGER->Use_Func()->get_World_Size().y - 200)
+	{
+		player->set_Info()->pos.center.y -= (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value) - (CAMERAMANAGER->Use_Func()->get_World_Size().y - 200);
+
+		// 카메라 위치 갱신
+		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+		// 렉트 갱신
+		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+		player->update_Ani_Rect();
+
+		// 나가기 전에 새 연산을 위해 모두 초기화
+		player->set_Info()->bool_V.idle_Cheack = false;
+		player->set_Info()->bool_V.walk_Cheack = false;
+		player->set_Info()->bool_V.walking_Cheack = false;
+		player->set_Info()->bool_V.jump_Cheack = false;
+		player->set_Info()->bool_V.jumping_Cheack = false;
+		player->set_Info()->bool_V.fall_Cheack = false;
+		player->set_Info()->bool_V.falling_Cheack = false;
+		player->set_Info()->jump.jump_Value = 0;
+
+		// 점프 수치 초기화
+		player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
+
+		// Idle 애니메이션 교체를 위해 호출
+		Idle(player);
+	}
+
+	// 추락연산
+	player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+
+	// 점프 수치를 중력만큼 뺀다. (최대 추락 속도보다 클때만)
+	if (player->get_Info().jump.jump_Value > PLAYER_MAX_FALL_SPEED)
+	{
+		player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+	}
+
+	// 만약 방향키를 땠다면 더 이상 이동하지 않는다.
+	if (KEYMANAGER->isOnceKeyUp(VK_LEFT))
+	{
+		// 이동중이 아니라면 false
+		player->set_Info()->bool_V.walking_Cheack = false;
+
+		// 다른 방향을 입력 시 추락 애니메이션 교체를 위해 false로
+		player->set_Info()->bool_V.fall_Cheack = false;
+
+		// 이동이 끝났으니 다른 연산을 위해 Fall 함수 호출
+		Fall(player);
+	}
+
+	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+	{
+		// 이동중이 아니라면 false
+		player->set_Info()->bool_V.walking_Cheack = false;
+
+		// 다른 방향을 입력 시 추락 애니메이션 교체를 위해 false로
+		player->set_Info()->bool_V.fall_Cheack = false;
+
+		// 이동이 끝났으니 다른 연산을 위해 Fall 함수 호출
+		Fall(player);
+	}
+
+	// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
+	if (KEYMANAGER->isOnceKeyDown('C'))
+	{
+		if (player->get_Info().jump.Jump_Count > 0)
+		{
+			// 점프 카운트를 감소 시켜주고, 점프 수치 회복
+			player->set_Info()->jump.Jump_Count--;
+			player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
+
+			// 점프 애니메이션 교체를 위해 호출
+			Jump(player);
+		}
+	}
 
 
 	// 카메라 위치 갱신
@@ -536,28 +744,169 @@ void FallState::Move(Player * player)
 
 void FallState::Jump(Player * player)
 {
+	// 방향에 따라서 맞는 점프 애니메이션으로 바꿔준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		// 애니메이션 교체 + 시작
+		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+		player->set_Info()->img.ani->start();
+
+		// 점프 애니메이션을 바꿨다면 true (중복 교체 방지)
+		player->set_Info()->bool_V.jump_Cheack = true;
+
+		// 점프중으로 바꿔준다.
+		player->set_Info()->bool_V.jumping_Cheack = true;
+
+		// 추락중이 아니므로 flase
+		player->set_Info()->bool_V.falling_Cheack = false;
+
+		// 점프 상태로 바꿔준다.
+		player->set_State(JumpState::getInstance());
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		// 애니메이션 교체 + 시작
+		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		player->set_Info()->img.ani->start();
+
+		// 점프 애니메이션을 바꿨다면 true (중복 교체 방지)
+		player->set_Info()->bool_V.jump_Cheack = true;
+
+		// 점프중으로 바꿔준다.
+		player->set_Info()->bool_V.jumping_Cheack = true;
+
+		// 추락중이 아니므로 flase
+		player->set_Info()->bool_V.falling_Cheack = false;
+
+		// 점프 상태로 바꿔준다.
+		player->set_State(JumpState::getInstance());
+	}
 }
 
 void FallState::Fall(Player * player)
 {
+	// 추락 루프 애니메이션으로 교체하는 시점 (스컬 추락 애니메이션 중에만)
+	if (player->get_Info().img.imgName == "skul_Fall")
+	{
+
+		// 프레임이 2로 변하는 시점 (프레임가로의 크기가 160이므로, 0 = 0, 160 = 1, 320 = 2로 프레임 위치를 가리킨다.)
+		if (player->get_Info().img.ani->getFramePos().x == 320)
+		{
+			// 망토가 계속 펄럭거려야 하기 때문에 루프 애니메이션으로 교체한다.
+			if (player->get_InputKey() == PRESS_LEFT)
+			{
+				player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
+				player->set_Info()->img.ani->start();
+			}
+
+			if (player->get_InputKey() == PRESS_RIGHT)
+			{
+				player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
+				player->set_Info()->img.ani->start();
+			}
+		}
+	}
+
 	// 이동중이라면 이동 연산을 한다.
 	if (player->get_Info().bool_V.walking_Cheack) Move(player);
-	// 그렇지 않다면 추락 연산만 한다.
-	else
+
+	// 이동중이 아니라면
+	if (!player->get_Info().bool_V.walking_Cheack)
 	{
+		// 방향키를 누른다면
+		if (KEYMANAGER->isStayKeyDown(VK_LEFT))
+		{
+			// 해당 방향키 저장
+			player->set_InputKey(PRESS_LEFT);
+
+			// 해당 방향으로 애니메이션 교체
+			player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
+			player->set_Info()->img.ani->start();
+
+			// 이동중이라면 true
+			player->set_Info()->bool_V.walking_Cheack = true;
+
+			// 이동 + 추락 연산을 위해 Jall함수 다시 호출
+			Fall(player);
+		}
+
+		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
+		{
+			// 해당 방향키 저장
+			player->set_InputKey(PRESS_RIGHT);
+
+			// 해당 방향으로 애니메이션 교체
+			player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
+			player->set_Info()->img.ani->start();
+
+			// 이동중이라면 true
+			player->set_Info()->bool_V.walking_Cheack = true;
+
+			// 이동 + 추락 연산을 위해 Jall함수 다시 호출
+			Fall(player);
+		}
+
+		// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
+		if (KEYMANAGER->isOnceKeyDown('C'))
+		{
+			if (player->get_Info().jump.Jump_Count > 0)
+			{
+				// 점프 카운트를 감소 시켜주고, 점프 수치 회복
+				player->set_Info()->jump.Jump_Count--;
+				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
+
+				// 점프 애니메이션 교체를 위해 호출
+				Jump(player);
+			}
+		}
+		
+		// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
+		if (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value > (CAMERAMANAGER->Use_Func()->get_World_Size().y - 200))
+		{
+			player->set_Info()->pos.center.y -= (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value) - (CAMERAMANAGER->Use_Func()->get_World_Size().y - 200);
+
+			// 카메라 위치 갱신
+			CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+			// 렉트 갱신
+			player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+			player->update_Ani_Rect();
+
+			// 나가기 전에 새 연산을 위해 모두 초기화
+			player->set_Info()->bool_V.idle_Cheack = false;
+			player->set_Info()->bool_V.walk_Cheack = false;
+			player->set_Info()->bool_V.walking_Cheack = false;
+			player->set_Info()->bool_V.jump_Cheack = false;
+			player->set_Info()->bool_V.jumping_Cheack = false;
+			player->set_Info()->bool_V.fall_Cheack = false;
+			player->set_Info()->bool_V.falling_Cheack = false;
+			player->set_Info()->jump.jump_Value = 0;
+
+			// 점프 수치 초기화
+			player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
+
+			// Idle 애니메이션 교체를 위해 호출
+			Idle(player);
+		}
+
 		// 추락연산
 		player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
-		player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
 
-		// 카메라 위치 갱신
-		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+		// 점프 수치를 중력만큼 뺀다. (최대 추락 속도보다 클때만)
+		if (player->get_Info().jump.jump_Value > PLAYER_MAX_FALL_SPEED)
+		{
+			player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+		}
 
-		// 렉트 갱신
-		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
-		player->update_Ani_Rect();
-
-		// 처음으로 되돌린다.
 	}
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
 }
 
 void FallState::update(Player * player)
