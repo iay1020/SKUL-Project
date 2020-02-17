@@ -542,3 +542,42 @@ void DataManager::create_Skul()
 	// 스컬 기본 셋팅
 	_skul = new Player();
 }
+
+bool DataManager::Collision_PlayerFall_Ground()
+{
+	// 캐릭터의 타일 인덱스를 저장할 공간
+	short player_TilePos_X, player_TilePos_Y;
+	
+	// 캐릭터가 위치한 타일의 인덱스를 구한다.
+	player_TilePos_X = (int)_skul->get_Info().pos.center.x / TILE_SIZE_X;
+	player_TilePos_Y = (int)_skul->get_Info().pos.center.y / TILE_SIZE_Y;
+
+	// 플레이어의 아래 타일이 땅이라면
+	if (_tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+	{
+		_skul->set_Info()->pos.center.y = _tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].rc.top - TILE_SIZE_Y / 3;
+
+		return true;
+	}
+
+	// 플레이어가 충돌하지 않았다면 false 반환
+	return false;
+}
+
+bool DataManager::Collision_Player_Wall()
+{
+	// 플레이어가 충돌했다면 true 반환
+
+
+	// 플레이어가 충돌하지 않았다면 false 반환
+	return false;
+}
+
+bool DataManager::Collision_Player_Trab()
+{
+	// 플레이어가 충돌했다면 true 반환
+
+
+	// 플레이어가 충돌하지 않았다면 false 반환
+	return false;
+}

@@ -11,6 +11,7 @@ test_Room::~test_Room()
 
 HRESULT test_Room::init()
 {
+	// 맵을 불러와 데이터매니저에 있는 변수에 저장한다.
 	DATAMANAGER->map_Load_Datamanager("tutorial.map", "tutorial_Info.map");
 
 	for (int i = 0; i < 5; ++i)	// 루프랜더용 변수

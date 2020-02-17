@@ -657,9 +657,8 @@ void FallState::Move(Player * player)
 	}
 
 	// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
-	if (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value > CAMERAMANAGER->Use_Func()->get_World_Size().y - 200)
+	if (DATAMANAGER->Collision_PlayerFall_Ground())
 	{
-		player->set_Info()->pos.center.y -= (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value) - (CAMERAMANAGER->Use_Func()->get_World_Size().y - 200);
 
 		// 카메라 위치 갱신
 		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
@@ -732,7 +731,6 @@ void FallState::Move(Player * player)
 			Jump(player);
 		}
 	}
-
 
 	// 카메라 위치 갱신
 	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
@@ -862,9 +860,8 @@ void FallState::Fall(Player * player)
 		}
 		
 		// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
-		if (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value > (CAMERAMANAGER->Use_Func()->get_World_Size().y - 200))
+		if (DATAMANAGER->Collision_PlayerFall_Ground())
 		{
-			player->set_Info()->pos.center.y -= (player->get_Info().pos.center.y - player->get_Info().jump.jump_Value) - (CAMERAMANAGER->Use_Func()->get_World_Size().y - 200);
 
 			// 카메라 위치 갱신
 			CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);

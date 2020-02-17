@@ -38,6 +38,8 @@ enum class TILE_TYPE
 	ENEMY,									// 에너미
 	DOOR,									// 도어	
 	GROUND,									// 땅
+	WALL,									// 벽
+	FOOTHOLD,								// 발판
 	DECORATION,								// 데코레이션 오브젝트
 	HIT_OBJECT,								// 타격 가능한 오브젝트
 	ITEM,									// 아이템 오브젝트

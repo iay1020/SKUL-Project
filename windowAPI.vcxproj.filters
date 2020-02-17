@@ -180,9 +180,6 @@
     <ClInclude Include="WorkList.h">
       <Filter>playGround</Filter>
     </ClInclude>
-    <ClInclude Include="test_Room.h">
-      <Filter>playGround\_Test_Room</Filter>
-    </ClInclude>
     <ClInclude Include="CharacterState.h">
       <Filter>playGround\CharacterState</Filter>
     </ClInclude>
@@ -194,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="CharacterState_Library.h">
       <Filter>playGround\CharacterState</Filter>
+    </ClInclude>
+    <ClInclude Include="test_Room.h">
+      <Filter>playGround\_Test_Room</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
