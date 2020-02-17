@@ -43,7 +43,10 @@ enum class BUTTON_TYPE
 	ITEM,							// 아이템 버튼을 눌렀다면
 	TRAP,							// 트랩 버튼을 눌렀다면
 	BACKGROUND,						// 백 그라운드 버튼을 눌렀다면
-	RECT_ADD_OR_MINUS				// 렉트 추가 삭제 버튼
+	RECT_ADD_OR_MINUS,				// 렉트 추가 삭제 버튼
+	FOOTHOLDTYPE_CHECK,				// 발판 타입이라는 속성을 넣는 버튼
+	WALLTYPE_CHECK,					// 벽 타입이라는 속성을 넣는 버튼
+	TRAPTYPE_CHECK					// 함정 타입이라는 속성을 넣는 버튼
 				
 };
 
@@ -170,6 +173,11 @@ struct tagMapInfo
 		for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)	_vSize[i] = 0;
 
 		_layer_Cnt = 0;
+
+		// 새로 맵을 불러오면 타일 갯수, 월드 사이즈를 갱신해준다.
+		CAMERAMANAGER->Use_Func()->set_Tile_CountX(tile_Count.x);														// 가로 사이즈 설정 (맵마다 가로세로가 다르니까)
+		CAMERAMANAGER->Use_Func()->set_Tile_CountY(tile_Count.y);														// 세로 사이즈 설정
+		CAMERAMANAGER->Use_Func()->set_World_Size(tile_Count.x * TILE_SIZE_X, tile_Count.y * TILE_SIZE_Y);				// 가로세로에 맞게 월드 사이즈 설정
 	}
 
 };
@@ -186,16 +194,17 @@ struct tagTileFrame
 // 타일 정보를 저장 할 구조체
 struct tagTileInfo
 {
-	POINTFLOAT			center;				// 타일의 중점을 담는다.
-	RECT				rc;					// 타일의 렉트를 담는다.
-	tag_U_Short			index;				// 타일의 인덱스를 담는다. (범위 : 0 ~ 65535)
+	POINTFLOAT			center;					// 타일의 중점을 담는다.
+	RECT				rc;						// 타일의 렉트를 담는다.
+	tag_U_Short			index;					// 타일의 인덱스를 담는다. (범위 : 0 ~ 65535)
 
-	TILE_TYPE			tile_Type;			// 타일의 타입을 담는다.
-	tagTileName			tileName;			// 타일 이미지 이름을 담는다.
+	TILE_TYPE			tile_Type;				// 타일의 타입을 담는다.
+	COLLISION_TILE_TYPE	tile_Collision_Type;	// 타일의 충돌 타입을 담는다.
+	tagTileName			tileName;				// 타일 이미지 이름을 담는다.
 
-	tagTileFrame 	    frame;				// 이미지 프레임을 담는다.
+	tagTileFrame 	    frame;					// 이미지 프레임을 담는다.
 
-	bool				useTile;			// 이미지가 있는 타일인지 아닌지
+	bool				useTile;				// 이미지가 있는 타일인지 아닌지
 
 	// 타일을 기본 셋팅 해준다. (비워준다)
 	void reset_Tile()
@@ -204,6 +213,7 @@ struct tagTileInfo
 		index.x  = index.y = 0;
 		frame.ground.x = frame.ground.y = 0;
 		tile_Type = TILE_TYPE::EMPTY;
+		tile_Collision_Type = COLLISION_TILE_TYPE::NONE_TYPE;
 		tileName.reset();
 		useTile = false;
 	}
@@ -556,6 +566,10 @@ struct tagPallets
 						}
 					}
 					break;
+
+				case BUTTON_TYPE::FOOTHOLDTYPE_CHECK: case BUTTON_TYPE::WALLTYPE_CHECK: case BUTTON_TYPE::TRAPTYPE_CHECK:
+					*click = true;
+					break;
 			}
 
 			KEYMANAGER->setKeyDown(VK_LBUTTON, false);	// 키 씹히는걸 방지하기 위해
@@ -578,6 +592,9 @@ struct tagButton_Info
 	RECT			BT_Down;			// 다운 버튼 (새로 생성 수정 했으면 이 주석 삭제)
 	RECT			BT_Minus;			// 레이어 삭제 버튼
 	RECT			BT_RectPlus;		// 렉트 추가 버튼
+	RECT			BT_FootHold_Check;	// 발판 속성 체크 버튼
+	RECT			BT_Wall_Check;		// 벽 속성 체크 버튼
+	RECT			BT_Trap_Check;		// 함정 속성 체크 버튼
 
 	// 팔렛트 버튼
 	RECT			BT_Ground;			// 지형 이미지 버튼
@@ -635,6 +652,10 @@ struct tagButton_Info
 		BT_Item = RectMake(start_Pos * 10 + button_Size * 9, 10, 52, 52);
 		BT_BackGround = RectMake(start_Pos * 11 + button_Size * 10, 10, 52, 52);
 		BT_RectPlus = RectMake(start_Pos * 12 + button_Size * 11, 10, 52, 52);
+		BT_FootHold_Check = RectMake(start_Pos * 13 + button_Size * 12, 10, 32, 30);
+		BT_Wall_Check = RectMake(BT_FootHold_Check.right, 10, 32, 30);
+		BT_Trap_Check = RectMake(BT_Wall_Check.right, 10, 32, 30);
+
 	}
 
 	// 다음, 이전 버튼의 위치를 갱신 해준다.
@@ -717,6 +738,9 @@ struct tagButton_Info
 			Rectangle(getDC, BT_Up);
 			Rectangle(getDC, BT_Down);
 			Rectangle(getDC, BT_RectPlus);
+			Rectangle(getDC, BT_FootHold_Check);
+			Rectangle(getDC, BT_Wall_Check);
+			Rectangle(getDC, BT_Trap_Check);
 		}
 
 		// 버튼 이미지 출력
@@ -724,6 +748,9 @@ struct tagButton_Info
 		IMAGEMANAGER->findImage("load_Icon")->render(getDC, BT_Load.left, BT_Load.top);
 		IMAGEMANAGER->findImage("eraser_Icon")->render(getDC, BT_Eraser.left, BT_Eraser.top);
 		IMAGEMANAGER->findImage("rect_Plus_Icon")->render(getDC, BT_RectPlus.left, BT_RectPlus.top);
+		IMAGEMANAGER->findImage("footHoldType_Check_Button")->render(getDC, BT_FootHold_Check.left, BT_FootHold_Check.top);
+		IMAGEMANAGER->findImage("wallType_Check_Button")->render(getDC, BT_Wall_Check.left, BT_Wall_Check.top);
+		IMAGEMANAGER->findImage("trapType_Check_Button")->render(getDC, BT_Trap_Check.left, BT_Trap_Check.top);
 
 		// 지우개 버튼을 클릭 하지 않았을때
 		if (!BT_Click_Eraser)
@@ -798,7 +825,9 @@ struct tagButton_Info
 			if (PtInRect(&BT_Trap, _ptMouse)) { BT_Type = BUTTON_TYPE::TRAP; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_BackGround, _ptMouse)) { BT_Type = BUTTON_TYPE::BACKGROUND; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_RectPlus, _ptMouse)) { BT_Type = BUTTON_TYPE::RECT_ADD_OR_MINUS; BT_FindNoTile = true; }
-
+			if (PtInRect(&BT_FootHold_Check, _ptMouse)) { BT_Type = BUTTON_TYPE::FOOTHOLDTYPE_CHECK; BT_FindNoTile = true; }
+			if (PtInRect(&BT_Wall_Check, _ptMouse)) { BT_Type = BUTTON_TYPE::WALLTYPE_CHECK; BT_FindNoTile = true; }
+			if (PtInRect(&BT_Trap_Check, _ptMouse)) { BT_Type = BUTTON_TYPE::TRAPTYPE_CHECK; BT_FindNoTile = true; }
 
 			// 다음 버튼을 눌렀다면 새로 갱신
 			if (PtInRect(&BT_Next, _ptMouse) && !next_Prev_Push_Okay)
@@ -1008,12 +1037,19 @@ public:
 	{
 		draw_Ready_BG = false;
 		draw_Cnt_BG = 0;
+
+		for (int i = 0; i < BACKGROUND_BACKCOUNT; ++i)
+		{
+			_vBackGround_Info[i].clear();
+		}
 	}
 
 
 	// 기본 타일을 만들어 준다.
 	void make_Base_TileList(vector<tagTileInfo>* tileList)
 	{
+		tileList->clear();
+
 		// 타일의 기본 렉트를 만들어 준다.
 		for (int y = 0; y < TILE_COUNT_Y; ++y)
 		{
@@ -1221,6 +1257,39 @@ public:
 							}
 						}
 						break;
+
+					case BUTTON_TYPE::FOOTHOLDTYPE_CHECK:
+						for (int i = 0; i < mapInfo->tile_Count.x * mapInfo->tile_Count.y; ++i)
+						{
+							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2))
+							{
+								// 발판 속성을 넣어준다.
+								(*TileList)[i].tile_Collision_Type = COLLISION_TILE_TYPE::FOOTHOLD_TYPE;
+							}
+						}
+						break;
+
+					case BUTTON_TYPE::WALLTYPE_CHECK:
+						for (int i = 0; i < mapInfo->tile_Count.x * mapInfo->tile_Count.y; ++i)
+						{
+							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2))
+							{
+								// 벽 속성을 넣어준다.
+								(*TileList)[i].tile_Collision_Type = COLLISION_TILE_TYPE::WALL_TYPE;
+							}
+						}
+						break;
+
+					case BUTTON_TYPE::TRAPTYPE_CHECK:
+						for (int i = 0; i < mapInfo->tile_Count.x * mapInfo->tile_Count.y; ++i)
+						{
+							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2))
+							{
+								// 함정 속성을 넣어준다.
+								(*TileList)[i].tile_Collision_Type = COLLISION_TILE_TYPE::TRAP_TYPE;
+							}
+						}
+						break;
 				}
 
 				KEYMANAGER->setKeyDown(VK_LBUTTON, false);	// 키 씹히는걸 방지하기 위해
@@ -1309,6 +1378,28 @@ public:
 					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::DECORATION)
 					{
 					
+					}
+				}
+
+				// 충돌 타입이 없다면 제외한다.
+				if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type != COLLISION_TILE_TYPE::NONE_TYPE)
+				{
+					// 발판 타입을 표시해준다.
+					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
+					{
+						IMAGEMANAGER->findImage("footHoldType_Check")->render(getMemDC, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.left, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.top);
+					}
+
+					// 벽 타입을 표시해준다.
+					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
+					{
+						IMAGEMANAGER->findImage("wallType_Check")->render(getMemDC, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.left, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.top);
+					}
+
+					// 함정 타입을 표시해준다.
+					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::TRAP_TYPE)
+					{
+						IMAGEMANAGER->findImage("trapType_Check")->render(getMemDC, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.left, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.top);
 					}
 				}
 			}

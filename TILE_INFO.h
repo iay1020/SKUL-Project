@@ -38,11 +38,18 @@ enum class TILE_TYPE
 	ENEMY,									// 에너미
 	DOOR,									// 도어	
 	GROUND,									// 땅
-	WALL,									// 벽
-	FOOTHOLD,								// 발판
 	DECORATION,								// 데코레이션 오브젝트
 	HIT_OBJECT,								// 타격 가능한 오브젝트
 	ITEM,									// 아이템 오브젝트
 	TRAP,									// 함정 타일
 	BACKGROUND								// 백그라운드 타일
+};
+
+// 충돌용 타일 타입
+enum class COLLISION_TILE_TYPE
+{
+	NONE_TYPE,			// 아무것도 없는 타입
+	FOOTHOLD_TYPE,		// 발판 타입
+	WALL_TYPE,			// 벽 타입
+	TRAP_TYPE			// 함정 타입
 };

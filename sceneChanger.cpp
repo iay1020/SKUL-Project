@@ -13,6 +13,7 @@ HRESULT sceneChanger::init()
 {
 	_sceneFunc.addScene();	// 씬을 추가 한다.
 	_sceneFunc.changeScene("mapTool");	// 처음 시작할 씬을 골라준다.
+	//_sceneFunc.changeScene("testRoom");	
 
 	return S_OK;
 }
