@@ -642,7 +642,12 @@ bool DataManager::Collision_Player_Wall()
 		// 플레이어가 바라보는 방향에 벽이 있다면
 		if (_tileList[(player_TilePos_X - 1) + player_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
 		{
-			return true;
+			// 플레이어의 Left가 벽의 Right보다 작으면
+			if ((_skul->get_Info().pos.rc.left + CAMERAMANAGER->Use_Func()->get_CameraXY().x) < _tileList[(player_TilePos_X - 1) + player_TilePos_Y * _mapInfo.tile_Count.x].rc.right)
+			{
+
+				return true;
+			}
 		}
 	}
 
@@ -651,12 +656,64 @@ bool DataManager::Collision_Player_Wall()
 		// 플레이어가 바라보는 방향에 벽이 있다면
 		if (_tileList[(player_TilePos_X + 1) + player_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
 		{
-			return true;
+			// 플레이어의 Right가 벽의 Left보다 크면
+			if ((_skul->get_Info().pos.rc.right + CAMERAMANAGER->Use_Func()->get_CameraXY().x) > _tileList[(player_TilePos_X + 1) + player_TilePos_Y * _mapInfo.tile_Count.x].rc.left)
+			{
+
+				return true;
+			}
 		}
 	}
 
 
 	// 플레이어가 충돌하지 않았다면 false 반환
+	return false;
+}
+
+bool DataManager::Collision_Player_FootHold()
+{
+	// 캐릭터의 타일 인덱스를 저장할 공간
+	short player_TilePos_X, player_TilePos_Y;
+
+	// 캐릭터가 위치한 타일의 인덱스를 구한다.
+	player_TilePos_X = (int)_skul->get_Info().pos.center.x / TILE_SIZE_X;
+	player_TilePos_Y = (int)_skul->get_Info().pos.center.y / TILE_SIZE_Y;
+
+	// 플레이어의 위에 발판이 있다면
+	if (_tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
+	{
+		cout << "플레이어 bottom : " <<  _skul->get_Info().pos.rc.bottom + CAMERAMANAGER->Use_Func()->get_CameraXY().y << endl;
+		cout << "발판의 bottom : " << _tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].rc.bottom << endl;
+
+		// 플레이어의 Top이 벽의 Bottom보다 크면
+		if ((_skul->get_Info().pos.rc.bottom + CAMERAMANAGER->Use_Func()->get_CameraXY().y) > _tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].rc.bottom)
+		{
+
+			return true;
+		}
+	}
+
+	// 발판을 찾지 못했다면
+	return false;
+}
+
+bool DataManager::Collision_Player_FootHold_Down()
+{
+	// 캐릭터의 타일 인덱스를 저장할 공간
+	short player_TilePos_X, player_TilePos_Y;
+
+	// 캐릭터가 위치한 타일의 인덱스를 구한다.
+	player_TilePos_X = (int)_skul->get_Info().pos.center.x / TILE_SIZE_X;
+	player_TilePos_Y = (int)_skul->get_Info().pos.center.y / TILE_SIZE_Y;
+
+	// 플레이어의 아래에 발판이 있다면
+	if (_tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
+	{
+		return true;
+		
+	}
+
+	// 발판을 찾지 못했다면
 	return false;
 }
 

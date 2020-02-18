@@ -32,6 +32,7 @@ enum CharacterDirection
 
 // 캐릭터 점프 파워
 #define PLAYER_JUMPPOWER    15
+#define PLAYER_DOWNJUMPPOWER 5
 
 // 캐릭터 최대 추락 속도
 #define PLAYER_MAX_FALL_SPEED -30.0f

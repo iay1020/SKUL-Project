@@ -62,7 +62,12 @@ public:
 	bool Collision_PlayerFall_Ground();		
 
 	// 플레이어가 바라보는 방향에 벽이 있는지 체크
-	bool Collision_Player_Wall();																		
+	bool Collision_Player_Wall();	
+
+	// 플레이어의 위에 발판이 있는지 체크
+	bool Collision_Player_FootHold();
+	// 플레이어의 아래에 발판이 있는지 체크
+	bool Collision_Player_FootHold_Down();
 
 	// 플레이어의 렉트가 함정 렉트와 충돌 했는지 체크
 	bool Collision_Player_Trab();																		

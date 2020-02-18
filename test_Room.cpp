@@ -69,11 +69,6 @@ void test_Room::testControl()
 		}
 	}
 
-	if (KEYMANAGER->isStayKeyDown(VK_UP))
-	{
-		_skul->set_Info()->pos.center.y -= 10;
-	}
-
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 	{
 		for (int i = 0; i < 5; ++i)
@@ -82,10 +77,6 @@ void test_Room::testControl()
 		}
 	}
 
-	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
-	{
-		_skul->set_Info()->pos.center.y += 10;
-	}
 }
 
 void test_Room::showRect(HDC getMemDC)

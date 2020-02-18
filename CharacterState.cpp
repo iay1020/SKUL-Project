@@ -5,9 +5,10 @@ IdleState* IdleState::instance;
 MoveState* MoveState::instance;
 JumpState* JumpState::instance;
 FallState* FallState::instance;
+DownJumpState* DownJumpState::instance;
 DashState* DashState::instance;
 
-// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대기 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대기 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 IdleState * IdleState::getInstance()
 {
 	if (instance == nullptr)
@@ -35,15 +36,11 @@ void IdleState::Idle(Player * player)
 		// 캐릭터의 방향을 저장한다.
 		player->set_Info()->status.direction = DIRECTION_LEFT;
 	
-		// 캐릭터 옆에 벽이 없어야 실행
-		if (!DATAMANAGER->Collision_Player_Wall())
-		{
-			// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
-			player->set_Info()->bool_V.walking_Cheack = true;
+		// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
+		player->set_Info()->bool_V.walking_Cheack = true;
 
-			// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.)
-			IdleState::Move(player);
-		}
+		// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.)
+		IdleState::Move(player);
 	}
 	
 	// 멈춰있는 상태에서 오른쪽을 눌렀다면 오른쪽 이동 상태로 바꿔준다.
@@ -55,15 +52,34 @@ void IdleState::Idle(Player * player)
 		// 캐릭터의 방향을 저장한다.
 		player->set_Info()->status.direction = DIRECTION_RIGHT;
 	
+		// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
+		player->set_Info()->bool_V.walking_Cheack = true;
 
-		// 캐릭터 옆에 벽이 없어야 실행
-		if (!DATAMANAGER->Collision_Player_Wall())
+		// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.) 
+		IdleState::Move(player);
+		
+	}
+
+	// 멈춰있는 상태에서 아래 방향키와 점프를 눌렀다면 아래 점프를 시작한다.
+	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
+	{
+
+		if (KEYMANAGER->isOnceKeyDown('C'))
 		{
-			// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
-			player->set_Info()->bool_V.walking_Cheack = true;
+			// 아래 타일이 발판일때만
+			if (DATAMANAGER->Collision_Player_FootHold_Down())
+			{
+				// 살짝 점프를 하기 때문에 점프 수치를 조금 넣어준다.
+				player->set_Info()->jump.jump_Value = PLAYER_DOWNJUMPPOWER;
 
-			// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.) 
-			IdleState::Move(player);
+				// 점프, 추락 애니메이션으로 교체를 위해 false로 바꿔준다.
+				player->set_Info()->bool_V.jump_Cheack = false;
+				player->set_Info()->bool_V.fall_Cheack = false;
+
+				// 아래점프 상태로 이동 한다.
+				IdleState::DownJump(player);
+
+			}
 		}
 	}
 	
@@ -192,6 +208,28 @@ void IdleState::Fall(Player * player)
 	player->get_State()->update(player);
 }
 
+void IdleState::DownJump(Player * player)
+{
+	// 점프 애니메이션으로 교체 한다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+		player->set_Info()->img.ani->start();
+
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		player->set_Info()->img.ani->start();
+
+	}
+	
+	// 아래 점프 상태로 이동한다.
+	player->set_State(DownJumpState::getInstance());
+	player->get_State()->update(player);
+}
+
 void IdleState::Dash(Player * player)
 {
 }
@@ -207,7 +245,7 @@ void IdleState::update(Player * player)
 
 
 
-// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 이동 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 이동 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 MoveState * MoveState::getInstance()
 {
 	if (instance == nullptr)
@@ -255,18 +293,6 @@ void MoveState::Idle(Player * player)
 
 void MoveState::Move(Player * player)
 {
-	// 플레이어가 바라보는 방향에 벽 타일이 있다면 대기 상태로 바꿔준다.
-	if (DATAMANAGER->Collision_Player_Wall())
-	{
-		//// 이동을 중지시킨다.
-		player->set_Info()->bool_V.walking_Cheack = false;
-		player->set_Info()->bool_V.walk_Cheack = false;
-		player->set_Info()->bool_V.idle_Cheack = false;
-	
-		// 대기 애니메이션으로 교체를 위해 호출
-		Idle(player); // 대기함수 호출
-	}
-
 	// 플레이어의 아래에 땅 타일이 없다면 추락 상태로 바꿔준다.
 	if (!DATAMANAGER->Collision_PlayerFall_Ground())
 	{
@@ -275,8 +301,12 @@ void MoveState::Move(Player * player)
 
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		// 플레이어가 왼쪽으로 이동 (이동중이라면)
-		if(player->get_Info().bool_V.walking_Cheack)  player->set_Info()->pos.center.x -= PLAYER_SPEED;
+		// 캐릭터 옆에 벽이 없어야 실행
+		if (!DATAMANAGER->Collision_Player_Wall())
+		{
+			// 플레이어가 왼쪽으로 이동 (이동중이라면)
+			if (player->get_Info().bool_V.walking_Cheack)  player->set_Info()->pos.center.x -= PLAYER_SPEED;
+		}
 
 		// 플레이어가 점프 키를 입력 한다면 점프 함수를 호출한다.
 		if (KEYMANAGER->isOnceKeyDown('C'))
@@ -311,8 +341,12 @@ void MoveState::Move(Player * player)
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		// 플레이어가 오른쪽으로 이동 (이동중이라면)
-		if (player->get_Info().bool_V.walking_Cheack) player->set_Info()->pos.center.x += PLAYER_SPEED;
+		// 캐릭터 옆에 벽이 없어야 실행
+		if (!DATAMANAGER->Collision_Player_Wall())
+		{
+			// 플레이어가 오른쪽으로 이동 (이동중이라면)
+			if (player->get_Info().bool_V.walking_Cheack) player->set_Info()->pos.center.x += PLAYER_SPEED;
+		}
 
 		// 플레이어가 점프 키를 입력 한다면 점프 함수를 호출한다.
 		if (KEYMANAGER->isOnceKeyDown('C'))
@@ -458,6 +492,10 @@ void MoveState::Fall(Player * player)
 	player->get_State()->update(player);
 }
 
+void MoveState::DownJump(Player * player)
+{
+}
+
 void MoveState::Dash(Player * player)
 {
 }
@@ -472,7 +510,7 @@ void MoveState::update(Player * player)
 
 
 
-// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 점프 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 점프 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 JumpState * JumpState::getInstance()
 {
 	if (instance == nullptr)
@@ -489,26 +527,22 @@ void JumpState::Idle(Player * player)
 
 void JumpState::Move(Player * player)
 {
-	// 캐릭터 옆에 벽이 없어야 실행
-	if (DATAMANAGER->Collision_Player_Wall())
-	{
-		player->set_Info()->bool_V.walking_Cheack = false;
-		Fall(player);
-	}
-
 	// 이동중일 경우 연산
 	if (player->get_Info().bool_V.walking_Cheack)
 	{
-
-		// 해당 방향으로 이동한다.
-		if (player->get_InputKey() == PRESS_LEFT)
+		// 캐릭터 옆에 벽이 없어야 실행
+		if (!DATAMANAGER->Collision_Player_Wall())
 		{
-			player->set_Info()->pos.center.x -= PLAYER_SPEED;
-		}
+			// 해당 방향으로 이동한다.
+			if (player->get_InputKey() == PRESS_LEFT)
+			{
+				player->set_Info()->pos.center.x -= PLAYER_SPEED;
+			}
 
-		if (player->get_InputKey() == PRESS_RIGHT)
-		{
-			player->set_Info()->pos.center.x += PLAYER_SPEED;
+			if (player->get_InputKey() == PRESS_RIGHT)
+			{
+				player->set_Info()->pos.center.x += PLAYER_SPEED;
+			}
 		}
 
 		// 점프 연산을 해준다.
@@ -669,6 +703,10 @@ void JumpState::Fall(Player * player)
 	player->get_State()->update(player);
 }
 
+void JumpState::DownJump(Player * player)
+{
+}
+
 void JumpState::Dash(Player * player)
 {
 }
@@ -684,7 +722,7 @@ void JumpState::update(Player * player)
 
 
 
-// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 추락 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 추락 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 FallState * FallState::getInstance()
 {
 	if (instance == nullptr)
@@ -732,21 +770,19 @@ void FallState::Idle(Player * player)
 void FallState::Move(Player * player)
 {
 	// 캐릭터 옆에 벽이 없어야 실행
-	if (DATAMANAGER->Collision_Player_Wall())
+	if (!DATAMANAGER->Collision_Player_Wall())
 	{
-		player->set_Info()->bool_V.walking_Cheack = false;
-		update(player);
-	}
 
-	// 이동중이라면 인동 연산을 한다.
-	if (player->get_InputKey() == PRESS_LEFT)
-	{
-		player->set_Info()->pos.center.x -= PLAYER_SPEED;
-	}
+		// 이동중이라면 인동 연산을 한다.
+		if (player->get_InputKey() == PRESS_LEFT)
+		{
+			player->set_Info()->pos.center.x -= PLAYER_SPEED;
+		}
 
-	if (player->get_InputKey() == PRESS_RIGHT)
-	{
-		player->set_Info()->pos.center.x += PLAYER_SPEED;
+		if (player->get_InputKey() == PRESS_RIGHT)
+		{
+			player->set_Info()->pos.center.x += PLAYER_SPEED;
+		}
 	}
 
 	// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
@@ -882,7 +918,7 @@ void FallState::Fall(Player * player)
 	{
 
 		// 프레임이 2로 변하는 시점 (프레임가로의 크기가 160이므로, 0 = 0, 160 = 1, 320 = 2로 프레임 위치를 가리킨다.)
-		if (player->get_Info().img.ani->getFramePos().x == 320)
+		if (player->get_Info().img.ani->getFramePos().x >= 320)
 		{
 			// 망토가 계속 펄럭거려야 하기 때문에 루프 애니메이션으로 교체한다.
 			if (player->get_InputKey() == PRESS_LEFT)
@@ -1007,6 +1043,10 @@ void FallState::Fall(Player * player)
 	player->update_Ani_Rect();
 }
 
+void FallState::DownJump(Player * player)
+{
+}
+
 void FallState::Dash(Player * player)
 {
 }
@@ -1022,7 +1062,114 @@ void FallState::update(Player * player)
 
 
 
-// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대쉬 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 아래 점프 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+DownJumpState * DownJumpState::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new DownJumpState();
+	}
+
+	return instance;
+}
+
+void DownJumpState::Idle(Player * player)
+{
+}
+
+void DownJumpState::Move(Player * player)
+{
+}
+
+void DownJumpState::Jump(Player * player)
+{
+	// 점프 수치만큼 캐릭터를 위로 올려주고, 중력만큼 수치를 감소한다.
+	player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+	player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
+
+	// 다시 DownJump함수로 돌아간다.
+	DownJump(player);
+}
+
+void DownJumpState::Fall(Player * player)
+{
+	// 추락 애니메이션 교체
+	if (!player->get_Info().bool_V.fall_Cheack)
+	{
+		if (player->get_InputKey() == PRESS_LEFT)
+		{
+			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+			player->set_Info()->img.ani->start();
+
+		}
+
+		if (player->get_InputKey() == PRESS_RIGHT)
+		{
+			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+			player->set_Info()->img.ani->start();
+
+		}
+
+		player->set_Info()->bool_V.fall_Cheack = true;
+	}
+
+	// 점프 수치만큼 아래로 떨어진다.
+	player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+	player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+
+	// 만약 위에 위치한 발판 렉트를 지나면 추락 상태로 바꿔준다.
+	if (DATAMANAGER->Collision_Player_FootHold())
+	{
+		// 추락 상태로 변경
+		player->set_State(FallState::getInstance());
+		player->get_State()->update(player);
+	}
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
+
+
+	// 연산이 끝나지 않았다면 반복
+	DownJump(player);
+}
+
+void DownJumpState::DownJump(Player * player)
+{
+	// 점프 수치가 남아있다면 점프 연산을 한다.
+	if (player->get_Info().jump.jump_Value > 0)	Jump(player);
+
+	// 아래로 떨어진다.
+	if (player->get_Info().jump.jump_Value <= 0) Fall(player);
+}
+
+void DownJumpState::Dash(Player * player)
+{
+}
+
+void DownJumpState::update(Player * player)
+{
+	DownJump(player);
+
+	KEYANIMANAGER->update();
+}
+
+
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대쉬 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 DashState * DashState::getInstance()
 {
 	if (instance == nullptr)
@@ -1049,6 +1196,10 @@ void DashState::Fall(Player * player)
 {
 }
 
+void DashState::DownJump(Player * player)
+{
+}
+
 void DashState::Dash(Player * player)
 {
 }
@@ -1059,3 +1210,5 @@ void DashState::update(Player * player)
 
 	KEYANIMANAGER->update();
 }
+
+
