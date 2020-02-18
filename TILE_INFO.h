@@ -15,6 +15,8 @@
 #define GROUND_SIZEY 5
 #define GROUND_IMAGE_CONUT 5	 // 땅(지형) 이미지 수량
 
+
+
 // 오브젝트 이미지의 갯수
 
 // 캐릭터 이미지의 갯수

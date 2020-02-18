@@ -19,6 +19,7 @@ using namespace std;
 #include "randomFunction.h"
 #include "keyManager.h"
 #include "utils.h"
+#include "collisionUtil.h"
 #include "imageManager.h"
 #include "timeManager.h"
 #include "effectManager.h"
@@ -28,6 +29,7 @@ using namespace std;
 #include "keyAniManager.h"
 
 using namespace SEVENTEEN_UTIL;
+using namespace COLLISION_UTIL;
 
 //=========================================
 // ## 19.10.30 ## - 디파인문 -

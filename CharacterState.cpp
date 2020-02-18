@@ -5,6 +5,7 @@ IdleState* IdleState::instance;
 MoveState* MoveState::instance;
 JumpState* JumpState::instance;
 FallState* FallState::instance;
+DashState* DashState::instance;
 
 // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대기 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 IdleState * IdleState::getInstance()
@@ -13,45 +14,59 @@ IdleState * IdleState::getInstance()
 	{
 		instance = new IdleState();
 	}
-
+	
 	return instance;
 }
 
 void IdleState::Idle(Player * player)
 {
+	// 플레이어의 아래에 땅 타일이 없다면 추락 상태로 바꿔준다.
+	if (!DATAMANAGER->Collision_PlayerFall_Ground())
+	{
+		Fall(player);  // 추락함수 호출
+	}
+
 	// 멈춰있는 상태에서 왼쪽을 눌렀다면 왼쪽 이동 상태로 바꿔준다.
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 	{
 		// inputKey에 입력한 키를 저장한다.
 		player->set_InputKey(PRESS_LEFT);
-
+	
 		// 캐릭터의 방향을 저장한다.
 		player->set_Info()->status.direction = DIRECTION_LEFT;
+	
+		// 캐릭터 옆에 벽이 없어야 실행
+		if (!DATAMANAGER->Collision_Player_Wall())
+		{
+			// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
+			player->set_Info()->bool_V.walking_Cheack = true;
 
-		// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
-		player->set_Info()->bool_V.walking_Cheack = true;
-
-		// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.)
-		IdleState::Move(player);
-
+			// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.)
+			IdleState::Move(player);
+		}
 	}
-
+	
 	// 멈춰있는 상태에서 오른쪽을 눌렀다면 오른쪽 이동 상태로 바꿔준다.
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 	{
 		// inputKey에 입력한 키를 저장한다.
 		player->set_InputKey(PRESS_RIGHT);
-
+	
 		// 캐릭터의 방향을 저장한다.
 		player->set_Info()->status.direction = DIRECTION_RIGHT;
+	
 
-		// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
-		player->set_Info()->bool_V.walking_Cheack = true;
-			
-		// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.) 
-		IdleState::Move(player);
+		// 캐릭터 옆에 벽이 없어야 실행
+		if (!DATAMANAGER->Collision_Player_Wall())
+		{
+			// 이동키를 계속 누르고 있을때 이 값은 true로 바뀐다.
+			player->set_Info()->bool_V.walking_Cheack = true;
 
+			// 무브 상태로 바꾼다. (Idle 상태에서 Move로 교체했으니, Move 함수를 호출한다.) 
+			IdleState::Move(player);
+		}
 	}
+	
 
 
 	// 멈춰있는 상태에서 점프를 눌렀다면 점프 상태로 바꿔준다.
@@ -148,8 +163,8 @@ void IdleState::Jump(Player * player)
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
-		player->set_Info()->img.ani->start();
+player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+player->set_Info()->img.ani->start();
 	}
 
 	// 상태를 다시 점프 상태로 교체
@@ -158,6 +173,26 @@ void IdleState::Jump(Player * player)
 }
 
 void IdleState::Fall(Player * player)
+{
+	// 캐릭터의 방향에 따라 추락 애니메이션을 넣어주고 추락 상태로 교체해준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	// 추락상태 교체
+	player->set_State(FallState::getInstance());
+	player->get_State()->update(player);
+}
+
+void IdleState::Dash(Player * player)
 {
 }
 
@@ -215,14 +250,33 @@ void MoveState::Idle(Player * player)
 
 	// 상태를 대기로 바꿔준다.
 	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
 }
 
 void MoveState::Move(Player * player)
 {
+	// 플레이어가 바라보는 방향에 벽 타일이 있다면 대기 상태로 바꿔준다.
+	if (DATAMANAGER->Collision_Player_Wall())
+	{
+		//// 이동을 중지시킨다.
+		player->set_Info()->bool_V.walking_Cheack = false;
+		player->set_Info()->bool_V.walk_Cheack = false;
+		player->set_Info()->bool_V.idle_Cheack = false;
+	
+		// 대기 애니메이션으로 교체를 위해 호출
+		Idle(player); // 대기함수 호출
+	}
+
+	// 플레이어의 아래에 땅 타일이 없다면 추락 상태로 바꿔준다.
+	if (!DATAMANAGER->Collision_PlayerFall_Ground())
+	{
+		Fall(player);  // 추락함수 호출
+	}
+
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
 		// 플레이어가 왼쪽으로 이동 (이동중이라면)
-		if(player->get_Info().bool_V.walking_Cheack) player->set_Info()->pos.center.x -= PLAYER_SPEED;
+		if(player->get_Info().bool_V.walking_Cheack)  player->set_Info()->pos.center.x -= PLAYER_SPEED;
 
 		// 플레이어가 점프 키를 입력 한다면 점프 함수를 호출한다.
 		if (KEYMANAGER->isOnceKeyDown('C'))
@@ -232,6 +286,7 @@ void MoveState::Move(Player * player)
 			{
 				// 점프 횟수를 감소 한다.
 				player->set_Info()->jump.Jump_Count--;
+
 
 				// 점프키를 눌렀다면 true로 바꿔준다.
 				player->set_Info()->bool_V.jumping_Cheack = true;
@@ -385,6 +440,26 @@ void MoveState::Jump(Player * player)
 
 void MoveState::Fall(Player * player)
 {
+	// 캐릭터의 방향에 따라 추락 애니메이션을 넣어주고 추락 상태로 교체해준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	// 추락상태 교체
+	player->set_State(FallState::getInstance());
+	player->get_State()->update(player);
+}
+
+void MoveState::Dash(Player * player)
+{
 }
 
 void MoveState::update(Player * player)
@@ -414,6 +489,13 @@ void JumpState::Idle(Player * player)
 
 void JumpState::Move(Player * player)
 {
+	// 캐릭터 옆에 벽이 없어야 실행
+	if (DATAMANAGER->Collision_Player_Wall())
+	{
+		player->set_Info()->bool_V.walking_Cheack = false;
+		Fall(player);
+	}
+
 	// 이동중일 경우 연산
 	if (player->get_Info().bool_V.walking_Cheack)
 	{
@@ -587,6 +669,10 @@ void JumpState::Fall(Player * player)
 	player->get_State()->update(player);
 }
 
+void JumpState::Dash(Player * player)
+{
+}
+
 void JumpState::update(Player * player)
 {
 	Jump(player);
@@ -645,6 +731,13 @@ void FallState::Idle(Player * player)
 
 void FallState::Move(Player * player)
 {
+	// 캐릭터 옆에 벽이 없어야 실행
+	if (DATAMANAGER->Collision_Player_Wall())
+	{
+		player->set_Info()->bool_V.walking_Cheack = false;
+		update(player);
+	}
+
 	// 이동중이라면 인동 연산을 한다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
@@ -657,16 +750,16 @@ void FallState::Move(Player * player)
 	}
 
 	// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
+
 	if (DATAMANAGER->Collision_PlayerFall_Ground())
 	{
-
-		// 카메라 위치 갱신
+		//// 카메라 위치 갱신
 		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
-
+		
 		// 렉트 갱신
 		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
 		player->update_Ani_Rect();
-
+		
 		// 나가기 전에 새 연산을 위해 모두 초기화
 		player->set_Info()->bool_V.idle_Cheack = false;
 		player->set_Info()->bool_V.walk_Cheack = false;
@@ -676,10 +769,10 @@ void FallState::Move(Player * player)
 		player->set_Info()->bool_V.fall_Cheack = false;
 		player->set_Info()->bool_V.falling_Cheack = false;
 		player->set_Info()->jump.jump_Value = 0;
-
+		
 		// 점프 수치 초기화
 		player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
-
+		
 		// Idle 애니메이션 교체를 위해 호출
 		Idle(player);
 	}
@@ -821,12 +914,16 @@ void FallState::Fall(Player * player)
 			// 해당 방향으로 애니메이션 교체
 			player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
 			player->set_Info()->img.ani->start();
+			
+			// 캐릭터 옆에 벽이 없어야 실행
+			if (!DATAMANAGER->Collision_Player_Wall())
+			{
+				// 이동중이라면 true
+				player->set_Info()->bool_V.walking_Cheack = true;
 
-			// 이동중이라면 true
-			player->set_Info()->bool_V.walking_Cheack = true;
-
-			// 이동 + 추락 연산을 위해 Jall함수 다시 호출
-			Fall(player);
+				// 이동 + 추락 연산을 위해 Jall함수 다시 호출
+				Fall(player);
+			}
 		}
 
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
@@ -838,11 +935,15 @@ void FallState::Fall(Player * player)
 			player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
 			player->set_Info()->img.ani->start();
 
-			// 이동중이라면 true
-			player->set_Info()->bool_V.walking_Cheack = true;
+			// 캐릭터 옆에 벽이 없어야 실행
+			if (!DATAMANAGER->Collision_Player_Wall())
+			{
+				// 이동중이라면 true
+				player->set_Info()->bool_V.walking_Cheack = true;
 
-			// 이동 + 추락 연산을 위해 Jall함수 다시 호출
-			Fall(player);
+				// 이동 + 추락 연산을 위해 Jall함수 다시 호출
+				Fall(player);
+			}
 		}
 
 		// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
@@ -906,9 +1007,55 @@ void FallState::Fall(Player * player)
 	player->update_Ani_Rect();
 }
 
+void FallState::Dash(Player * player)
+{
+}
+
 void FallState::update(Player * player)
 {
 	Fall(player);
+
+	KEYANIMANAGER->update();
+}
+
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대쉬 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+DashState * DashState::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new DashState();
+	}
+
+	return instance;
+}
+
+void DashState::Idle(Player * player)
+{
+}
+
+void DashState::Move(Player * player)
+{
+}
+
+void DashState::Jump(Player * player)
+{
+}
+
+void DashState::Fall(Player * player)
+{
+}
+
+void DashState::Dash(Player * player)
+{
+}
+
+void DashState::update(Player * player)
+{
+	Dash(player);
 
 	KEYANIMANAGER->update();
 }

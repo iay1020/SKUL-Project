@@ -1265,6 +1265,7 @@ public:
 							{
 								// 발판 속성을 넣어준다.
 								(*TileList)[i].tile_Collision_Type = COLLISION_TILE_TYPE::FOOTHOLD_TYPE;
+								(*TileList)[i].tile_Type = TILE_TYPE::EMPTY;
 							}
 						}
 						break;
@@ -1276,6 +1277,7 @@ public:
 							{
 								// 벽 속성을 넣어준다.
 								(*TileList)[i].tile_Collision_Type = COLLISION_TILE_TYPE::WALL_TYPE;
+								(*TileList)[i].tile_Type = TILE_TYPE::EMPTY;
 							}
 						}
 						break;
@@ -1287,6 +1289,7 @@ public:
 							{
 								// 함정 속성을 넣어준다.
 								(*TileList)[i].tile_Collision_Type = COLLISION_TILE_TYPE::TRAP_TYPE;
+								(*TileList)[i].tile_Type = TILE_TYPE::EMPTY;
 							}
 						}
 						break;
@@ -1387,19 +1390,25 @@ public:
 					// 발판 타입을 표시해준다.
 					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
 					{
-						IMAGEMANAGER->findImage("footHoldType_Check")->render(getMemDC, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.left, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.top);
+						IMAGEMANAGER->findImage((*_vTileList)[y * mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+							(*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.x, (*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.y);
+						IMAGEMANAGER->findImage("footHoldType_Check")->render(getMemDC, rc.left, rc.top);
 					}
 
 					// 벽 타입을 표시해준다.
 					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
 					{
-						IMAGEMANAGER->findImage("wallType_Check")->render(getMemDC, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.left, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.top);
+						IMAGEMANAGER->findImage((*_vTileList)[y * mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+							(*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.x, (*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.y);
+						IMAGEMANAGER->findImage("wallType_Check")->render(getMemDC, rc.left, rc.top);
 					}
 
 					// 함정 타입을 표시해준다.
 					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::TRAP_TYPE)
 					{
-						IMAGEMANAGER->findImage("trapType_Check")->render(getMemDC, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.left, (*_vTileList)[y * mapInfo.tile_Count.x + x].rc.top);
+						IMAGEMANAGER->findImage((*_vTileList)[y * mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+							(*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.x, (*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.y);
+						IMAGEMANAGER->findImage("trapType_Check")->render(getMemDC, rc.left, rc.top);
 					}
 				}
 			}

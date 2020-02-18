@@ -2,6 +2,7 @@
 #include "gameNode.h"
 #include "sceneChanger.h"
 #include "addImage.h"
+#include "collisionTestScene.h"
 
 #ifdef UNICODE
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
@@ -15,6 +16,8 @@ private:
 	sceneChanger*	_sceneChanger;	// 씬 전환을 담당한다.
 
 	tagAddImage		_addImage;	// 이미지를 추가 한다. (나중에 로딩씬으로 이동 해야한다)
+
+	//collisionTestScene* _cts;
 	
 public:
 	playGround();

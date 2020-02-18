@@ -18,6 +18,9 @@ HRESULT playGround::init()
 	_sceneChanger = new sceneChanger;	// 동적할당	
 	_sceneChanger->init();				// 기본 셋팅 초기화
 
+	//_cts = new collisionTestScene;
+	//_cts->init();
+
 	return S_OK;
 }
 
@@ -33,8 +36,9 @@ void playGround::release()
 void playGround::update()
 {
 	gameNode::update();
-
+	
 	_sceneChanger->update();	// 씬 체인저 업데이트
+	//_cts->update();
 }
 
 void playGround::render()
@@ -43,6 +47,7 @@ void playGround::render()
 	//==========================================================	
 
 	_sceneChanger->render();
+	//_cts->render();
 
 	//===========================================================
 	_backBuffer->render(getHDC(), 0, 0);

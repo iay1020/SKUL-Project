@@ -10,12 +10,13 @@
 class CharacterState
 {
 public:
-	virtual void Idle(Player* player) = 0;
-	virtual void Move(Player* player) = 0;
-	virtual void Jump(Player* player) = 0;
-	virtual void Fall(Player* player) = 0;
+	virtual void Idle(Player* player)	= 0;
+	virtual void Move(Player* player)   = 0;
+	virtual void Jump(Player* player)   = 0;
+	virtual void Fall(Player* player)   = 0;
+	virtual void Dash(Player* player)   = 0;
 	virtual void update(Player* player) = 0;
-
+	
 protected:
 
 protected:
@@ -41,6 +42,7 @@ public:
 	virtual void Move(Player* player);
 	virtual void Jump(Player* player);
 	virtual void Fall(Player* player);
+	virtual void Dash(Player* player);
 	virtual void update(Player* player);
 	
 };
@@ -61,6 +63,7 @@ public:
 	virtual void Move(Player* player);
 	virtual void Jump(Player* player);
 	virtual void Fall(Player* player);
+	virtual void Dash(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -81,6 +84,7 @@ public:
 	virtual void Move(Player* player);
 	virtual void Jump(Player* player);
 	virtual void Fall(Player* player);
+	virtual void Dash(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -101,12 +105,31 @@ public:
 	virtual void Move(Player* player);
 	virtual void Jump(Player* player);
 	virtual void Fall(Player* player);
+	virtual void Dash(Player* player);
 	virtual void update(Player* player);
 
 
 };
 
 
+
+
+
+// 대쉬 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class DashState : public CharacterState
+{
+	static DashState* instance;
+
+public:
+	static DashState* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void Dash(Player* player);
+	virtual void update(Player* player);
+};
 
 
 

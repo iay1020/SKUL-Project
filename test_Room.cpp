@@ -21,6 +21,7 @@ HRESULT test_Room::init()
 
 	DATAMANAGER->create_Skul();				// 스컬 생성
 	_skul = DATAMANAGER->skul_Address();	// 스컬 데이터 연결
+	_skul->update_Pos(4, 26);
 
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
 	// 기본 카메라 위치 설정 (플레이어 중점으로)
@@ -41,7 +42,7 @@ void test_Room::update()
 	DATAMANAGER->update();
 	
 	// 캐릭터 타일 위치
-	//cout << "x : " << (int)(_player->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_player->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
+	//cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
 }
 
 void test_Room::render()

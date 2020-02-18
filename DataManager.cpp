@@ -439,6 +439,34 @@ void DataManager::map_Render_Datamanager(HDC getMemDC)
 
 				}
 			}
+
+			// 충돌 타입이 없다면 제외한다.
+			if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type != COLLISION_TILE_TYPE::NONE_TYPE)
+			{
+				// 발판 타입을 표시해준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
+				{
+					IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+						_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+					
+				}
+
+				// 벽 타입을 표시해준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
+				{
+					IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+						_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+					
+				}
+
+				// 함정 타입을 표시해준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::TRAP_TYPE)
+				{
+					IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+						_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+					
+				}
+			}
 		}
 	}
 }
@@ -512,6 +540,34 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 
 				}
 			}
+
+			// 충돌 타입이 없다면 제외한다.
+			if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type != COLLISION_TILE_TYPE::NONE_TYPE)
+			{
+				// 발판 타입을 표시해준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
+				{
+					IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+						_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+
+				}
+
+				// 벽 타입을 표시해준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
+				{
+					IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+						_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+
+				}
+
+				// 함정 타입을 표시해준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::TRAP_TYPE)
+				{
+					IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+						_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+
+				}
+			}
 		}
 	}
 }
@@ -553,11 +609,18 @@ bool DataManager::Collision_PlayerFall_Ground()
 	player_TilePos_Y = (int)_skul->get_Info().pos.center.y / TILE_SIZE_Y;
 
 	// 플레이어의 아래 타일이 땅이라면
-	if (_tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+	if (_tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND ||
+		_tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
 	{
-		_skul->set_Info()->pos.center.y = _tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].rc.top - TILE_SIZE_Y / 3;
+		
+		// 플레이어의 bottom이 땅 top보다 작을때만
+		if ((_skul->get_Info().pos.rc.bottom + CAMERAMANAGER->Use_Func()->get_CameraXY().y) - 20 < _tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].rc.top)
+		{
+			// 플레이어의 위치 수정
+			 _skul->set_Info()->pos.center.y = _tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].rc.top - TILE_SIZE_Y / 2;
 
-		return true;
+			return true;
+		}
 	}
 
 	// 플레이어가 충돌하지 않았다면 false 반환
@@ -566,7 +629,31 @@ bool DataManager::Collision_PlayerFall_Ground()
 
 bool DataManager::Collision_Player_Wall()
 {
-	// 플레이어가 충돌했다면 true 반환
+	// 캐릭터의 타일 인덱스를 저장할 공간
+	short player_TilePos_X, player_TilePos_Y;
+
+	// 캐릭터가 위치한 타일의 인덱스를 구한다.
+	player_TilePos_X = (int)_skul->get_Info().pos.center.x / TILE_SIZE_X;
+	player_TilePos_Y = (int)_skul->get_Info().pos.center.y / TILE_SIZE_Y;
+
+	// 캐릭터가 바라보는 방향에 따라 다른 연산
+	if (_skul->get_InputKey() == PRESS_LEFT)
+	{
+		// 플레이어가 바라보는 방향에 벽이 있다면
+		if (_tileList[(player_TilePos_X - 1) + player_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		{
+			return true;
+		}
+	}
+
+	if (_skul->get_InputKey() == PRESS_RIGHT)
+	{
+		// 플레이어가 바라보는 방향에 벽이 있다면
+		if (_tileList[(player_TilePos_X + 1) + player_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		{
+			return true;
+		}
+	}
 
 
 	// 플레이어가 충돌하지 않았다면 false 반환

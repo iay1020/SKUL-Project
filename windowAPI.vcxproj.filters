@@ -195,6 +195,12 @@
     <ClInclude Include="test_Room.h">
       <Filter>playGround\_Test_Room</Filter>
     </ClInclude>
+    <ClInclude Include="collisionUtil.h">
+      <Filter>2DGameFramework\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionTestScene.h">
+      <Filter>playGround</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -277,6 +283,12 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>playGround\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="collisionUtil.cpp">
+      <Filter>2DGameFramework\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="collisionTestScene.cpp">
+      <Filter>playGround</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -76,10 +76,13 @@ struct CharacterBool
 	bool				walk_Cheack;		// 캐릭터의 walk 이미지 교체가 있었는지
 	bool				jump_Cheack;		// 캐릭터의 jump 이미지 교체가 있었는지
 	bool				fall_Cheack;		// 캐릭터의 fall 이미지 교체가 있었는지
+	bool				dash_Cheack;		// 캐릭터가 dash 이미지 교체가 있었는지
 
 	bool				walking_Cheack;		// 캐릭터가 이동중인지 체크하는 변수
 	bool				jumping_Cheack;		// 캐릭터가 점프중인지 체크하는 변수
 	bool				falling_Cheack;		// 캐릭터가 추락중인지 체크하는 변수
+	bool				dashing_Cheack;		// 캐릭터가 대쉬중인지 체크하는 변수
+
 };
 
 // 캐릭터의 점프 구조체
@@ -124,10 +127,13 @@ struct CharacterInfo
 		bool_V.walk_Cheack = false;
 		bool_V.jump_Cheack = false;
 		bool_V.fall_Cheack = false;
+		bool_V.dash_Cheack = false;
 
 		bool_V.walking_Cheack = false;
 		bool_V.jumping_Cheack = false;
 		bool_V.falling_Cheack = false;
+		bool_V.dashing_Cheack = false;
+
 
 		// 점프 초기화
 		jump.jump_Value = 0;
@@ -144,6 +150,15 @@ struct CharacterInfo
 
 		// 캐릭터의 중점을 기준으로 매개변수 사이즈 만큼의 렉트를 만든다.
 		pos.rc = RectMakeCenter(pos.center.x, pos.center.y, sizeX, sizeY);
+	}
+
+	// 캐릭터의 렉트 셋팅
+	void set_Rect(float left, float top, float right, float bottom)
+	{
+		pos.rc.left = left;
+		pos.rc.right = right;
+		pos.rc.top = top;
+		pos.rc.bottom = bottom;
 	}
 
 	// 캐릭터의 애니메이션 셋팅 (매개변수 : 이미지 키값, 애니 키값)
