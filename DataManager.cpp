@@ -23,6 +23,7 @@ void DataManager::release()
 void DataManager::update()
 {
 	_skul->update();
+	//_skul->get_Info().dash_CoolTile(&_skul->get_Info().dash.Dash_CoolTime);
 }
 
 void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo)
@@ -724,4 +725,50 @@ bool DataManager::Collision_Player_Trab()
 
 	// 플레이어가 충돌하지 않았다면 false 반환
 	return false;
+}
+
+void DataManager::Lerp_Player()
+{
+	// true일때만 실행
+	if (!_skul->get_Info().bool_V.dashing_Cheack) return;
+
+	// 경과시간
+	float elapsedTime = TIMEMANAGER->getElapsedTime();
+
+	// 스피드 구하기
+	float lerp_Speed = (elapsedTime / PLAYER_DASH_TIME) * PLAYER_DASH_RANGE;
+
+	// 이동
+	if(_skul->get_InputKey() == PRESS_RIGHT) _skul->set_Info()->pos.center.x += cosf(0) * lerp_Speed;
+	if(_skul->get_InputKey() == PRESS_LEFT) _skul->set_Info()->pos.center.x += cosf(3.14) * lerp_Speed;
+
+	// 멈추는 조건
+	if (_skul->get_Info().dash.Dash_StartTime + PLAYER_DASH_TIME <= TIMEMANAGER->getWorldTime())
+	{
+		// 현재 시간으로 초기화
+		_skul->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+
+		// bool 값 끄기
+		_skul->set_Info()->bool_V.dashing_Cheack = false;
+		_skul->set_Info()->bool_V.dash_Cheack = false;
+
+		// Idle 함수 호출
+		_skul->get_State()->Idle(_skul);
+	}
+
+}
+
+void DataManager::Lerp_Enemy()
+{
+	// true일때만 실행 (에너미 전용)
+
+	// 틱 받기
+
+	// 스피드 구하기
+
+	// 이동
+
+	// 멈추는 조건
+
+	// bool 값 끄기
 }

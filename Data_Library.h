@@ -21,24 +21,37 @@ enum CharacterDirection
 };
 
 // 캐릭터 렉트 사이즈
-#define	PLAYER_RECT_SIZE_X	40
-#define PLAYER_RECT_SIZE_Y	40		// (살짝 20정도 bottom이 더 길어야 함)
+#define	PLAYER_RECT_SIZE_X				40
+#define PLAYER_RECT_SIZE_Y				40		// (살짝 20정도 bottom이 더 길어야 함)
 
 // 캐릭터 이동속도
-#define PLAYER_SPEED		5
+#define PLAYER_SPEED					5
 
 // 캐릭터 중력
-#define PLAYER_GRAVITY		0.5f
+#define PLAYER_GRAVITY					0.5f
 
 // 캐릭터 점프 파워
-#define PLAYER_JUMPPOWER    15
-#define PLAYER_DOWNJUMPPOWER 5
+#define PLAYER_JUMPPOWER				15
+#define PLAYER_DOWNJUMPPOWER			5
 
 // 캐릭터 최대 추락 속도
-#define PLAYER_MAX_FALL_SPEED -30.0f
+#define PLAYER_MAX_FALL_SPEED			-30.0f
 
 // 캐릭터 기본 점프 횟수
-#define PLAYER_JUMP_COUNT	1
+#define PLAYER_JUMP_COUNT				1
+
+// 캐릭터 대쉬 기본 횟수
+#define PLAYER_DASH_COUNT				1
+
+// 캐릭터 대쉬 거리
+#define PLAYER_DASH_RANGE				150
+
+// 캐릭터 대쉬 시간
+#define PLAYER_DASH_TIME				0.1f
+
+// 캐릭터 대쉬 쿨타임
+#define PLAYER_DASH_COOLTIME			10
+
 
 
 // 캐릭터 좌표 구조체
@@ -94,6 +107,17 @@ struct CharacterJump
 	float				jump_Value;			// 점프 수치
 };
 
+// 캐릭터의 대쉬 구조체
+struct CharacterDash
+{
+	short				Dash_Count;			// 대쉬 횟수
+	short				Dash_Count_Save;	// 대쉬 횟수 저장 (충전 할때 이용)
+
+	float				Dash_StartTime;		// 대쉬 시작 시간
+
+	short				Dash_CoolTime;		// 대쉬 횟수가 생성되는 쿨타임
+};
+
 // 캐릭터의 정보 구조체
 struct CharacterInfo
 {
@@ -102,6 +126,7 @@ struct CharacterInfo
 	CharacterStatus		status;		// 캐릭터의 스테이터스 정보를 담는다.
 	CharacterBool		bool_V;		// 캐릭터의 bool 정보를 담는다.
 	CharacterJump		jump;		// 캐릭터의 점프 정보를 담는다.
+	CharacterDash		dash;		// 캐릭터의 대쉬 정보를 담는다.
 
 	// 캐릭터의 정보를 담을 변수 초기화
 	void reset()
@@ -135,11 +160,17 @@ struct CharacterInfo
 		bool_V.falling_Cheack = false;
 		bool_V.dashing_Cheack = false;
 
-
 		// 점프 초기화
 		jump.jump_Value = 0;
 		jump.Jump_Count = PLAYER_JUMP_COUNT;
 		jump.Jump_Count_Save = 0;
+
+		// 대쉬 초기화
+		dash.Dash_StartTime = 0;
+		dash.Dash_Count = PLAYER_DASH_COUNT;
+		dash.Dash_Count_Save = 0;
+		dash.Dash_CoolTime = 0;
+
 	}
 
 	// 캐릭터 좌표 셋팅 (매개변수 : 중점x, 중점y, 렉트사이즈x, 렉트사이즈y)
@@ -177,7 +208,7 @@ struct CharacterInfo
 	}
 
 	// 캐릭터의 스테이터스 셋팅 (매개변수 : 이름, HP, ATK, DEF, 방향, 점프 횟수 추가)
-	void set_Status(string name, short hp, short atk, short def, CharacterDirection direction, short jumpCnt = 0)
+	void set_Status(string name, short hp, short atk, short def, CharacterDirection direction, short jumpCnt = 0, short dashCnt = 0)
 	{
 		status.Name = name;
 		status.HP = hp;
@@ -187,6 +218,9 @@ struct CharacterInfo
 
 		jump.Jump_Count += jumpCnt;					// 특정 클래스는 점프가 2번
 		jump.Jump_Count_Save = jump.Jump_Count;		// 점프 카운트를 저장한다. 충전할때 이 값을 이용하여 충전
+
+		dash.Dash_Count += dashCnt;					// 특정 클래스는 대쉬가 2번 
+		dash.Dash_Count_Save = dash.Dash_Count;		// 대쉬 카운트를 저장한다. 충전할때 이 값을 이용하여 충전
 	}
 
 	// 캐릭터의 렉트를 갱신한다. (매개변수 : 렉트 사이즈x, 렉트 사이즈y)
@@ -212,5 +246,26 @@ struct CharacterInfo
 		img.img_Rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 	}
 
+	// 대쉬 쿨타임을 돌려준다.
+	void dash_CoolTile(short* CoolTime)
+	{
+		// 대쉬 횟수가 맥스 대쉬 횟수보다 낮아지면
+		if (dash.Dash_Count < dash.Dash_Count_Save)
+		{
+			// 쿨타임을 돌려준다.
+			*CoolTime++;
+
+			// 쿨타임과 같거나 크다면
+			if (*CoolTime > PLAYER_DASH_COOLTIME)
+			{
+				// 맥스 대쉬보다 횟수가 낮으면 하나 채워준다.
+				dash.Dash_Count++;
+
+				// 쿨타임 변수 초기화
+				dash.Dash_CoolTime = 0;
+
+			}
+		}
+	}
 };
 

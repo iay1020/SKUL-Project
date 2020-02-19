@@ -118,7 +118,26 @@ void IdleState::Idle(Player * player)
 	// 멈춰있는 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 	{
+		// 대쉬 애니메이션으로 교체
 
+		// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+		if (player->get_Info().dash.Dash_Count > 0)
+		{
+			// 대쉬 횟수 감소
+			player->set_Info()->dash.Dash_Count--;
+
+			// 대쉬 시작 시간 저장
+			player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+
+			// 대쉬중이라면 true로 바꾼다.
+			player->set_Info()->bool_V.dashing_Cheack = true;
+
+			// 대쉬 애니메이션 교체를 해야 하니까 false로
+			player->set_Info()->bool_V.dash_Cheack = false;
+
+			// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+			Dash(player);
+		}
 	}
 
 	// 카메라 위치 갱신
@@ -163,8 +182,8 @@ void IdleState::Move(Player * player)
 		}
 
 		// 상태를 무브로 바꿔준다.
-		player->set_State(MoveState::getInstance());
-		player->get_State()->update(player);
+		player->set_State(MoveState::getInstance());                
+		player->get_State()->update(player); 
 	}
 }
 
@@ -232,6 +251,22 @@ void IdleState::DownJump(Player * player)
 
 void IdleState::Dash(Player * player)
 {
+	// 방향에 맞는 대쉬 애니메이션으로 교체해준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+		player->set_Info()->img.ani->start();
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+		player->set_Info()->img.ani->start();
+	}
+
+	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
+	player->set_State(DashState::getInstance());
+	player->get_State()->update(player);
 }
 
 void IdleState::update(Player * player)
@@ -1087,15 +1122,7 @@ void DownJumpState::Jump(Player * player)
 	player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
 	player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
 
-	// 카메라 위치 갱신
-	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
-
-	// 렉트 갱신
-	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
-	player->update_Ani_Rect();
-
-	// 다시 DownJump함수로 돌아간다.
-	DownJump(player);
+	cout << player->get_Info().pos.center.y << endl;
 }
 
 void DownJumpState::Fall(Player * player)
@@ -1131,17 +1158,6 @@ void DownJumpState::Fall(Player * player)
 		player->set_State(FallState::getInstance());
 		player->get_State()->update(player);
 	}
-
-	// 카메라 위치 갱신
-	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
-
-	// 렉트 갱신
-	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
-	player->update_Ani_Rect();
-
-
-	// 연산이 끝나지 않았다면 반복
-	DownJump(player);
 }
 
 void DownJumpState::DownJump(Player * player)
@@ -1151,6 +1167,13 @@ void DownJumpState::DownJump(Player * player)
 
 	// 아래로 떨어진다.
 	if (player->get_Info().jump.jump_Value <= 0) Fall(player);
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
 }
 
 void DownJumpState::Dash(Player * player)
@@ -1182,6 +1205,21 @@ DashState * DashState::getInstance()
 
 void DashState::Idle(Player * player)
 {
+	// 대기 애니메이션으로 교체 후 대기 상태로 이동
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
 }
 
 void DashState::Move(Player * player)
@@ -1202,6 +1240,22 @@ void DashState::DownJump(Player * player)
 
 void DashState::Dash(Player * player)
 {
+	DATAMANAGER->Lerp_Player();
+
+	// 대쉬 상태에서 점프 가능 (대쉬 이동 거리만큼만 이동한다 (점프 + 대쉬)
+
+	// 대쉬 상태에서 공격 가능 (대쉬 이동 거리만큼 이동한다. (점프 + 공격)
+
+	// 대쉬 상태에서 대쉬 가능 (대쉬 수치만큼 그 자리에서 다시 재시작)
+
+	// 
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
 }
 
 void DashState::update(Player * player)
