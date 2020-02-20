@@ -29,9 +29,19 @@ void DataManager::update()
 	_skul->update();
 
 	// 테스트용 캐릭터 클래스 체인지
-	if (KEYMANAGER->isOnceKeyDown('P'))
+	if (KEYMANAGER->isOnceKeyDown('I'))
+	{
+		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_NOWEAPON;
+	}
+
+	if (KEYMANAGER->isOnceKeyDown('O'))
 	{
 		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+	}
+
+	if (KEYMANAGER->isOnceKeyDown('P'))
+	{
+		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
 	}
 
 }

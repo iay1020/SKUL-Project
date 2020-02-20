@@ -224,11 +224,24 @@ struct tagAddImage
 			int fall_L_NoWeapon[] = { 5, 6, 7, 8, 9 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Left_NoWeapon", "skul_Fall", fall_L_NoWeapon, 5, 10, false);
 
+			int fall_R_NoHead[] = { 0, 1, 2, 3, 4 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Right_NoHead", "skul_Fall_NoHead", fall_R_NoHead, 5, 10, false);
+
+			int fall_L_NoHead[] = { 5, 6, 7, 8, 9 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Left_NoHead", "skul_Fall_NoHead", fall_L_NoHead, 5, 10, false);
+
 			int falling_R_NoWeapon[] = { 0, 1, 2 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Right_NoWeapon", "skul_Falling", falling_R_NoWeapon, 3, 10, true);
 
 			int falling_L_NoWeapon[] = { 3, 4, 5 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Left_NoWeapon", "skul_Falling", falling_L_NoWeapon, 3, 10, true);
+
+			int falling_R_NoHead[] = { 0, 1, 2 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Right_NoHead", "skul_Falling_NoHead", falling_R_NoHead, 3, 10, true);
+
+			int falling_L_NoHead[] = { 3, 4, 5 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Left_NoHead", "skul_Falling_NoHead", falling_L_NoHead, 3, 10, true);
+
 		}
 
 		// <Dash>
