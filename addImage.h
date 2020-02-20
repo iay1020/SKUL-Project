@@ -190,6 +190,13 @@ struct tagAddImage
 			// jump Left NoWeapon Ani
 			int jump_L_NoWeapon[] = { 3, 2 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_NoWeapon", "skul_Jump", jump_L_NoWeapon, 2, 10, false);
+
+			// jump Right NoHead Ani
+			int jump_R_NoHead[] = { 0, 1 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Right_NoHead", "skul_Jump_NoHead", jump_R_NoHead, 2, 10, false);
+			// jump Left NoHead Ani
+			int jump_L_NoHead[] = { 3, 2 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_NoHead", "skul_Jump_NoHead", jump_L_NoHead, 2, 10, false);
 		}
 
 		// <Jump Attack>

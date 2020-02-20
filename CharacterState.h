@@ -30,6 +30,7 @@ protected:
 	{
 		player->set_State(state);
 	}
+
 };
 
 

@@ -118,6 +118,10 @@ void IdleState::Idle(Player * player)
 
 	}
 
+
+	// 멈춰있는 상태에서 공격키를 누른다면 공격 상태로 바꿔준다.
+
+
 	// 멈춰있는 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 	{
@@ -157,7 +161,18 @@ void IdleState::Move(Player * player)
 		if (!player->get_Info().bool_V.walk_Cheack)
 		{
 			// 애니메이션 교체
-			player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
+			if(player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
+				player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
+
+			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+				player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Left_HaveWeapon");
+
+			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+				player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Left_HaveWeapon_NoHead");
+
+			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+			//	player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
+
 			player->set_Info()->img.ani->start();
 
 			// 애니메이션 교체 후 true (1번만 바꾸기 위해)
@@ -174,9 +189,19 @@ void IdleState::Move(Player * player)
 		// false라면 walk 애니메이션으로 바꿔준다.
 		if (!player->get_Info().bool_V.walk_Cheack)
 		{
+
 			// 애니메이션 교체
-			player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Right_NoWeapon");
+			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
+				player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Right_NoWeapon");
+
+			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+				player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Right_HaveWeapon");
+
+			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+				player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Right_HaveWeapon_NoHead");
+
 			player->set_Info()->img.ani->start();
+
 
 			// 애니메이션 교체 후 true (1번만 바꾸기 위해)
 			player->set_Info()->bool_V.walk_Cheack = true;
@@ -193,13 +218,28 @@ void IdleState::Jump(Player * player)
 	// 방향이 바뀌었다면 이미지를 교체해준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+		// 애니메이션 교체
+		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON || 
+			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+
+		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
+
 		player->set_Info()->img.ani->start();
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		// 애니메이션 교체
+		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
+			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+
+		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Right_Left_NoHead");
+
+
 		player->set_Info()->img.ani->start();
 	}
 
@@ -213,6 +253,8 @@ void IdleState::Fall(Player * player)
 	// 캐릭터의 방향에 따라 추락 애니메이션을 넣어주고 추락 상태로 교체해준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
+		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
+			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
 		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
 		player->set_Info()->img.ani->start();
 	}

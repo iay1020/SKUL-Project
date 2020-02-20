@@ -243,6 +243,7 @@ struct CharacterInfo
 		img.img_Rc = RectMakeCenter(pos.center.x, pos.center.y, img.ani->getFrameWidth(), img.ani->getFrameHeight());
 	}
 
+
 	// 캐릭터의 스테이터스 셋팅 (매개변수 : 이름, HP, ATK, DEF, 방향, 점프 횟수 추가)
 	void set_Status(string name, short hp, short atk, short def, CharacterDirection direction, short jumpCnt = 0, short dashCnt = 0)
 	{

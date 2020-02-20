@@ -22,8 +22,17 @@ void DataManager::release()
 
 void DataManager::update()
 {
+	// 스컬 대쉬 쿨타임 함수
 	_skul->set_Info()->dash_CoolTime();
+
+	// 스컬 상태 업데이트
 	_skul->update();
+
+	// 테스트용 캐릭터 클래스 체인지
+	if (KEYMANAGER->isOnceKeyDown('P'))
+	{
+		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+	}
 
 }
 
