@@ -22,8 +22,9 @@ void DataManager::release()
 
 void DataManager::update()
 {
+	_skul->set_Info()->dash_CoolTime();
 	_skul->update();
-	//_skul->get_Info().dash_CoolTile(&_skul->get_Info().dash.Dash_CoolTime);
+
 }
 
 void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo)
@@ -644,7 +645,7 @@ bool DataManager::Collision_Player_Wall()
 		if (_tileList[(player_TilePos_X - 1) + player_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
 		{
 			// 플레이어의 Left가 벽의 Right보다 작으면
-			if ((_skul->get_Info().pos.rc.left + CAMERAMANAGER->Use_Func()->get_CameraXY().x) < _tileList[(player_TilePos_X - 1) + player_TilePos_Y * _mapInfo.tile_Count.x].rc.right)
+			if ((_skul->get_Info().pos.rc.left + CAMERAMANAGER->Use_Func()->get_CameraXY().x) - 5 < _tileList[(player_TilePos_X - 1) + player_TilePos_Y * _mapInfo.tile_Count.x].rc.right)
 			{
 
 				return true;
@@ -658,7 +659,7 @@ bool DataManager::Collision_Player_Wall()
 		if (_tileList[(player_TilePos_X + 1) + player_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
 		{
 			// 플레이어의 Right가 벽의 Left보다 크면
-			if ((_skul->get_Info().pos.rc.right + CAMERAMANAGER->Use_Func()->get_CameraXY().x) > _tileList[(player_TilePos_X + 1) + player_TilePos_Y * _mapInfo.tile_Count.x].rc.left)
+			if ((_skul->get_Info().pos.rc.right + CAMERAMANAGER->Use_Func()->get_CameraXY().x) + 5 > _tileList[(player_TilePos_X + 1) + player_TilePos_Y * _mapInfo.tile_Count.x].rc.left)
 			{
 
 				return true;
@@ -729,31 +730,41 @@ bool DataManager::Collision_Player_Trab()
 
 void DataManager::Lerp_Player()
 {
-	// true일때만 실행
-	if (!_skul->get_Info().bool_V.dashing_Cheack) return;
-
 	// 경과시간
 	float elapsedTime = TIMEMANAGER->getElapsedTime();
 
 	// 스피드 구하기
 	float lerp_Speed = (elapsedTime / PLAYER_DASH_TIME) * PLAYER_DASH_RANGE;
 
-	// 이동
-	if(_skul->get_InputKey() == PRESS_RIGHT) _skul->set_Info()->pos.center.x += cosf(0) * lerp_Speed;
-	if(_skul->get_InputKey() == PRESS_LEFT) _skul->set_Info()->pos.center.x += cosf(3.14) * lerp_Speed;
+	// 이동 (벽이 없을때만 이동 연산을 한다.)
+	if (!DATAMANAGER->Collision_Player_Wall())
+	{
+		if (_skul->get_InputKey() == PRESS_RIGHT) _skul->set_Info()->pos.center.x += cosf(0) * lerp_Speed;
+		if (_skul->get_InputKey() == PRESS_LEFT) _skul->set_Info()->pos.center.x += cosf(3.14) * lerp_Speed;
+
+		// 카메라 위치 갱신
+		CAMERAMANAGER->Use_Func()->set_CameraXY(_skul->get_Info().pos.center.x, _skul->get_Info().pos.center.y, true);
+
+		// 렉트 갱신
+		_skul->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+		_skul->update_Ani_Rect();
+	
+	}
 
 	// 멈추는 조건
-	if (_skul->get_Info().dash.Dash_StartTime + PLAYER_DASH_TIME <= TIMEMANAGER->getWorldTime())
+	if (_skul->get_Info().dash.Dash_StartTime + PLAYER_DASH_TIME < TIMEMANAGER->getWorldTime())
 	{
 		// 현재 시간으로 초기화
 		_skul->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
 
 		// bool 값 끄기
 		_skul->set_Info()->bool_V.dashing_Cheack = false;
-		_skul->set_Info()->bool_V.dash_Cheack = false;
 
-		// Idle 함수 호출
-		_skul->get_State()->Idle(_skul);
+		_skul->set_Info()->bool_V.walk_Cheack = false;
+		_skul->set_Info()->bool_V.jumping_Cheack = false;
+		_skul->set_Info()->bool_V.jump_Cheack = false;
+		_skul->set_Info()->bool_V.falling_Cheack = false;
+		_skul->set_Info()->bool_V.fall_Cheack = false;
 	}
 
 }

@@ -7,6 +7,11 @@ JumpState* JumpState::instance;
 FallState* FallState::instance;
 DownJumpState* DownJumpState::instance;
 DashState* DashState::instance;
+Attack_A_State* Attack_A_State::instance;
+Attack_B_State* Attack_B_State::instance;
+Attack_C_State* Attack_C_State::instance;
+Skill_A_State* Skill_A_State::instance;
+Skill_B_State* Skill_B_State::instance;
 
 // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대기 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 IdleState * IdleState::getInstance()
@@ -113,30 +118,26 @@ void IdleState::Idle(Player * player)
 
 	}
 
-
-
 	// 멈춰있는 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 	{
-		// 대쉬 애니메이션으로 교체
-
 		// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
 		if (player->get_Info().dash.Dash_Count > 0)
 		{
 			// 대쉬 횟수 감소
 			player->set_Info()->dash.Dash_Count--;
-
+	
 			// 대쉬 시작 시간 저장
 			player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
-
+	
 			// 대쉬중이라면 true로 바꾼다.
 			player->set_Info()->bool_V.dashing_Cheack = true;
-
+	
 			// 대쉬 애니메이션 교체를 해야 하니까 false로
 			player->set_Info()->bool_V.dash_Cheack = false;
-
+	
 			// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-			Dash(player);
+			IdleState::Dash(player);
 		}
 	}
 
@@ -198,8 +199,8 @@ void IdleState::Jump(Player * player)
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
-player->set_Info()->img.ani->start();
+		player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		player->set_Info()->img.ani->start();
 	}
 
 	// 상태를 다시 점프 상태로 교체
@@ -254,19 +255,49 @@ void IdleState::Dash(Player * player)
 	// 방향에 맞는 대쉬 애니메이션으로 교체해준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
-		player->set_Info()->img.ani->start();
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
-		player->set_Info()->img.ani->start();
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
 	}
 
 	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
 	player->set_State(DashState::getInstance());
 	player->get_State()->update(player);
+}
+
+void IdleState::Attack_A(Player * player)
+{
+}
+
+void IdleState::Attack_B(Player * player)
+{
+}
+
+void IdleState::Attack_C(Player * player)
+{
+}
+
+void IdleState::Skill_A(Player * player)
+{
+}
+
+void IdleState::Skill_B(Player * player)
+{
 }
 
 void IdleState::update(Player * player)
@@ -372,6 +403,29 @@ void MoveState::Move(Player * player)
 			// 대기 이미지로 바꾸기 위해 Idle함수 호출
 			MoveState::Idle(player);
 		}
+
+		// 이동 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+			if (player->get_Info().dash.Dash_Count > 0)
+			{
+				// 대쉬 횟수 감소
+				player->set_Info()->dash.Dash_Count--;
+		
+				// 대쉬 시작 시간 저장
+				player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+		
+				// 대쉬중이라면 true로 바꾼다.
+				player->set_Info()->bool_V.dashing_Cheack = true;
+		
+				// 대쉬 애니메이션 교체를 해야 하니까 false로
+				player->set_Info()->bool_V.dash_Cheack = false;
+		
+				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+				Dash(player);
+			}
+		}
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
@@ -410,6 +464,30 @@ void MoveState::Move(Player * player)
 
 			// 대기 이미지로 바꾸기 위해 Idle함수 호출
 			MoveState::Idle(player);
+		}
+
+		// 이동 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			cout << "이동 상태에서 대쉬" << endl;
+			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+			if (player->get_Info().dash.Dash_Count > 0)
+			{
+				// 대쉬 횟수 감소
+				player->set_Info()->dash.Dash_Count--;
+		
+				// 대쉬 시작 시간 저장
+				player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+		
+				// 대쉬중이라면 true로 바꾼다.
+				player->set_Info()->bool_V.dashing_Cheack = true;
+		
+				// 대쉬 애니메이션 교체를 해야 하니까 false로
+				player->set_Info()->bool_V.dash_Cheack = false;
+		
+				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+				Dash(player);
+			}
 		}
 	}
 
@@ -533,6 +611,53 @@ void MoveState::DownJump(Player * player)
 
 void MoveState::Dash(Player * player)
 {
+	// 방향에 맞는 대쉬 애니메이션으로 교체해준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
+	}
+
+	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
+	player->set_State(DashState::getInstance());
+	player->get_State()->update(player);
+
+}
+
+void MoveState::Attack_A(Player * player)
+{
+}
+
+void MoveState::Attack_B(Player * player)
+{
+}
+
+void MoveState::Attack_C(Player * player)
+{
+}
+
+void MoveState::Skill_A(Player * player)
+{
+}
+
+void MoveState::Skill_B(Player * player)
+{
 }
 
 void MoveState::update(Player * player)
@@ -630,6 +755,30 @@ void JumpState::Move(Player * player)
 				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
 			}
 		}
+
+		// 점프 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			cout << "점프 상태 대쉬" << endl;
+			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+			if (player->get_Info().dash.Dash_Count > 0)
+			{
+				// 대쉬 횟수 감소
+				player->set_Info()->dash.Dash_Count--;
+		
+				// 대쉬 시작 시간 저장
+				player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+		
+				// 대쉬중이라면 true로 바꾼다.
+				player->set_Info()->bool_V.dashing_Cheack = true;
+		
+				// 대쉬 애니메이션 교체를 해야 하니까 false로
+				player->set_Info()->bool_V.dash_Cheack = false;
+		
+				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+				Dash(player);
+			}
+		}
 	}
 }
 
@@ -682,7 +831,31 @@ void JumpState::Jump(Player * player)
 				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
 			}
 		}
-	
+
+		// 점프 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			cout << "점프 상태 대쉬" << endl;
+			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+			if (player->get_Info().dash.Dash_Count > 0)
+			{
+				// 대쉬 횟수 감소
+				player->set_Info()->dash.Dash_Count--;
+		
+				// 대쉬 시작 시간 저장
+				player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+		
+				// 대쉬중이라면 true로 바꾼다.
+				player->set_Info()->bool_V.dashing_Cheack = true;
+		
+				// 대쉬 애니메이션 교체를 해야 하니까 false로
+				player->set_Info()->bool_V.dash_Cheack = false;
+		
+				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+				Dash(player);
+			}
+		}
+
 		// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
 		if (player->get_Info().jump.jump_Value > 0)
 		{
@@ -743,6 +916,52 @@ void JumpState::DownJump(Player * player)
 }
 
 void JumpState::Dash(Player * player)
+{
+	// 방향에 맞는 대쉬 애니메이션으로 교체해준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
+	}
+
+	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
+	player->set_State(DashState::getInstance());
+	player->get_State()->update(player);
+}
+
+void JumpState::Attack_A(Player * player)
+{
+}
+
+void JumpState::Attack_B(Player * player)
+{
+}
+
+void JumpState::Attack_C(Player * player)
+{
+}
+
+void JumpState::Skill_A(Player * player)
+{
+}
+
+void JumpState::Skill_B(Player * player)
 {
 }
 
@@ -807,7 +1026,6 @@ void FallState::Move(Player * player)
 	// 캐릭터 옆에 벽이 없어야 실행
 	if (!DATAMANAGER->Collision_Player_Wall())
 	{
-
 		// 이동중이라면 인동 연산을 한다.
 		if (player->get_InputKey() == PRESS_LEFT)
 		{
@@ -839,6 +1057,8 @@ void FallState::Move(Player * player)
 		player->set_Info()->bool_V.jumping_Cheack = false;
 		player->set_Info()->bool_V.fall_Cheack = false;
 		player->set_Info()->bool_V.falling_Cheack = false;
+		player->set_Info()->bool_V.dash_Cheack = false;
+		player->set_Info()->bool_V.dashing_Cheack = false;
 		player->set_Info()->jump.jump_Value = 0;
 		
 		// 점프 수치 초기화
@@ -895,6 +1115,33 @@ void FallState::Move(Player * player)
 			Jump(player);
 		}
 	}
+
+	// 추락 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			cout << "추락 상태 대쉬" << endl;
+			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+			if (player->get_Info().dash.Dash_Count > 0)
+			{
+				// 추락 상태에서 대쉬를 사용하면 추락 수치가 감소한다.
+				player->set_Info()->jump.jump_Value = 0;
+	
+				// 대쉬 횟수 감소
+				player->set_Info()->dash.Dash_Count--;
+	
+				// 대쉬 시작 시간 저장
+				player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+	
+				// 대쉬중이라면 true로 바꾼다.
+				player->set_Info()->bool_V.dashing_Cheack = true;
+	
+				// 대쉬 애니메이션 교체를 해야 하니까 false로
+				player->set_Info()->bool_V.dash_Cheack = false;
+	
+				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+				Dash(player);
+			}
+		}
 
 	// 카메라 위치 갱신
 	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
@@ -1030,6 +1277,33 @@ void FallState::Fall(Player * player)
 				Jump(player);
 			}
 		}
+
+		// 추락 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('Z'))
+		{
+			cout << "추락 상태 대쉬" << endl;
+			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+			if (player->get_Info().dash.Dash_Count > 0)
+			{
+				// 추락 상태에서 대쉬를 사용하면 추락 수치가 감소한다.
+				player->set_Info()->jump.jump_Value = 0;
+		
+				// 대쉬 횟수 감소
+				player->set_Info()->dash.Dash_Count--;
+		
+				// 대쉬 시작 시간 저장
+				player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+		
+				// 대쉬중이라면 true로 바꾼다.
+				player->set_Info()->bool_V.dashing_Cheack = true;
+		
+				// 대쉬 애니메이션 교체를 해야 하니까 false로
+				player->set_Info()->bool_V.dash_Cheack = false;
+		
+				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+				Dash(player);
+			}
+		}
 		
 		// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
 		if (DATAMANAGER->Collision_PlayerFall_Ground())
@@ -1050,6 +1324,8 @@ void FallState::Fall(Player * player)
 			player->set_Info()->bool_V.jumping_Cheack = false;
 			player->set_Info()->bool_V.fall_Cheack = false;
 			player->set_Info()->bool_V.falling_Cheack = false;
+			player->set_Info()->bool_V.dash_Cheack = false;
+			player->set_Info()->bool_V.dashing_Cheack = false;
 			player->set_Info()->jump.jump_Value = 0;
 
 			// 점프 수치 초기화
@@ -1083,6 +1359,52 @@ void FallState::DownJump(Player * player)
 }
 
 void FallState::Dash(Player * player)
+{
+	// 방향에 맞는 대쉬 애니메이션으로 교체해준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		if (!player->get_Info().bool_V.dash_Cheack)
+		{
+			player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->img.ani->start();
+
+			player->set_Info()->bool_V.dash_Cheack = true;
+		}
+	}
+
+	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
+	player->set_State(DashState::getInstance());
+	player->get_State()->update(player);
+}
+
+void FallState::Attack_A(Player * player)
+{
+}
+
+void FallState::Attack_B(Player * player)
+{
+}
+
+void FallState::Attack_C(Player * player)
+{
+}
+
+void FallState::Skill_A(Player * player)
+{
+}
+
+void FallState::Skill_B(Player * player)
 {
 }
 
@@ -1122,7 +1444,6 @@ void DownJumpState::Jump(Player * player)
 	player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
 	player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
 
-	cout << player->get_Info().pos.center.y << endl;
 }
 
 void DownJumpState::Fall(Player * player)
@@ -1180,6 +1501,26 @@ void DownJumpState::Dash(Player * player)
 {
 }
 
+void DownJumpState::Attack_A(Player * player)
+{
+}
+
+void DownJumpState::Attack_B(Player * player)
+{
+}
+
+void DownJumpState::Attack_C(Player * player)
+{
+}
+
+void DownJumpState::Skill_A(Player * player)
+{
+}
+
+void DownJumpState::Skill_B(Player * player)
+{
+}
+
 void DownJumpState::update(Player * player)
 {
 	DownJump(player);
@@ -1219,7 +1560,7 @@ void DashState::Idle(Player * player)
 	}
 
 	player->set_State(IdleState::getInstance());
-	player->get_State()->update(player);
+	player->get_State()->Idle(player);
 }
 
 void DashState::Move(Player * player)
@@ -1232,6 +1573,22 @@ void DashState::Jump(Player * player)
 
 void DashState::Fall(Player * player)
 {
+	// 방향에 맞는 추락 이미지를 넣어준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+		player->set_Info()->img.ani->start();
+	}
+
+	// 추락 상태로 이동한다.
+	player->set_State(FallState::getInstance());
+	player->get_State()->update(player);
 }
 
 void DashState::DownJump(Player * player)
@@ -1240,29 +1597,375 @@ void DashState::DownJump(Player * player)
 
 void DashState::Dash(Player * player)
 {
-	DATAMANAGER->Lerp_Player();
+	// 대쉬중일때만 실행
+	if (player->get_Info().bool_V.dashing_Cheack) DATAMANAGER->Lerp_Player();
 
-	// 대쉬 상태에서 점프 가능 (대쉬 이동 거리만큼만 이동한다 (점프 + 대쉬)
+	// 대쉬중이 아닐때
+	if (!player->get_Info().bool_V.dashing_Cheack)
+	{
+		// 아래 땅이 없다면 추락 함수 호출
+		if (!DATAMANAGER->Collision_PlayerFall_Ground())
+		{
+			Fall(player);
+		}
+		
+		// 아래 땅이 있다면 대기 함수 호출
+		if (DATAMANAGER->Collision_PlayerFall_Ground())
+		{
+			player->set_Info()->bool_V.idle_Cheack = false;
+		
+			// 점프 수치 초기화
+			player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
+			player->set_Info()->jump.jump_Value = 0;
+			
+			Idle(player);
+		}
+	}
+	
+}
 
-	// 대쉬 상태에서 공격 가능 (대쉬 이동 거리만큼 이동한다. (점프 + 공격)
+void DashState::Attack_A(Player * player)
+{
+}
 
-	// 대쉬 상태에서 대쉬 가능 (대쉬 수치만큼 그 자리에서 다시 재시작)
+void DashState::Attack_B(Player * player)
+{
+}
 
-	// 
+void DashState::Attack_C(Player * player)
+{
+}
 
-	// 카메라 위치 갱신
-	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+void DashState::Skill_A(Player * player)
+{
+}
 
-	// 렉트 갱신
-	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
-	player->update_Ani_Rect();
+void DashState::Skill_B(Player * player)
+{
 }
 
 void DashState::update(Player * player)
 {
-	Dash(player);
+	DashState::Dash(player);
 
 	KEYANIMANAGER->update();
 }
 
 
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 기본공격 A! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+Attack_A_State * Attack_A_State::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new Attack_A_State();
+	}
+
+	return instance;
+}
+
+void Attack_A_State::Idle(Player * player)
+{
+}
+
+void Attack_A_State::Move(Player * player)
+{
+}
+
+void Attack_A_State::Jump(Player * player)
+{
+}
+
+void Attack_A_State::Fall(Player * player)
+{
+}
+
+void Attack_A_State::DownJump(Player * player)
+{
+}
+
+void Attack_A_State::Dash(Player * player)
+{
+}
+
+void Attack_A_State::Attack_A(Player * player)
+{
+}
+
+void Attack_A_State::Attack_B(Player * player)
+{
+}
+
+void Attack_A_State::Attack_C(Player * player)
+{
+}
+
+void Attack_A_State::Skill_A(Player * player)
+{
+}
+
+void Attack_A_State::Skill_B(Player * player)
+{
+}
+
+void Attack_A_State::update(Player * player)
+{
+}
+
+
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 기본공격 B! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+Attack_B_State * Attack_B_State::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new Attack_B_State();
+	}
+
+	return instance;
+}
+
+void Attack_B_State::Idle(Player * player)
+{
+}
+
+void Attack_B_State::Move(Player * player)
+{
+}
+
+void Attack_B_State::Jump(Player * player)
+{
+}
+
+void Attack_B_State::Fall(Player * player)
+{
+}
+
+void Attack_B_State::DownJump(Player * player)
+{
+}
+
+void Attack_B_State::Dash(Player * player)
+{
+}
+
+void Attack_B_State::Attack_A(Player * player)
+{
+}
+
+void Attack_B_State::Attack_B(Player * player)
+{
+}
+
+void Attack_B_State::Attack_C(Player * player)
+{
+}
+
+void Attack_B_State::Skill_A(Player * player)
+{
+}
+
+void Attack_B_State::Skill_B(Player * player)
+{
+}
+
+void Attack_B_State::update(Player * player)
+{
+}
+
+
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 기본공격 C! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+Attack_C_State * Attack_C_State::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new Attack_C_State();
+	}
+
+	return instance;
+}
+
+void Attack_C_State::Idle(Player * player)
+{
+}
+
+void Attack_C_State::Move(Player * player)
+{
+}
+
+void Attack_C_State::Jump(Player * player)
+{
+}
+
+void Attack_C_State::Fall(Player * player)
+{
+}
+
+void Attack_C_State::DownJump(Player * player)
+{
+}
+
+void Attack_C_State::Dash(Player * player)
+{
+}
+
+void Attack_C_State::Attack_A(Player * player)
+{
+}
+
+void Attack_C_State::Attack_B(Player * player)
+{
+}
+
+void Attack_C_State::Attack_C(Player * player)
+{
+}
+
+void Attack_C_State::Skill_A(Player * player)
+{
+}
+
+void Attack_C_State::Skill_B(Player * player)
+{
+}
+
+void Attack_C_State::update(Player * player)
+{
+}
+
+
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 스킬 A! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+Skill_A_State * Skill_A_State::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new Skill_A_State();
+	}
+
+	return instance;
+}
+
+void Skill_A_State::Idle(Player * player)
+{
+}
+
+void Skill_A_State::Move(Player * player)
+{
+}
+
+void Skill_A_State::Jump(Player * player)
+{
+}
+
+void Skill_A_State::Fall(Player * player)
+{
+}
+
+void Skill_A_State::DownJump(Player * player)
+{
+}
+
+void Skill_A_State::Dash(Player * player)
+{
+}
+
+void Skill_A_State::Attack_A(Player * player)
+{
+}
+
+void Skill_A_State::Attack_B(Player * player)
+{
+}
+
+void Skill_A_State::Attack_C(Player * player)
+{
+}
+
+void Skill_A_State::Skill_A(Player * player)
+{
+}
+
+void Skill_A_State::Skill_B(Player * player)
+{
+}
+
+void Skill_A_State::update(Player * player)
+{
+}
+
+
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 스킬 B! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+Skill_B_State * Skill_B_State::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new Skill_B_State();
+	}
+
+	return instance;
+}
+
+void Skill_B_State::Idle(Player * player)
+{
+}
+
+void Skill_B_State::Move(Player * player)
+{
+}
+
+void Skill_B_State::Jump(Player * player)
+{
+}
+
+void Skill_B_State::Fall(Player * player)
+{
+}
+
+void Skill_B_State::DownJump(Player * player)
+{
+}
+
+void Skill_B_State::Dash(Player * player)
+{
+}
+
+void Skill_B_State::Attack_A(Player * player)
+{
+}
+
+void Skill_B_State::Attack_B(Player * player)
+{
+}
+
+void Skill_B_State::Attack_C(Player * player)
+{
+}
+
+void Skill_B_State::Skill_A(Player * player)
+{
+}
+
+void Skill_B_State::Skill_B(Player * player)
+{
+}
+
+void Skill_B_State::update(Player * player)
+{
+}

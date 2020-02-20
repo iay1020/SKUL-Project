@@ -50,7 +50,7 @@ enum CharacterDirection
 #define PLAYER_DASH_TIME				0.1f
 
 // 캐릭터 대쉬 쿨타임
-#define PLAYER_DASH_COOLTIME			10
+#define PLAYER_DASH_COOLTIME			100
 
 
 
@@ -118,6 +118,22 @@ struct CharacterDash
 	short				Dash_CoolTime;		// 대쉬 횟수가 생성되는 쿨타임
 };
 
+// 캐릭터 타입 Enum
+enum class SKUL_TYPE
+{
+	SKUL_NOWEAPON,			// 무기없는 스컬
+	SKUL_WEAPON,			// 무기 있는 스컬
+	SKUL_WEAPON_NOHEAD,		// 무기 있는 머리 없는 스컬
+	SKUL_NIGHT				// 기사 스컬
+};
+
+// 캐릭터 타입 구조체
+struct CharacterType
+{
+	SKUL_TYPE	skul_Type;
+	string		skul_Type_Name;
+};
+
 // 캐릭터의 정보 구조체
 struct CharacterInfo
 {
@@ -127,6 +143,7 @@ struct CharacterInfo
 	CharacterBool		bool_V;		// 캐릭터의 bool 정보를 담는다.
 	CharacterJump		jump;		// 캐릭터의 점프 정보를 담는다.
 	CharacterDash		dash;		// 캐릭터의 대쉬 정보를 담는다.
+	CharacterType		type;		// 캐릭터의 클래스 타입 정보를 담는다.
 
 	// 캐릭터의 정보를 담을 변수 초기화
 	void reset()
@@ -171,6 +188,25 @@ struct CharacterInfo
 		dash.Dash_Count_Save = 0;
 		dash.Dash_CoolTime = 0;
 
+		// 스컬 클래스 초기화
+		type.skul_Type = SKUL_TYPE::SKUL_NOWEAPON;
+		//type.skul_Type_Name = ;
+	}
+
+	// 캐릭터 bool 초기화
+	void bool_Value_Reset()
+	{
+		// bool 초기화
+		bool_V.idle_Cheack = false;
+		bool_V.walk_Cheack = false;
+		bool_V.jump_Cheack = false;
+		bool_V.fall_Cheack = false;
+		bool_V.dash_Cheack = false;
+
+		bool_V.walking_Cheack = false;
+		bool_V.jumping_Cheack = false;
+		bool_V.falling_Cheack = false;
+		bool_V.dashing_Cheack = false;
 	}
 
 	// 캐릭터 좌표 셋팅 (매개변수 : 중점x, 중점y, 렉트사이즈x, 렉트사이즈y)
@@ -247,19 +283,19 @@ struct CharacterInfo
 	}
 
 	// 대쉬 쿨타임을 돌려준다.
-	void dash_CoolTile(short* CoolTime)
+	void dash_CoolTime()
 	{
 		// 대쉬 횟수가 맥스 대쉬 횟수보다 낮아지면
 		if (dash.Dash_Count < dash.Dash_Count_Save)
 		{
 			// 쿨타임을 돌려준다.
-			*CoolTime++;
+			dash.Dash_CoolTime++;
 
 			// 쿨타임과 같거나 크다면
-			if (*CoolTime > PLAYER_DASH_COOLTIME)
+			if (dash.Dash_CoolTime >= PLAYER_DASH_COOLTIME)
 			{
 				// 맥스 대쉬보다 횟수가 낮으면 하나 채워준다.
-				dash.Dash_Count++;
+				dash.Dash_Count = dash.Dash_Count_Save;
 
 				// 쿨타임 변수 초기화
 				dash.Dash_CoolTime = 0;

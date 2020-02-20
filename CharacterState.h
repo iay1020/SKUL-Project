@@ -16,6 +16,11 @@ public:
 	virtual void Fall(Player* player)		= 0;
 	virtual void DownJump(Player* player)	= 0;
 	virtual void Dash(Player* player)		= 0;
+	virtual void Attack_A(Player* player)	= 0;
+	virtual void Attack_B(Player* player)	= 0;
+	virtual void Attack_C(Player* player)	= 0;
+	virtual void Skill_A(Player* player)	= 0;
+	virtual void Skill_B(Player* player)	= 0;
 	virtual void update(Player* player)		= 0;
 	
 protected:
@@ -45,6 +50,11 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
 	virtual void update(Player* player);
 	
 };
@@ -67,6 +77,11 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -89,6 +104,11 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -111,6 +131,11 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -133,6 +158,11 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -154,61 +184,140 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
 	virtual void update(Player* player);
 };
 
 
 
-//class Player;
-//
-//// 상태 종류
-//enum STATE
-//{
-//	STATE_IDLE,
-//	STATE_WALK
-//};
-//
-//// 상태 인터페이스
-//class CharacterState
-//{
-//protected:
-//	Player* me;
-//
-//public:
-//	CharacterState(Player* owner = nullptr) { me = owner; }
-//	virtual ~CharacterState() {} // 소멸자
-//	virtual void handleInput() {}
-//	virtual void update() {}
-//};
-//
-//// 상태별 클래스 만들기
-//class IdleState : public CharacterState
-//{
-//public:
-//	IdleState(Player* owner = nullptr) { this->me = owner; }
-//	virtual void handleInput()
-//	{
-//
-//	}
-//
-//	virtual void update()
-//	{
-//		cout << "Idle" << endl;
-//	}
-//
-//};
-//
-//class MoveState : public CharacterState
-//{
-//public:
-//	MoveState(Player*  owner = nullptr) {	this->me = owner; }
-//	virtual void handleInput()
-//	{
-//
-//	}
-//	virtual void update()
-//	{
-//		cout << "Move" << endl;
-//	}
-//};
-//
+
+
+// 기본공격 A 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class Attack_A_State : public CharacterState
+{
+	static Attack_A_State* instance;
+
+public:
+	static Attack_A_State* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void DownJump(Player* player);
+	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
+	virtual void update(Player* player);
+};
+
+
+
+
+
+// 기본공격 B 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class Attack_B_State : public CharacterState
+{
+	static Attack_B_State* instance;
+
+public:
+	static Attack_B_State* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void DownJump(Player* player);
+	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
+	virtual void update(Player* player);
+};
+
+
+
+
+
+// 기본공격 C 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class Attack_C_State : public CharacterState
+{
+	static Attack_C_State* instance;
+
+public:
+	static Attack_C_State* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void DownJump(Player* player);
+	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
+	virtual void update(Player* player);
+};
+
+
+
+
+
+// 스킬 A 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class Skill_A_State : public CharacterState
+{
+	static Skill_A_State* instance;
+
+public:
+	static Skill_A_State* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void DownJump(Player* player);
+	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
+	virtual void update(Player* player);
+};
+
+
+
+
+
+// 스킬 B 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class Skill_B_State : public CharacterState
+{
+	static Skill_B_State* instance;
+
+public:
+	static Skill_B_State* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void DownJump(Player* player);
+	virtual void Dash(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
+	virtual void update(Player* player);
+};
