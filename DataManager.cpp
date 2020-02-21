@@ -789,6 +789,8 @@ void DataManager::Lerp_Player()
 		_skul->set_Info()->bool_V.jump_Cheack = false;
 		_skul->set_Info()->bool_V.falling_Cheack = false;
 		_skul->set_Info()->bool_V.fall_Cheack = false;
+
+		_skul->set_Info()->jump.jump_Value = 0;
 	}
 
 }

@@ -122,6 +122,11 @@ void IdleState::Idle(Player * player)
 
 
 	// 멈춰있는 상태에서 공격키를 누른다면 공격 상태로 바꿔준다.
+	if (KEYMANAGER->isOnceKeyDown('X'))
+	{
+		// 공격 A의 애니메이션으로 교체 해준다.
+		IdleState::Attack_A(player);
+	}
 
 
 	// 멈춰있는 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
@@ -338,6 +343,13 @@ void IdleState::JumpAttack(Player * player)
 
 void IdleState::Attack_A(Player * player)
 {
+	// 공격 A 애니메이션으로 교체
+	player->set_Info()->ani_Changer("Attack_A", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 공격 A 상태로 교체해준다.
+	player->set_State(Attack_A_State::getInstance());
+	player->get_State()->update(player);
 }
 
 void IdleState::Attack_B(Player * player)
@@ -484,6 +496,12 @@ void MoveState::Move(Player * player)
 				Dash(player);
 			}
 		}
+
+		// 이동 상태에서 공격을 눌렀다면 공격 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('X'))
+		{
+			Attack_A(player);
+		}
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
@@ -546,6 +564,12 @@ void MoveState::Move(Player * player)
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 				Dash(player);
 			}
+		}
+
+		// 이동 상태에서 공격을 눌렀다면 공격 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('X'))
+		{
+			Attack_A(player);
 		}
 	}
 
@@ -710,6 +734,13 @@ void MoveState::JumpAttack(Player * player)
 
 void MoveState::Attack_A(Player * player)
 {
+	// 공격 A 애니메이션으로 교체 
+	player->set_Info()->ani_Changer("Attack_A", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 공격 A 상태로 바꿔준다.
+	player->set_State(Attack_A_State::getInstance());
+	player->get_State()->update(player);
 }
 
 void MoveState::Attack_B(Player * player)
@@ -1972,7 +2003,7 @@ void JumpAttackState::Skill_B(Player * player)
 void JumpAttackState::update(Player * player)
 {
 	JumpAttack(player);
-	cout << player->get_Info().jump.jump_Value << endl;
+
 	KEYANIMANAGER->update();
 }
 
@@ -1993,6 +2024,16 @@ Attack_A_State * Attack_A_State::getInstance()
 
 void Attack_A_State::Idle(Player * player)
 {
+	// 사용했던 변수 초기화
+	player->set_Info()->bool_Value_Reset();
+
+	// 대기 애니메이션을 넣어준다.
+	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
+	player->get_Info().img.ani->start();
+
+	// 대기 상태로 바꿔준다.
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
 }
 
 void Attack_A_State::Move(Player * player)
@@ -2021,10 +2062,61 @@ void Attack_A_State::JumpAttack(Player * player)
 
 void Attack_A_State::Attack_A(Player * player)
 {
+	// 만약 이동중인 bool 값이 켜져있다면 조금 움직인다.
+	if (player->get_Info().bool_V.walking_Cheack)
+	{
+		if (player->get_InputKey() == PRESS_LEFT)
+		{
+			player->set_Info()->pos.center.x -= PLAYER_SPEED * 2;
+
+			// 한번만 움직여야하기 때문에 false로 바꿔준다.
+			player->set_Info()->bool_V.walking_Cheack = false;
+		}
+
+		if (player->get_InputKey() == PRESS_RIGHT)
+		{
+			player->set_Info()->pos.center.x += PLAYER_SPEED * 2;
+
+			// 한번만 움직여야하기 때문에 false로 바꿔준다.
+			player->set_Info()->bool_V.walking_Cheack = false;
+		}
+
+		// 카메라 위치 갱신
+		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+		// 렉트 갱신
+		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+		player->update_Ani_Rect();
+	}
+
+	// 만약 공격 A를 실행시키고 있는 도중에 X키를 눌렀다면 (+ 아직 Attack_B의 bool값이 true가 안됐을때)
+	{
+		if (KEYMANAGER->isOnceKeyDown('X') && !player->get_Info().bool_V.next_Attack_B)
+		{
+			player->set_Info()->bool_V.next_Attack_B = true;
+		}
+	}
+
+	// 공격 애니메이션의 마지막 프레임일때
+	if (player->get_Info().img.ani->getFramePos().x == 640)
+	{
+		// 만약 공격 B의 bool값이 켜져 있다면 공격 B 애니메이션으로 교체 하러 간다.
+		if(player->get_Info().bool_V.next_Attack_B) Attack_B(player);
+	
+		// 아니라면 대기 애니메이션을 넣어준다.
+		else Idle(player);
+	}
 }
 
 void Attack_A_State::Attack_B(Player * player)
 {
+	// 공격 B 애니메이션으로 교체해준다.
+	player->set_Info()->ani_Changer("Attack_B", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 공격 B 상태로 교체해준다.
+	player->set_State(Attack_B_State::getInstance());
+	player->get_State()->update(player);
 }
 
 void Attack_A_State::Attack_C(Player * player)
@@ -2041,6 +2133,9 @@ void Attack_A_State::Skill_B(Player * player)
 
 void Attack_A_State::update(Player * player)
 {
+	Attack_A(player);
+
+	KEYANIMANAGER->update();
 }
 
 
@@ -2061,6 +2156,15 @@ Attack_B_State * Attack_B_State::getInstance()
 
 void Attack_B_State::Idle(Player * player)
 {
+	// 사용한 변수 초기화
+	player->set_Info()->bool_Value_Reset();
+
+	// 대기 애니메이션으로 교체 해준다.
+	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
+
+	// 대기 상태로 바꿔준다.
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
 }
 
 void Attack_B_State::Move(Player * player)
@@ -2093,6 +2197,18 @@ void Attack_B_State::Attack_A(Player * player)
 
 void Attack_B_State::Attack_B(Player * player)
 {
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
+
+	// 공격 애니메이션의 마지막 프레임일때
+	if (player->get_Info().img.ani->getFramePos().x == 640)
+	{
+		Idle(player);
+	}
 }
 
 void Attack_B_State::Attack_C(Player * player)
@@ -2109,6 +2225,9 @@ void Attack_B_State::Skill_B(Player * player)
 
 void Attack_B_State::update(Player * player)
 {
+	Attack_B(player);
+
+	KEYANIMANAGER->update();
 }
 
 

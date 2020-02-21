@@ -100,6 +100,8 @@ struct CharacterBool
 	bool				falling_Cheack;		// 캐릭터가 추락중인지 체크하는 변수
 	bool				dashing_Cheack;		// 캐릭터가 대쉬중인지 체크하는 변수
 
+	bool				next_Attack_B;		// 캐릭터가 다음 공격으로 B를 연결해야한다.
+	bool				next_Attack_C;		// 캐릭터가 다음 공격으로 C를 연결해야한다.
 };
 
 // 캐릭터의 점프 구조체
@@ -182,6 +184,9 @@ struct CharacterInfo
 		bool_V.falling_Cheack = false;
 		bool_V.dashing_Cheack = false;
 
+		bool_V.next_Attack_B = false;
+		bool_V.next_Attack_C = false;
+
 		// 점프 초기화
 		jump.jump_Value = 0;
 		jump.Jump_Count = PLAYER_JUMP_COUNT;
@@ -213,6 +218,10 @@ struct CharacterInfo
 		bool_V.jumping_Cheack = false;
 		bool_V.falling_Cheack = false;
 		bool_V.dashing_Cheack = false;
+
+
+		bool_V.next_Attack_B = false;
+		bool_V.next_Attack_C = false;
 	}
 
 	// 캐릭터 좌표 셋팅 (매개변수 : 중점x, 중점y, 렉트사이즈x, 렉트사이즈y)
@@ -334,16 +343,7 @@ struct CharacterInfo
 					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Left");
-					// 공격 A
-					//if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Left");
-					// 공격 B
-					//if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Left");
-					// 공격 C
-					//if (StateName == "AttackC");
-					// 스킬 A
-					//if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_L"); 
-					// 스킬 B
-					//if (StateName == "SkillB");
+
 				}
 				if (Key == PRESS_RIGHT)
 				{
@@ -361,16 +361,7 @@ struct CharacterInfo
 					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Right");
-					// 공격 A
-					//if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Right");
-					// 공격 B
-					//if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Right");
-					// 공격 C
-					//if (StateName == "AttackC");
-					// 스킬 A
-					//if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_R");
-					// 스킬 B
-					//if (StateName == "SkillB");
+
 				}
 				break;
 
@@ -392,15 +383,13 @@ struct CharacterInfo
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Left");
 					// 공격 A
-					if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Left");
+					if (StateName == "Attack_A") set_Ani("skul_Attack_A", "skul_Attack_A_Left");
 					// 공격 B
-					if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Left");
-					// 공격 C
-					//if (StateName == "AttackC");
+					if (StateName == "Attack_B") set_Ani("skul_Attack_B", "skul_Attack_B_Left");
+
 					// 스킬 A
-					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_L");
-					// 스킬 B
-					//if (StateName == "SkillB");
+					if (StateName == "Skill_A") set_Ani("skul_Skill", "throw_Head_L");
+
 				}
 				if (Key == PRESS_RIGHT)
 				{
@@ -419,15 +408,13 @@ struct CharacterInfo
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Right");
 					// 공격 A
-					if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Right");
+					if (StateName == "Attack_A") set_Ani("skul_Attack_A", "skul_Attack_A_Right");
 					// 공격 B
-					if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Right");
-					// 공격 C
-					//if (StateName == "AttackC");
+					if (StateName == "Attack_B") set_Ani("skul_Attack_B", "skul_Attack_B_Right");
+
 					// 스킬 A
-					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_R");
-					// 스킬 B
-					//if (StateName == "SkillB");
+					if (StateName == "Skill_A") set_Ani("skul_Skill", "throw_Head_R");
+
 				}
 				break;
 
@@ -449,13 +436,13 @@ struct CharacterInfo
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash_NoHead", "skul_Dash_Left_NoHead");
 					// 공격 A
-					if (StateName == "AttackA") set_Ani("skul_Attack_A_NoHead", "skul_Attack_A_Left_N");
+					if (StateName == "Attack_A") set_Ani("skul_Attack_A_NoHead", "skul_Attack_A_Left_N");
 					// 공격 B
-					if (StateName == "AttackB") set_Ani("skul_Attack_B_NoHead", "skul_Attack_B_Left_N");
+					if (StateName == "Attack_B") set_Ani("skul_Attack_B_NoHead", "skul_Attack_B_Left_N");
 					// 공격 C
 					//if (StateName == "AttackC");
 					// 스킬 A
-					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_L");
+					if (StateName == "Skill_A") set_Ani("skul_Skill", "throw_Head_L");
 					// 스킬 B
 					//if (StateName == "SkillB");
 				}
@@ -476,13 +463,13 @@ struct CharacterInfo
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash_NoHead", "skul_Dash_Right_NoHead");
 					// 공격 A
-					if (StateName == "AttackA") set_Ani("skul_Attack_A_NoHead", "skul_Attack_A_Right_N");
+					if (StateName == "Attack_A") set_Ani("skul_Attack_A_NoHead", "skul_Attack_A_Right_N");
 					// 공격 B
-					if (StateName == "AttackB") set_Ani("skul_Attack_B_NoHead", "skul_Attack_B_Right_N");
+					if (StateName == "Attack_B") set_Ani("skul_Attack_B_NoHead", "skul_Attack_B_Right_N");
 					// 공격 C
 					//if (StateName == "AttackC");
 					// 스킬 A
-					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_R");
+					if (StateName == "Skill_A") set_Ani("skul_Skill", "throw_Head_R");
 					// 스킬 B
 					//if (StateName == "SkillB");
 				}

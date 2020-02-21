@@ -9,10 +9,14 @@ Player::Player()
 	info.reset();
 	info.set_Status("스컬", 100, 15, 0, DIRECTION_RIGHT, 1, 1);
 	info.set_Pos(100, CAMERAMANAGER->Use_Func()->get_World_Size().y - 64 * 3, PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
-	info.set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+	//info.set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+	inputKey = PRESS_RIGHT;				// 오른쪽 애니메이션을 쓰고 있으니까
+	//info.type.skul_Type = SKUL_TYPE::SKUL_NOWEAPON;
+	info.type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+	//info.type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
+	info.ani_Changer("Idle", inputKey);
 	info.img.ani->start();
 
-	inputKey = PRESS_RIGHT;				// 오른쪽 애니메이션을 쓰고 있으니까
 	state = IdleState::getInstance();	// 기본 상태는 Idle
 }
 
