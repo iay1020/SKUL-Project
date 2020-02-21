@@ -32,18 +32,23 @@ void DataManager::update()
 	if (KEYMANAGER->isOnceKeyDown('I'))
 	{
 		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_NOWEAPON;
+		_skul->set_Info()->ani_Changer("Idle", _skul->get_InputKey());
+		_skul->set_Info()->img.ani->start();
 	}
 
 	if (KEYMANAGER->isOnceKeyDown('O'))
 	{
 		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+		_skul->set_Info()->ani_Changer("Idle", _skul->get_InputKey());
+		_skul->set_Info()->img.ani->start();
 	}
 
 	if (KEYMANAGER->isOnceKeyDown('P'))
 	{
 		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
+		_skul->set_Info()->ani_Changer("Idle", _skul->get_InputKey());
+		_skul->set_Info()->img.ani->start();
 	}
-
 }
 
 void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo)

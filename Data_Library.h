@@ -34,6 +34,9 @@ enum CharacterDirection
 #define PLAYER_JUMPPOWER				15
 #define PLAYER_DOWNJUMPPOWER			5
 
+// 캐릭터 점프 공격 쿨타임
+#define PLAYER_JUMPATTACK_COOLTIME		30
+
 // 캐릭터 최대 추락 속도
 #define PLAYER_MAX_FALL_SPEED			-30.0f
 
@@ -105,6 +108,8 @@ struct CharacterJump
 	short				Jump_Count;			// 점프 횟수
 	short				Jump_Count_Save;	// 점프 횟수 저장 (충전 할때 이용)
 	float				jump_Value;			// 점프 수치
+
+	short				jump_Attack_Count;	// 점프 어택을 했을때 애니메이션 유지 시간 (다음 점프 어택까지의 시간)
 };
 
 // 캐릭터의 대쉬 구조체
@@ -181,6 +186,7 @@ struct CharacterInfo
 		jump.jump_Value = 0;
 		jump.Jump_Count = PLAYER_JUMP_COUNT;
 		jump.Jump_Count_Save = 0;
+		jump.jump_Attack_Count = 0;
 
 		// 대쉬 초기화
 		dash.Dash_StartTime = 0;
@@ -303,6 +309,248 @@ struct CharacterInfo
 
 			}
 		}
+	}
+
+	// 애니메이션 체인저
+	void ani_Changer(string StateName, InputKey Key)
+	{
+		
+		switch (type.skul_Type)
+		{
+			case SKUL_TYPE::SKUL_NOWEAPON:
+				if (Key == PRESS_LEFT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
+					// 이동
+					if (StateName == "Move") set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
+					// 점프
+					if (StateName == "Jump") set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("skul_Jump_Attack", "skul_Jump_Left_Attack");
+					// 추락
+					if (StateName == "Fall") set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+					// 추락중
+					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Left");
+					// 공격 A
+					//if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Left");
+					// 공격 B
+					//if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Left");
+					// 공격 C
+					//if (StateName == "AttackC");
+					// 스킬 A
+					//if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_L"); 
+					// 스킬 B
+					//if (StateName == "SkillB");
+				}
+				if (Key == PRESS_RIGHT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+					// 이동
+					if (StateName == "Move") set_Ani("skul_Walk_NoWeapon", "skul_Walk_Right_NoWeapon");
+					// 점프
+					if (StateName == "Jump") set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("skul_Jump_Attack", "skul_Jump_Right_Attack");
+					// 추락
+					if (StateName == "Fall") set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+					// 추락중
+					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Right");
+					// 공격 A
+					//if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Right");
+					// 공격 B
+					//if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Right");
+					// 공격 C
+					//if (StateName == "AttackC");
+					// 스킬 A
+					//if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_R");
+					// 스킬 B
+					//if (StateName == "SkillB");
+				}
+				break;
+
+			case SKUL_TYPE::SKUL_WEAPON:
+				if (Key == PRESS_LEFT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Left_HaveWeapon");
+					// 이동
+					if (StateName == "Move") set_Ani("skul_Walk_Weapon", "skul_Walk_Left_HaveWeapon");
+					// 점프
+					if (StateName == "Jump") set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("skul_Jump_Attack", "skul_Jump_Left_Attack");
+					// 추락
+					if (StateName == "Fall") set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+					// 추락중
+					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Left");
+					// 공격 A
+					if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Left");
+					// 공격 B
+					if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Left");
+					// 공격 C
+					//if (StateName == "AttackC");
+					// 스킬 A
+					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_L");
+					// 스킬 B
+					//if (StateName == "SkillB");
+				}
+				if (Key == PRESS_RIGHT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Right_HaveWeapon");
+					// 이동
+					if (StateName == "Move") set_Ani("skul_Walk_Weapon", "skul_Walk_Right_HaveWeapon");
+					// 점프
+					if (StateName == "Jump") set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("skul_Jump_Attack", "skul_Jump_Right_Attack");
+					// 추락
+					if (StateName == "Fall") set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+					// 추락중
+					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Right");
+					// 공격 A
+					if (StateName == "AttackA") set_Ani("skul_Attack_A", "skul_Attack_A_Right");
+					// 공격 B
+					if (StateName == "AttackB") set_Ani("skul_Attack_B", "skul_Attack_B_Right");
+					// 공격 C
+					//if (StateName == "AttackC");
+					// 스킬 A
+					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_R");
+					// 스킬 B
+					//if (StateName == "SkillB");
+				}
+				break;
+
+			case SKUL_TYPE::SKUL_WEAPON_NOHEAD:
+				if (Key == PRESS_LEFT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Left_HaveWeapon_NoHead");
+					// 이동
+					if (StateName == "Move") set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Left_HaveWeapon_NoHead");
+					// 점프
+					if (StateName == "Jump") set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("skul_Jump_NoHead_Attack", "skul_Jump_Left_Attack_NoHead");
+					// 추락
+					if (StateName == "Fall") set_Ani("skul_Fall_NoHead", "skul_Fall_Left_NoHead");
+					// 추락중
+					if (StateName == "Falling") set_Ani("skul_Falling_NoHead", "skul_Falling_Left_NoHead");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("skul_Dash_NoHead", "skul_Dash_Left_NoHead");
+					// 공격 A
+					if (StateName == "AttackA") set_Ani("skul_Attack_A_NoHead", "skul_Attack_A_Left_N");
+					// 공격 B
+					if (StateName == "AttackB") set_Ani("skul_Attack_B_NoHead", "skul_Attack_B_Left_N");
+					// 공격 C
+					//if (StateName == "AttackC");
+					// 스킬 A
+					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_L");
+					// 스킬 B
+					//if (StateName == "SkillB");
+				}
+				if (Key == PRESS_RIGHT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Right_HaveWeapon_NoHead");
+					// 이동
+					if (StateName == "Move") set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Right_HaveWeapon_NoHead");
+					// 점프
+					if (StateName == "Jump") set_Ani("skul_Jump_NoHead", "skul_Jump_Right_NoHead");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("skul_Jump_NoHead_Attack", "skul_Jump_Right_Attack_NoHead");
+					// 추락
+					if (StateName == "Fall") set_Ani("skul_Fall_NoHead", "skul_Fall_Right_NoHead");
+					// 추락중
+					if (StateName == "Falling") set_Ani("skul_Falling_NoHead", "skul_Falling_Right_NoHead");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("skul_Dash_NoHead", "skul_Dash_Right_NoHead");
+					// 공격 A
+					if (StateName == "AttackA") set_Ani("skul_Attack_A_NoHead", "skul_Attack_A_Right_N");
+					// 공격 B
+					if (StateName == "AttackB") set_Ani("skul_Attack_B_NoHead", "skul_Attack_B_Right_N");
+					// 공격 C
+					//if (StateName == "AttackC");
+					// 스킬 A
+					if (StateName == "SkillA") set_Ani("skul_Skill", "throw_Head_R");
+					// 스킬 B
+					//if (StateName == "SkillB");
+				}
+				break;
+
+			//case SKUL_TYPE::SKUL_NIGHT:
+			//	if (Key == PRESS_LEFT)
+			//	{
+			//		// 대기
+			//		if (StateName == "Idle");
+			//		// 이동
+			//		if (StateName == "Move");
+			//		// 점프
+			//		if (StateName == "Jump");
+			//		// 점프 공격
+			//		if (StateName == "JumpAttack");
+			//		// 추락
+			//		if (StateName == "Fall");
+			//		// 추락중
+			//		if (StateName == "Falling");
+			//		// 대쉬
+			//		if (StateName == "Dash");
+			//		// 공격 A
+			//		if (StateName == "AttackA");
+			//		// 공격 B
+			//		if (StateName == "AttackB");
+			//		// 공격 C
+			//		if (StateName == "AttackC");
+			//		// 스킬 A
+			//		if (StateName == "SkillA");
+			//		// 스킬 B
+			//		if (StateName == "SkillB");
+			//	}
+			//	if (Key == PRESS_RIGHT)
+			//	{
+			//		// 대기
+			//		if (StateName == "Idle");
+			//		// 이동
+			//		if (StateName == "Move");
+			//		// 점프
+			//		if (StateName == "Jump");
+			//		// 점프 공격
+			//		if (StateName == "JumpAttack");
+			//		// 추락
+			//		if (StateName == "Fall");
+			//		// 추락중
+			//		if (StateName == "Falling");
+			//		// 대쉬
+			//		if (StateName == "Dash");
+			//		// 공격 A
+			//		if (StateName == "AttackA");
+			//		// 공격 B
+			//		if (StateName == "AttackB");
+			//		// 공격 C
+			//		if (StateName == "AttackC");
+			//		// 스킬 A
+			//		if (StateName == "SkillA");
+			//		// 스킬 B
+			//		if (StateName == "SkillB");
+			//	}
+			//	break;
+		}
+		
+
+		
+
+		
+
 	}
 };
 

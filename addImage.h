@@ -104,8 +104,8 @@ struct tagAddImage
 		{
 			IMAGEMANAGER->addFrameImage("skul_Jump", "./image/skul/Jump/skul_Jump.bmp", 320, 238, 2, 2, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("skul_Jump_NoHead", "./image/skul/Jump/skul_Jump_NoHead.bmp", 320, 238, 2, 2, true, RGB(255, 0, 255));
-			IMAGEMANAGER->addFrameImage("skul_Jump_Attack", "./image/skul/Jump/skul_Jump_Attack.bmp", 640, 238, 4, 4, true, RGB(255, 0, 255));
-			IMAGEMANAGER->addFrameImage("skul_Jump_NoHead_Attack", "./image/skul/Jump/skul_Jump_NoHead_Attack.bmp", 640, 238, 4, 4, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("skul_Jump_Attack", "./image/skul/Jump/skul_Jump_Attack.bmp", 640, 238, 4, 2, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("skul_Jump_NoHead_Attack", "./image/skul/Jump/skul_Jump_NoHead_Attack.bmp", 640, 238, 4, 2, true, RGB(255, 0, 255));
 		}
 
 		// <Fall>
@@ -162,6 +162,7 @@ struct tagAddImage
 
 		// <Walk>
 		{
+			// Walk_Right NoWeapon Ani
 			int walk_R_NoWeapon[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Walk_Right_NoWeapon", "skul_Walk_NoWeapon", walk_R_NoWeapon, 8, 10, true);
 			// Walk Right HaveWeapon Ani
@@ -187,13 +188,14 @@ struct tagAddImage
 			// jump Right NoWeapon Ani
 			int jump_R_NoWeapon[] = { 0, 1 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Right_NoWeapon", "skul_Jump", jump_R_NoWeapon, 2, 10, false);
-			// jump Left NoWeapon Ani
-			int jump_L_NoWeapon[] = { 3, 2 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_NoWeapon", "skul_Jump", jump_L_NoWeapon, 2, 10, false);
-
 			// jump Right NoHead Ani
 			int jump_R_NoHead[] = { 0, 1 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Right_NoHead", "skul_Jump_NoHead", jump_R_NoHead, 2, 10, false);
+
+
+			// jump Left NoWeapon Ani
+			int jump_L_NoWeapon[] = { 3, 2 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_NoWeapon", "skul_Jump", jump_L_NoWeapon, 2, 10, false);
 			// jump Left NoHead Ani
 			int jump_L_NoHead[] = { 3, 2 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_NoHead", "skul_Jump_NoHead", jump_L_NoHead, 2, 10, false);
@@ -204,13 +206,13 @@ struct tagAddImage
 			// jump Right Attack Ani
 			int jump_R_Attack[] = { 0, 1, 2, 3 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Right_Attack", "skul_Jump_Attack", jump_R_Attack, 4, 10, false);
-			// jump Left Attack Ani
-			int jump_L_Attack[] = { 7, 6, 5, 4 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_Attack", "skul_Jump_Attack", jump_L_Attack, 4, 10, false);
-
 			// jump Right Attack NoHead Ani
 			int jump_R_Attack_NoHead[] = { 0, 1, 2, 3 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Right_Attack_NoHead", "skul_Jump_NoHead_Attack", jump_R_Attack_NoHead, 4, 10, false);
+
+			// jump Left Attack Ani
+			int jump_L_Attack[] = { 7, 6, 5, 4 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_Attack", "skul_Jump_Attack", jump_L_Attack, 4, 10, false);
 			// jump Left Attack NoHead Ani
 			int jump_L_Attack_NoHead[] = { 7, 6, 5, 4 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_Attack_NoHead", "skul_Jump_NoHead_Attack", jump_L_Attack_NoHead, 4, 10, false);
@@ -220,57 +222,45 @@ struct tagAddImage
 		{
 			int fall_R_NoWeapon[] = { 0, 1, 2, 3, 4 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Right_NoWeapon", "skul_Fall", fall_R_NoWeapon, 5, 10, false);
-
-			int fall_L_NoWeapon[] = { 5, 6, 7, 8, 9 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Left_NoWeapon", "skul_Fall", fall_L_NoWeapon, 5, 10, false);
-
-			int fall_R_NoHead[] = { 0, 1, 2, 3, 4 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Right_NoHead", "skul_Fall_NoHead", fall_R_NoHead, 5, 10, false);
-
-			int fall_L_NoHead[] = { 5, 6, 7, 8, 9 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Left_NoHead", "skul_Fall_NoHead", fall_L_NoHead, 5, 10, false);
-
 			int falling_R_NoWeapon[] = { 0, 1, 2 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Right_NoWeapon", "skul_Falling", falling_R_NoWeapon, 3, 10, true);
-
-			int falling_L_NoWeapon[] = { 3, 4, 5 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Left_NoWeapon", "skul_Falling", falling_L_NoWeapon, 3, 10, true);
-
+			int fall_R_NoHead[] = { 0, 1, 2, 3, 4 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Right_NoHead", "skul_Fall_NoHead", fall_R_NoHead, 5, 10, false);
 			int falling_R_NoHead[] = { 0, 1, 2 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Right_NoHead", "skul_Falling_NoHead", falling_R_NoHead, 3, 10, true);
 
+			int fall_L_NoWeapon[] = { 5, 6, 7, 8, 9 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Left_NoWeapon", "skul_Fall", fall_L_NoWeapon, 5, 10, false);
+			int falling_L_NoWeapon[] = { 3, 4, 5 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Left_NoWeapon", "skul_Falling", falling_L_NoWeapon, 3, 10, true);
+			int fall_L_NoHead[] = { 5, 6, 7, 8, 9 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Fall_Left_NoHead", "skul_Fall_NoHead", fall_L_NoHead, 5, 10, false);
 			int falling_L_NoHead[] = { 3, 4, 5 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Falling_Left_NoHead", "skul_Falling_NoHead", falling_L_NoHead, 3, 10, true);
-
 		}
 
 		// <Dash>
 		{
 			int dash_R[] = { 0, 1 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Right", "skul_Dash", dash_R, 2, 10, true);
+			int dash_R_NoHead[] = { 0, 1 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Right_NoHead", "skul_Dash_NoHead", dash_R_NoHead, 2, 10, true);
 
 			int dash_L[] = { 2, 3 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Left", "skul_Dash", dash_L, 2, 10, true);
-
-			int dash_R_NoHead[] = { 0, 1 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Left_NoHead", "skul_Dash_NoHead", dash_R_NoHead, 2, 10, true);
-
 			int dash_L_NoHead[] = { 2, 3 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Right_NoHead", "skul_Dash_NoHead", dash_L_NoHead, 2, 10, true);
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Left_NoHead", "skul_Dash_NoHead", dash_L_NoHead, 2, 10, true);
 		}
 
-		// <Attack A>
+		// <Attack A, B>
 		{
 			int attack_A_R[] = { 0, 1, 2, 3, 4 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_A_Right", "skul_Attack_A", attack_A_R, 5, 10, false);
-
-			int attack_A_L[] = { 5, 6, 7, 8, 9 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_A_Left", "skul_Attack_A", attack_A_L, 5, 10, false);
-
-			// <Attack B>
 			int attack_B_R[] = { 0, 1, 2, 3, 4 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_B_Right", "skul_Attack_B", attack_B_R, 5, 10, false);
 
+			int attack_A_L[] = { 5, 6, 7, 8, 9 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_A_Left", "skul_Attack_A", attack_A_L, 5, 10, false);
 			int attack_B_L[] = { 5, 6, 7, 8, 9 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_B_Left", "skul_Attack_B", attack_B_L, 5, 10, false);
 
@@ -279,14 +269,11 @@ struct tagAddImage
 			// <Attack A NoHead>
 			int attack_A_R_N[] = { 0, 1, 2, 3, 4 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_A_Right_N", "skul_Attack_A_NoHead", attack_A_R_N, 5, 10, false);
-
-			int attack_A_L_N[] = { 5, 6, 7, 8, 9 };
-			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_A_Left_N", "skul_Attack_A_NoHead", attack_A_L_N, 5, 10, false);
-
-			// <Attack B NoHead>
 			int attack_B_R_N[] = { 0, 1, 2, 3, 4 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_B_Right_N", "skul_Attack_B_NoHead", attack_B_R_N, 5, 10, false);
 
+			int attack_A_L_N[] = { 5, 6, 7, 8, 9 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_A_Left_N", "skul_Attack_A_NoHead", attack_A_L_N, 5, 10, false);
 			int attack_B_L_N[] = { 5, 6, 7, 8, 9 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_B_Left_N", "skul_Attack_B_NoHead", attack_B_L_N, 5, 10, false);
 		}

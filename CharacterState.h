@@ -16,6 +16,7 @@ public:
 	virtual void Fall(Player* player)		= 0;
 	virtual void DownJump(Player* player)	= 0;
 	virtual void Dash(Player* player)		= 0;
+	virtual void JumpAttack(Player* player) = 0;
 	virtual void Attack_A(Player* player)	= 0;
 	virtual void Attack_B(Player* player)	= 0;
 	virtual void Attack_C(Player* player)	= 0;
@@ -51,6 +52,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -78,6 +80,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -105,6 +108,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -132,6 +136,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -159,6 +164,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -185,6 +191,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -193,6 +200,33 @@ public:
 	virtual void update(Player* player);
 };
 
+
+
+
+
+
+// 점프 공격 상태 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+class JumpAttackState : public CharacterState
+{
+	static JumpAttackState* instance;
+
+public:
+	static JumpAttackState* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void DownJump(Player* player);
+	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
+	virtual void update(Player* player);
+};
 
 
 
@@ -211,6 +245,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -237,6 +272,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -263,6 +299,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -289,6 +326,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);
@@ -315,6 +353,7 @@ public:
 	virtual void Fall(Player* player);
 	virtual void DownJump(Player* player);
 	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
 	virtual void Attack_A(Player* player);
 	virtual void Attack_B(Player* player);
 	virtual void Attack_C(Player* player);

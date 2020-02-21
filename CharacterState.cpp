@@ -7,11 +7,13 @@ JumpState* JumpState::instance;
 FallState* FallState::instance;
 DownJumpState* DownJumpState::instance;
 DashState* DashState::instance;
+JumpAttackState* JumpAttackState::instance;
 Attack_A_State* Attack_A_State::instance;
 Attack_B_State* Attack_B_State::instance;
 Attack_C_State* Attack_C_State::instance;
 Skill_A_State* Skill_A_State::instance;
 Skill_B_State* Skill_B_State::instance;
+
 
 // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대기 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 IdleState * IdleState::getInstance()
@@ -161,17 +163,17 @@ void IdleState::Move(Player * player)
 		if (!player->get_Info().bool_V.walk_Cheack)
 		{
 			// 애니메이션 교체
-			if(player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
-				player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Left_HaveWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Left_HaveWeapon_NoHead");
-
+			//if(player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
+			//	player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
+			//
+			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+			//	player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Left_HaveWeapon");
+			//
+			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+			//	player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Left_HaveWeapon_NoHead");
 			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
 			//	player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
+			player->set_Info()->ani_Changer("Move", player->get_InputKey());
 
 			player->set_Info()->img.ani->start();
 
@@ -191,14 +193,15 @@ void IdleState::Move(Player * player)
 		{
 
 			// 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
-				player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Right_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Right_HaveWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Right_HaveWeapon_NoHead");
+			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
+			//	player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Right_NoWeapon");
+			//
+			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+			//	player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Right_HaveWeapon");
+			//
+			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+			//	player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Right_HaveWeapon_NoHead");
+			player->set_Info()->ani_Changer("Move", player->get_InputKey());
 
 			player->set_Info()->img.ani->start();
 
@@ -219,12 +222,13 @@ void IdleState::Jump(Player * player)
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
 		// 애니메이션 교체
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON || 
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
+		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON || 
+		//	player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+		//	player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+		//
+		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+		//	player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
+		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
 		player->set_Info()->img.ani->start();
 	}
@@ -232,13 +236,13 @@ void IdleState::Jump(Player * player)
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
 		// 애니메이션 교체
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Right_Left_NoHead");
-
+		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
+		//	player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+		//	player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		//
+		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+		//	player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Right_Left_NoHead");
+		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
 		player->set_Info()->img.ani->start();
 	}
@@ -253,25 +257,17 @@ void IdleState::Fall(Player * player)
 	// 캐릭터의 방향에 따라 추락 애니메이션을 넣어주고 추락 상태로 교체해준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-		player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Left_NoHead");
-
+		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
+		//	player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Right_NoHead");
-
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
@@ -285,26 +281,16 @@ void IdleState::DownJump(Player * player)
 	// 점프 애니메이션으로 교체 한다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		// 애니메이션 교체
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
+		//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		// 애니메이션 교체
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Right_NoHead");
+		//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 
 	}
@@ -321,11 +307,8 @@ void IdleState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Left_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -336,11 +319,8 @@ void IdleState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Right_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -350,6 +330,10 @@ void IdleState::Dash(Player * player)
 	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
 	player->set_State(DashState::getInstance());
 	player->get_State()->update(player);
+}
+
+void IdleState::JumpAttack(Player * player)
+{
 }
 
 void IdleState::Attack_A(Player * player)
@@ -402,9 +386,8 @@ void MoveState::Idle(Player * player)
 		if (!player->get_Info().bool_V.idle_Cheack)
 		{
 			// 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)		player->set_Info()->set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Left_HaveWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)	player->set_Info()->set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Left_HaveWeapon_NoHead");
+			//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
+			player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			// 애니메이션 교체 후 true (1번만 바꾸기 위해)
@@ -418,9 +401,8 @@ void MoveState::Idle(Player * player)
 		if (!player->get_Info().bool_V.idle_Cheack)
 		{
 			// 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)		player->set_Info()->set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Right_HaveWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)	player->set_Info()->set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Right_HaveWeapon_NoHead");
+			//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+			player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			// 애니메이션 교체 후 true (1번만 바꾸기 위해)
@@ -582,13 +564,8 @@ void MoveState::Jump(Player * player)
 		if (!player->get_Info().bool_V.jump_Cheack)
 		{
 			// 점프 애니메이션을 넣어준다.
-			// 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
+			//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+			player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			// 점프 변수에 값을 넣어준다.
@@ -631,13 +608,8 @@ void MoveState::Jump(Player * player)
 		if (!player->get_Info().bool_V.jump_Cheack)
 		{
 			// 점프 애니메이션을 넣어준다.
-			// 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Right_NoHead");
+			//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+			player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			// 점프 변수에 값을 넣어준다.
@@ -678,23 +650,15 @@ void MoveState::Fall(Player * player)
 	// 캐릭터의 방향에 따라 추락 애니메이션을 넣어주고 추락 상태로 교체해준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Left_NoHead");
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Right_NoHead");
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
@@ -714,11 +678,8 @@ void MoveState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Left_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -729,11 +690,8 @@ void MoveState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Right_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -744,6 +702,10 @@ void MoveState::Dash(Player * player)
 	player->set_State(DashState::getInstance());
 	player->get_State()->update(player);
 
+}
+
+void MoveState::JumpAttack(Player * player)
+{
 }
 
 void MoveState::Attack_A(Player * player)
@@ -865,7 +827,7 @@ void JumpState::Move(Player * player)
 		// 점프 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
 		if (KEYMANAGER->isOnceKeyDown('Z'))
 		{
-		
+			
 			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
 			if (player->get_Info().dash.Dash_Count > 0)
 			{
@@ -885,6 +847,13 @@ void JumpState::Move(Player * player)
 				Dash(player);
 			}
 		}
+
+		// 점프 상태에서 공격을 눌렀다면 점프 공격 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('X'))
+		{
+			// 애니메이션 교체를 위해 JumpAttack 함수 호출
+			JumpAttack(player);
+		}
 	}
 }
 
@@ -903,15 +872,8 @@ void JumpState::Jump(Player * player)
 			player->set_InputKey(PRESS_LEFT);
 
 			// 방향에 맞는 애니메이션으로 교체
-			// 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
-
-			player->set_Info()->img.ani->start();
+			//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+			player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
 			// 이동중이라면 true
 			player->set_Info()->bool_V.walking_Cheack = true;
@@ -926,15 +888,8 @@ void JumpState::Jump(Player * player)
 			player->set_InputKey(PRESS_RIGHT);
 
 			// 방향에 맞는 애니메이션으로 교체
-			// 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Right_NoHead");
-
-			player->set_Info()->img.ani->start();
+			//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+			player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
 			// 이동중이라면 true
 			player->set_Info()->bool_V.walking_Cheack = true;
@@ -978,6 +933,13 @@ void JumpState::Jump(Player * player)
 			}
 		}
 
+		// 점프 상태에서 공격을 눌렀다면 점프 공격 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('X'))
+		{
+			// 애니메이션 교체를 위해 JumpAttack 함수 호출
+			JumpAttack(player);
+		}
+
 		// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
 		if (player->get_Info().jump.jump_Value > 0)
 		{
@@ -1018,23 +980,15 @@ void JumpState::Fall(Player * player)
 	// 방향에 맞는 추락 이미지를 넣어준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Left_NoHead");
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Right_NoHead");
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
@@ -1054,11 +1008,8 @@ void JumpState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Left_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -1069,11 +1020,8 @@ void JumpState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Right_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -1082,6 +1030,17 @@ void JumpState::Dash(Player * player)
 
 	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
 	player->set_State(DashState::getInstance());
+	player->get_State()->update(player);
+}
+
+void JumpState::JumpAttack(Player * player)
+{
+	// 점프어택 애니메이션으로 교체해준다.
+	player->set_Info()->ani_Changer("JumpAttack", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 점프어택 상태로 바꿔준다.
+	player->set_State(JumpAttackState::getInstance());
 	player->get_State()->update(player);
 }
 
@@ -1135,9 +1094,8 @@ void FallState::Idle(Player * player)
 		if (!player->get_Info().bool_V.idle_Cheack)
 		{
 			// 대기 애니메이션으로 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)		player->set_Info()->set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Left_HaveWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)	player->set_Info()->set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Left_HaveWeapon_NoHead");
+			//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
+			player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			// 교체를 했다면 true
@@ -1150,9 +1108,8 @@ void FallState::Idle(Player * player)
 		if (!player->get_Info().bool_V.idle_Cheack)
 		{
 			// 대기 애니메이션으로 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)		player->set_Info()->set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Right_HaveWeapon");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)	player->set_Info()->set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Right_HaveWeapon_NoHead");
+			//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+			player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			// 교체를 했다면 true
@@ -1194,15 +1151,8 @@ void FallState::Move(Player * player)
 		player->update_Ani_Rect();
 		
 		// 나가기 전에 새 연산을 위해 모두 초기화
-		player->set_Info()->bool_V.idle_Cheack = false;
-		player->set_Info()->bool_V.walk_Cheack = false;
-		player->set_Info()->bool_V.walking_Cheack = false;
-		player->set_Info()->bool_V.jump_Cheack = false;
-		player->set_Info()->bool_V.jumping_Cheack = false;
-		player->set_Info()->bool_V.fall_Cheack = false;
-		player->set_Info()->bool_V.falling_Cheack = false;
-		player->set_Info()->bool_V.dash_Cheack = false;
-		player->set_Info()->bool_V.dashing_Cheack = false;
+		player->set_Info()->bool_Value_Reset();
+
 		player->set_Info()->jump.jump_Value = 0;
 		
 		// 점프 수치 초기화
@@ -1261,31 +1211,38 @@ void FallState::Move(Player * player)
 	}
 
 	// 추락 상태에서 대쉬를 눌렀다면 대쉬 상태로 바꿔준다.
-		if (KEYMANAGER->isOnceKeyDown('Z'))
+	if (KEYMANAGER->isOnceKeyDown('Z'))
+	{
+	
+		// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
+		if (player->get_Info().dash.Dash_Count > 0)
 		{
-		
-			// 대쉬 횟수가 있다면 실행한다. ( 횟수가 하나라도 있다면)
-			if (player->get_Info().dash.Dash_Count > 0)
-			{
-				// 추락 상태에서 대쉬를 사용하면 추락 수치가 감소한다.
-				player->set_Info()->jump.jump_Value = 0;
+			// 추락 상태에서 대쉬를 사용하면 추락 수치가 감소한다.
+			player->set_Info()->jump.jump_Value = 0;
 	
-				// 대쉬 횟수 감소
-				player->set_Info()->dash.Dash_Count--;
+			// 대쉬 횟수 감소
+			player->set_Info()->dash.Dash_Count--;
 	
-				// 대쉬 시작 시간 저장
-				player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+			// 대쉬 시작 시간 저장
+			player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
 	
-				// 대쉬중이라면 true로 바꾼다.
-				player->set_Info()->bool_V.dashing_Cheack = true;
+			// 대쉬중이라면 true로 바꾼다.
+			player->set_Info()->bool_V.dashing_Cheack = true;
 	
-				// 대쉬 애니메이션 교체를 해야 하니까 false로
-				player->set_Info()->bool_V.dash_Cheack = false;
+			// 대쉬 애니메이션 교체를 해야 하니까 false로
+			player->set_Info()->bool_V.dash_Cheack = false;
 	
-				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-				Dash(player);
-			}
+			// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
+			Dash(player);
 		}
+	}
+
+	// 추락 상태에서 공격키를 누르면 점프 공격 상태로 바꿔준다.
+	if (KEYMANAGER->isOnceKeyDown('X'))
+	{
+		// 점프 공격 애니메이션으로 바꾸기 위해 함수 호출
+		JumpAttack(player);
+	}
 
 	// 카메라 위치 갱신
 	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
@@ -1301,12 +1258,9 @@ void FallState::Jump(Player * player)
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
 		// 애니메이션 교체 + 시작
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+		//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
 		player->set_Info()->img.ani->start();
 
 		// 점프 애니메이션을 바꿨다면 true (중복 교체 방지)
@@ -1325,12 +1279,9 @@ void FallState::Jump(Player * player)
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
 		// 애니메이션 교체 + 시작
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Right_NoHead");
 		player->set_Info()->img.ani->start();
 
 		// 점프 애니메이션을 바꿨다면 true (중복 교체 방지)
@@ -1360,23 +1311,15 @@ void FallState::Fall(Player * player)
 			// 망토가 계속 펄럭거려야 하기 때문에 루프 애니메이션으로 교체한다.
 			if (player->get_InputKey() == PRESS_LEFT)
 			{
-				if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-					player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-					player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
-
-				if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-					player->set_Info()->set_Ani("skul_Falling_NoHead", "skul_Falling_Left_NoHead");
+				//player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
+				player->set_Info()->ani_Changer("Falling", player->get_InputKey());
 				player->set_Info()->img.ani->start();
 			}
 
 			if (player->get_InputKey() == PRESS_RIGHT)
 			{
-				if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-					player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-					player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
-
-				if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-					player->set_Info()->set_Ani("skul_Falling_NoHead", "skul_Falling_Right_NoHead");
+				//player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
+				player->set_Info()->ani_Changer("Falling", player->get_InputKey());
 				player->set_Info()->img.ani->start();
 			}
 		}
@@ -1395,12 +1338,8 @@ void FallState::Fall(Player * player)
 			player->set_InputKey(PRESS_LEFT);
 
 			// 해당 방향으로 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Falling_NoHead", "skul_Falling_Left_NoHead");
+			//player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
+			player->set_Info()->ani_Changer("Falling", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 			
 			// 캐릭터 옆에 벽이 없어야 실행
@@ -1420,12 +1359,8 @@ void FallState::Fall(Player * player)
 			player->set_InputKey(PRESS_RIGHT);
 
 			// 해당 방향으로 애니메이션 교체
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Falling_NoHead", "skul_Falling_Right_NoHead");
+			//player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
+			player->set_Info()->ani_Changer("Falling", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			// 캐릭터 옆에 벽이 없어야 실행
@@ -1479,6 +1414,13 @@ void FallState::Fall(Player * player)
 				Dash(player);
 			}
 		}
+
+		// 추락 상태에서 공격키를 누르면 점프 공격 상태로 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown('X'))
+		{
+			// 점프 공격 애니메이션으로 바꾸기 위해 함수 호출
+			JumpAttack(player);
+		}
 		
 		// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
 		if (DATAMANAGER->Collision_PlayerFall_Ground())
@@ -1492,15 +1434,8 @@ void FallState::Fall(Player * player)
 			player->update_Ani_Rect();
 
 			// 나가기 전에 새 연산을 위해 모두 초기화
-			player->set_Info()->bool_V.idle_Cheack = false;
-			player->set_Info()->bool_V.walk_Cheack = false;
-			player->set_Info()->bool_V.walking_Cheack = false;
-			player->set_Info()->bool_V.jump_Cheack = false;
-			player->set_Info()->bool_V.jumping_Cheack = false;
-			player->set_Info()->bool_V.fall_Cheack = false;
-			player->set_Info()->bool_V.falling_Cheack = false;
-			player->set_Info()->bool_V.dash_Cheack = false;
-			player->set_Info()->bool_V.dashing_Cheack = false;
+			player->set_Info()->bool_Value_Reset();
+
 			player->set_Info()->jump.jump_Value = 0;
 
 			// 점프 수치 초기화
@@ -1540,11 +1475,8 @@ void FallState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Left_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -1555,11 +1487,8 @@ void FallState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Dash_NoHead", "skul_Dash_Right_NoHead");
+			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 			player->set_Info()->bool_V.dash_Cheack = true;
@@ -1568,6 +1497,17 @@ void FallState::Dash(Player * player)
 
 	// 애니메이션 교체가 끝났다면 Dash 상태로 바꿔준다.
 	player->set_State(DashState::getInstance());
+	player->get_State()->update(player);
+}
+
+void FallState::JumpAttack(Player * player)
+{
+	// 점프어택 애니메이션으로 교체해준다.
+	player->set_Info()->ani_Changer("JumpAttack", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 점프어택 상태로 바꿔준다.
+	player->set_State(JumpAttackState::getInstance());
 	player->get_State()->update(player);
 }
 
@@ -1636,24 +1576,16 @@ void DownJumpState::Fall(Player * player)
 	{
 		if (player->get_InputKey() == PRESS_LEFT)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Left_NoHead");
+			//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+			player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 		}
 
 		if (player->get_InputKey() == PRESS_RIGHT)
 		{
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-				player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-				player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
-
-			if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-				player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Right_NoHead");
+			//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+			player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
 		}
@@ -1691,6 +1623,10 @@ void DownJumpState::DownJump(Player * player)
 }
 
 void DownJumpState::Dash(Player * player)
+{
+}
+
+void DownJumpState::JumpAttack(Player * player)
 {
 }
 
@@ -1742,17 +1678,15 @@ void DashState::Idle(Player * player)
 	// 대기 애니메이션으로 교체 후 대기 상태로 이동
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)		player->set_Info()->set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Left_HaveWeapon");
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)	player->set_Info()->set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Left_HaveWeapon_NoHead");
+		//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
+		player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)		player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)		player->set_Info()->set_Ani("skul_Idle_HaveWeapon", "skul_Idle_Right_HaveWeapon");
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)	player->set_Info()->set_Ani("skul_Idle_HaveWeapon_NoHead", "skul_Idle_Right_HaveWeapon_NoHead");
+		//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
+		player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
@@ -1773,23 +1707,15 @@ void DashState::Fall(Player * player)
 	// 방향에 맞는 추락 이미지를 넣어준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Left_NoHead");
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-			player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
-
-		if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			player->set_Info()->set_Ani("skul_Fall_NoHead", "skul_Fall_Right_NoHead");
+		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
@@ -1831,6 +1757,10 @@ void DashState::Dash(Player * player)
 	
 }
 
+void DashState::JumpAttack(Player * player)
+{
+}
+
 void DashState::Attack_A(Player * player)
 {
 }
@@ -1855,6 +1785,194 @@ void DashState::update(Player * player)
 {
 	DashState::Dash(player);
 
+	KEYANIMANAGER->update();
+}
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 점프 어택 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+JumpAttackState * JumpAttackState::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new JumpAttackState();
+	}
+
+	return instance;
+}
+
+void JumpAttackState::Idle(Player * player)
+{
+	// 대기 애니메이션으로 교체한다.
+	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 사용 한 변수 초기화
+	player->set_Info()->jump.jump_Value = 0;
+	player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
+	player->set_Info()->jump.jump_Attack_Count = 0;
+
+	player->set_Info()->bool_Value_Reset();
+
+	// 대기 상태로 교체
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
+}
+
+void JumpAttackState::Move(Player * player)
+{
+	if (player->get_Info().jump.jump_Value < 0)
+	{
+		player->set_Info()->bool_V.jumping_Cheack = false;
+		player->set_Info()->bool_V.falling_Cheack = true;
+
+		// 아래에 타일이 있으면 추락을 멈추고 대기 애니메이션으로 바꿔준다.
+		if (DATAMANAGER->Collision_PlayerFall_Ground() &&
+			player->get_Info().bool_V.falling_Cheack &&
+			!player->get_Info().bool_V.jumping_Cheack) Idle(player);
+	}
+
+	// 만약 방향키를 땠을 경우에는 이동 bool 값을 false로
+	if (KEYMANAGER->isOnceKeyUp(VK_LEFT) || KEYMANAGER->isOnceKeyUp(VK_RIGHT))
+	{
+		player->set_Info()->bool_V.walking_Cheack = false;
+
+		JumpAttack(player);
+	}
+
+	// 방향키에 맞게 플레이어를 이동시켜준다.
+	if (player->get_InputKey() == PRESS_LEFT)
+	{
+		// 벽이 있으면 이동하지 않도록 한다.
+		if (!DATAMANAGER->Collision_Player_Wall()) player->set_Info()->pos.center.x -= PLAYER_SPEED;
+	}
+
+	if (player->get_InputKey() == PRESS_RIGHT)
+	{
+		// 벽이 있으면 이동하지 않도록 한다.
+		if (!DATAMANAGER->Collision_Player_Wall()) player->set_Info()->pos.center.x += PLAYER_SPEED;
+	}
+
+	player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+	if (player->get_Info().jump.jump_Value > PLAYER_MAX_FALL_SPEED) player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
+}
+
+void JumpAttackState::Jump(Player * player)
+{
+}
+
+void JumpAttackState::Fall(Player * player)
+{
+	// 점프어택 카운트 초기화
+	player->set_Info()->jump.jump_Attack_Count = 0;
+
+	// 추락중 애니메이션으로 바꿔준다.
+	player->set_Info()->ani_Changer("Falling", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 추락 상태로 바꿔준다.
+	player->set_State(FallState::getInstance());
+	player->get_State()->update(player);
+}
+
+void JumpAttackState::DownJump(Player * player)
+{
+}
+
+void JumpAttackState::Dash(Player * player)
+{
+}
+
+void JumpAttackState::JumpAttack(Player * player)
+{
+	if (player->get_Info().jump.jump_Value < 0)
+	{
+		player->set_Info()->bool_V.jumping_Cheack = false;
+		player->set_Info()->bool_V.falling_Cheack = true;
+
+		// 아래에 타일이 있으면 추락을 멈추고 대기 애니메이션으로 바꿔준다.
+		if (DATAMANAGER->Collision_PlayerFall_Ground() &&
+			player->get_Info().bool_V.falling_Cheack &&
+			!player->get_Info().bool_V.jumping_Cheack) Idle(player);
+	}
+
+	// 만약 이동중이라면
+	if (player->get_Info().bool_V.walking_Cheack) Move(player);
+
+	// 이동중이지 않다면 그냥 추락 연산만
+	if (!player->get_Info().bool_V.walking_Cheack)
+	{
+		// 만약 이동키를 눌렀을 경우에는 bool값을 바꿔준다.
+		if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
+		{
+			player->set_InputKey(PRESS_LEFT);
+
+			player->set_Info()->bool_V.walking_Cheack = true;
+
+			// 이동을 같이 해야 하기 때문에 재호출
+			JumpAttack(player);
+		}
+
+		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
+		{
+			player->set_InputKey(PRESS_RIGHT);
+
+			player->set_Info()->bool_V.walking_Cheack = true;
+
+			// 이동을 같이 해야 하기 때문에 재호출
+			JumpAttack(player);
+		}
+
+		player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
+		if (player->get_Info().jump.jump_Value > PLAYER_MAX_FALL_SPEED) player->set_Info()->jump.jump_Value -= PLAYER_GRAVITY;
+
+		// 카메라 위치 갱신
+		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+		// 렉트 갱신
+		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+		player->update_Ani_Rect();
+	}
+
+	// 점프 공격 인터벌용
+	player->set_Info()->jump.jump_Attack_Count++;
+
+	// 점프 공격을 시작하면 일정 시간이 지난 후 추락중 애니메이션으로 바뀐다.
+	if (player->get_Info().jump.jump_Attack_Count >= PLAYER_JUMPATTACK_COOLTIME) Fall(player);
+}
+
+void JumpAttackState::Attack_A(Player * player)
+{
+}
+
+void JumpAttackState::Attack_B(Player * player)
+{
+}
+
+void JumpAttackState::Attack_C(Player * player)
+{
+}
+
+void JumpAttackState::Skill_A(Player * player)
+{
+}
+
+void JumpAttackState::Skill_B(Player * player)
+{
+}
+
+void JumpAttackState::update(Player * player)
+{
+	JumpAttack(player);
+	cout << player->get_Info().jump.jump_Value << endl;
 	KEYANIMANAGER->update();
 }
 
@@ -1894,6 +2012,10 @@ void Attack_A_State::DownJump(Player * player)
 }
 
 void Attack_A_State::Dash(Player * player)
+{
+}
+
+void Attack_A_State::JumpAttack(Player * player)
 {
 }
 
@@ -1961,6 +2083,10 @@ void Attack_B_State::Dash(Player * player)
 {
 }
 
+void Attack_B_State::JumpAttack(Player * player)
+{
+}
+
 void Attack_B_State::Attack_A(Player * player)
 {
 }
@@ -2022,6 +2148,10 @@ void Attack_C_State::DownJump(Player * player)
 }
 
 void Attack_C_State::Dash(Player * player)
+{
+}
+
+void Attack_C_State::JumpAttack(Player * player)
 {
 }
 
@@ -2089,6 +2219,10 @@ void Skill_A_State::Dash(Player * player)
 {
 }
 
+void Skill_A_State::JumpAttack(Player * player)
+{
+}
+
 void Skill_A_State::Attack_A(Player * player)
 {
 }
@@ -2153,6 +2287,10 @@ void Skill_B_State::Dash(Player * player)
 {
 }
 
+void Skill_B_State::JumpAttack(Player * player)
+{
+}
+
 void Skill_B_State::Attack_A(Player * player)
 {
 }
@@ -2176,3 +2314,5 @@ void Skill_B_State::Skill_B(Player * player)
 void Skill_B_State::update(Player * player)
 {
 }
+
+
