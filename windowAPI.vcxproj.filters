@@ -73,6 +73,9 @@
     <Filter Include="playGround\Player">
       <UniqueIdentifier>{8a480303-b561-485d-b3ee-2cbcd04ba25b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\FlyingObject">
+      <UniqueIdentifier>{81877399-eb7c-4077-bc8d-1e5d7c59c5fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -201,6 +204,12 @@
     <ClInclude Include="collisionTestScene.h">
       <Filter>playGround</Filter>
     </ClInclude>
+    <ClInclude Include="FlyingObject.h">
+      <Filter>playGround\FlyingObject</Filter>
+    </ClInclude>
+    <ClInclude Include="FlyingObject_Library.h">
+      <Filter>playGround\FlyingObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -289,6 +298,9 @@
     </ClCompile>
     <ClCompile Include="collisionTestScene.cpp">
       <Filter>playGround</Filter>
+    </ClCompile>
+    <ClCompile Include="FlyingObject.cpp">
+      <Filter>playGround\FlyingObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

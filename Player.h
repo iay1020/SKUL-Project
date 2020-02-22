@@ -9,6 +9,7 @@ protected:
 	InputKey		inputKey;	// 플레이어 입력 키
 	CharacterInfo	info;		// 플레이어 스테이터스
 
+
 public:
 	Player();
 

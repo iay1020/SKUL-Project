@@ -72,4 +72,5 @@ extern BOOL			_leftButtonDown;
 #include "cameraManager.h"
 #include "camera_Library.h"
 #include "Data_Library.h"
+#include "FlyingObject_Library.h"
 #include "DataManager.h"

@@ -12,6 +12,8 @@ DataManager::~DataManager()
 
 HRESULT DataManager::init()
 {
+	// 투사체 매니저 할당
+	_flyObj_Manager = new FlyingObject;
 
 	return S_OK;
 }
@@ -22,11 +24,11 @@ void DataManager::release()
 
 void DataManager::update()
 {
-	// 스컬 대쉬 쿨타임 함수
-	_skul->set_Info()->dash_CoolTime();
-
 	// 스컬 상태 업데이트
 	_skul->update();
+
+	// 투사체 매니저 업데이트
+	_flyObj_Manager->update();
 
 	// 테스트용 캐릭터 클래스 체인지
 	if (KEYMANAGER->isOnceKeyDown('I'))

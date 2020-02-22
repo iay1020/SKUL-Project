@@ -3,6 +3,7 @@
 #include "mapTool_Library.h"
 #include "Player.h"
 #include "CharacterState.h"
+#include "FlyingObject.h"
 
 class DataManager : public singletonBase<DataManager>
 {
@@ -11,7 +12,9 @@ private:
 	tagMapInfo					_mapInfo;								// 맵의 정보를 담는다.
 	vector<tagSaveBackGround>	_vMapInfo[BACKGROUND_LAYER_COUNT];		// 맵의 배경을 담는다.
 
-	Player*						_skul;
+	Player*						_skul;									// 스컬 정보
+
+	FlyingObject*				_flyObj_Manager;						// 투사체 매니저
 
 public:
 	DataManager();		// 생성자
@@ -80,5 +83,14 @@ public:
 	// 선형보간 함수 (에너미)
 	void Lerp_Enemy();
 
+	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 투사체 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+	// 투사체 매니저의 주소를 얻는다.
+	FlyingObject* flyObj_Manager_Address() { return _flyObj_Manager; }
+
+	// 투사체 출력
+	void show_FlyingObject() { _flyObj_Manager->Show_FlyingObj(); }
+
 };
+
 

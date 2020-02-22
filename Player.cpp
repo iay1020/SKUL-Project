@@ -36,6 +36,9 @@ void Player::init()
 
 void Player::update()
 {
+	// 스컬 대쉬 쿨타임 함수
+	info.dash_CoolTime();
+
 	state->update(this);							// 상태 업데이트
 }
 

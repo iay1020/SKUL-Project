@@ -55,6 +55,9 @@ enum CharacterDirection
 // 캐릭터 대쉬 쿨타임
 #define PLAYER_DASH_COOLTIME			100
 
+// 스컬의 머리 날아가는 속도
+#define PLAYER_HEAD_SPEED				20
+
 
 
 // 캐릭터 좌표 구조체
@@ -102,6 +105,9 @@ struct CharacterBool
 
 	bool				next_Attack_B;		// 캐릭터가 다음 공격으로 B를 연결해야한다.
 	bool				next_Attack_C;		// 캐릭터가 다음 공격으로 C를 연결해야한다.
+
+	bool				useing_Skill_A;		// 캐릭터가 A 스킬을 사용중인지 체크하는 변수
+	bool				useing_Skill_B;		// 캐릭터가 B 스킬을 사용중인지 체크하는 변수
 };
 
 // 캐릭터의 점프 구조체
@@ -187,6 +193,9 @@ struct CharacterInfo
 		bool_V.next_Attack_B = false;
 		bool_V.next_Attack_C = false;
 
+		bool_V.useing_Skill_A = false;
+		bool_V.useing_Skill_B = false;
+
 		// 점프 초기화
 		jump.jump_Value = 0;
 		jump.Jump_Count = PLAYER_JUMP_COUNT;
@@ -222,6 +231,10 @@ struct CharacterInfo
 
 		bool_V.next_Attack_B = false;
 		bool_V.next_Attack_C = false;
+
+		bool_V.useing_Skill_A = false;
+		bool_V.useing_Skill_B = false;
+
 	}
 
 	// 캐릭터 좌표 셋팅 (매개변수 : 중점x, 중점y, 렉트사이즈x, 렉트사이즈y)

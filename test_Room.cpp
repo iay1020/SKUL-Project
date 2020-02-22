@@ -57,6 +57,9 @@ void test_Room::render()
 	// 플레이어 출력
 	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
 		_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
+
+	// 투사체 출력
+	DATAMANAGER->show_FlyingObject();
 }
 
 void test_Room::testControl()

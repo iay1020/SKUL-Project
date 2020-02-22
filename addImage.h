@@ -128,6 +128,7 @@ struct tagAddImage
 		// <Skill>
 		{
 			IMAGEMANAGER->addFrameImage("skul_Skill", "./image/skul/Skill/skul_Skill.bmp", 640, 238, 4, 2, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("skul_Skill_Head", "./image/skul/Skill/skul_Skill_Head.bmp", 120, 60, 4, 2, true, RGB(255, 0, 255));
 		}
 
 		// <Loading Skul>
@@ -287,6 +288,13 @@ struct tagAddImage
 
 			int throw_Head_L[] = { 4, 5, 6, 7 };
 			KEYANIMANAGER->addArrayFrameAnimation("throw_Head_L", "skul_Skill", throw_Head_L, 4, 10, false);
+
+			int skill_Head_R[] = { 0, 1, 2, 3 };
+			KEYANIMANAGER->addArrayFrameAnimation("skill_Head_R", "skul_Skill_Head", skill_Head_R, 4, 10, true);
+
+			int skill_Head_L[] = { 4, 5, 6, 7 };
+			KEYANIMANAGER->addArrayFrameAnimation("skill_Head_L", "skul_Skill_Head", skill_Head_L, 4, 10, true);
+
 		}
 
 

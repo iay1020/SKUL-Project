@@ -112,7 +112,8 @@ void IdleState::Idle(Player * player)
 	// 멈춰있는 상태에서 스킬을 눌렀다면 스킬 상태로 바꿔준다.
 	if (KEYMANAGER->isOnceKeyDown('A'))
 	{
-
+		// 스킬 A의 애니메이션으로 교체 해준다.
+		IdleState::Skill_A(player);
 	}
 
 	if (KEYMANAGER->isOnceKeyDown('S'))
@@ -362,6 +363,14 @@ void IdleState::Attack_C(Player * player)
 
 void IdleState::Skill_A(Player * player)
 {
+	// 스킬 A의 애니메이션으로 교체
+	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 스킬 A 상태로 교체 
+	player->set_State(Skill_A_State::getInstance());
+	player->get_State()->update(player);
+
 }
 
 void IdleState::Skill_B(Player * player)
@@ -2316,6 +2325,13 @@ Skill_A_State * Skill_A_State::getInstance()
 
 void Skill_A_State::Idle(Player * player)
 {
+	// 대기 애니메이션으로 교체
+	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 대기 상태로 교체
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
 }
 
 void Skill_A_State::Move(Player * player)
@@ -2356,6 +2372,37 @@ void Skill_A_State::Attack_C(Player * player)
 
 void Skill_A_State::Skill_A(Player * player)
 {
+	// 스컬의 머리 위치에서 렉트를 생성하여 바라보는 방향으로 날려준다. (머리통 렉트 생성 함수 호출)
+	// 스컬의 머리는 한번만 날아가야 한다. 한개를 생성과 동시에 bool값을 바꿔준다.
+	// 스컬이 머리를 다시 줍거나, 일정 시간이 자나면 bool값이 false로 바뀐다.
+	if (!player->get_Info().bool_V.useing_Skill_A)
+	{
+		// 스컬의 머리를 생성해준다. (방향에 따라 다른 이미지, 다른 각도)
+		if (player->get_InputKey() == PRESS_RIGHT)
+		{
+			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_R", FLYINFOBJECT_TYPE::SKUL_HEAD,
+				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
+				0.f, PLAYER_HEAD_SPEED, true);
+		}
+
+		if (player->get_InputKey() == PRESS_LEFT)
+		{
+			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_L", FLYINFOBJECT_TYPE::SKUL_HEAD,
+				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
+				3.14f, PLAYER_HEAD_SPEED, true);
+		}
+
+		// 스킬을 사용했으면 true
+		player->set_Info()->bool_V.useing_Skill_A = true;
+	}
+
+	// 스컬이 머리를 날리는 애니메이션이 끝나면 스컬 머리가 없는 애니메이션 타입으로 교체 후 대기 상태로
+	if (player->get_Info().img.ani->getFramePos().x == 480)
+	{
+		player->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
+		Skill_A_State::Idle(player);
+	}
+
 }
 
 void Skill_A_State::Skill_B(Player * player)
@@ -2364,6 +2411,9 @@ void Skill_A_State::Skill_B(Player * player)
 
 void Skill_A_State::update(Player * player)
 {
+	Skill_A(player);
+
+	KEYANIMANAGER->update();
 }
 
 
