@@ -58,6 +58,8 @@ enum CharacterDirection
 // 스컬의 머리 날아가는 속도
 #define PLAYER_HEAD_SPEED				20
 
+// 스컬 머리 날리는 스킬 쿨타임
+#define SKILL_THROW_HEAD_COOLTIME		300	
 
 
 // 캐릭터 좌표 구조체
@@ -110,6 +112,17 @@ struct CharacterBool
 	bool				useing_Skill_B;		// 캐릭터가 B 스킬을 사용중인지 체크하는 변수
 };
 
+// 캐릭터의 스킬 쿨타임
+struct CharacterSkillCoolTime
+{
+	int					skill_A_CoolTime;		// 스킬 A의 쿨타임
+	int					skill_A_CoolTime_Cnt;	// 스킬 A의 쿨타임 카운터
+
+	int					skill_B_CoolTime;		// 스킬 B의 쿨타임
+	int					skill_B_CoolTime_Cnt;	// 스킬 B의 쿨타임 카운터
+
+};
+
 // 캐릭터의 점프 구조체
 struct CharacterJump
 {
@@ -150,13 +163,14 @@ struct CharacterType
 // 캐릭터의 정보 구조체
 struct CharacterInfo
 {
-	CharacterPos		pos;		// 캐릭터의 좌표 정보를담는다.
-	CharacterImage		img;		// 캐릭터의 이미지 정보를 담는다.
-	CharacterStatus		status;		// 캐릭터의 스테이터스 정보를 담는다.
-	CharacterBool		bool_V;		// 캐릭터의 bool 정보를 담는다.
-	CharacterJump		jump;		// 캐릭터의 점프 정보를 담는다.
-	CharacterDash		dash;		// 캐릭터의 대쉬 정보를 담는다.
-	CharacterType		type;		// 캐릭터의 클래스 타입 정보를 담는다.
+	CharacterPos				pos;		// 캐릭터의 좌표 정보를담는다.
+	CharacterImage				img;		// 캐릭터의 이미지 정보를 담는다.
+	CharacterStatus				status;		// 캐릭터의 스테이터스 정보를 담는다.
+	CharacterBool				bool_V;		// 캐릭터의 bool 정보를 담는다.
+	CharacterJump				jump;		// 캐릭터의 점프 정보를 담는다.
+	CharacterDash				dash;		// 캐릭터의 대쉬 정보를 담는다.
+	CharacterType				type;		// 캐릭터의 클래스 타입 정보를 담는다.
+	CharacterSkillCoolTime		skill;		// 캐릭터의 스킬 쿨타임 정보를 담는다.
 
 	// 캐릭터의 정보를 담을 변수 초기화
 	void reset()
@@ -211,6 +225,13 @@ struct CharacterInfo
 		// 스컬 클래스 초기화
 		type.skul_Type = SKUL_TYPE::SKUL_NOWEAPON;
 		//type.skul_Type_Name = ;
+
+		// 스킬 쿨타임 
+		skill.skill_A_CoolTime = 0;
+		skill.skill_A_CoolTime_Cnt = 0;
+
+		skill.skill_B_CoolTime = 0;
+		skill.skill_B_CoolTime_Cnt = 0;
 	}
 
 	// 캐릭터 bool 초기화
@@ -235,6 +256,16 @@ struct CharacterInfo
 		bool_V.useing_Skill_A = false;
 		bool_V.useing_Skill_B = false;
 
+	}
+
+	// 캐릭터 상태 bool 초기화
+	void bool_State_Reset()
+	{
+		bool_V.idle_Cheack = false;
+		bool_V.walk_Cheack = false;
+		bool_V.jump_Cheack = false;
+		bool_V.fall_Cheack = false;
+		bool_V.dash_Cheack = false;
 	}
 
 	// 캐릭터 좌표 셋팅 (매개변수 : 중점x, 중점y, 렉트사이즈x, 렉트사이즈y)
@@ -331,6 +362,85 @@ struct CharacterInfo
 
 			}
 		}
+	}
+
+	// 캐릭터 타입에 따라 맞는 쿨타임을 넣어준다.
+	void setting_CoolTime()
+	{
+		// 타입에 따라 쿨타임 저장
+		switch (type.skul_Type)
+		{
+		case SKUL_TYPE::SKUL_WEAPON:
+			// 스컬의 머리를 던지는 스킬 쿨타임을 넣어준다.
+			skill.skill_A_CoolTime = SKILL_THROW_HEAD_COOLTIME;
+
+			break;
+
+		}
+	}
+
+	// 스킬 쿨타임을 돌려준다.
+	void skil_CoolTime()
+	{
+		// 캐릭터 타입에 따라 쿨타임 넣기
+		setting_CoolTime();
+
+		// 스킬 A가 사용중이라면 true
+		if (bool_V.useing_Skill_A)
+		{
+			// 스킬 A 쿨타임을 돌린다.
+			skill.skill_A_CoolTime_Cnt++;
+
+			// 스킬 A의 쿨타임이 다 돌았을때
+			if (skill.skill_A_CoolTime_Cnt >= skill.skill_A_CoolTime)
+			{
+				// 스킬을 다시 사용 가능하도록 false로 바꿔준다.
+				bool_V.useing_Skill_A = false;
+
+				// 다음 연산을 위해 쿨타임 초기화
+				skill.skill_A_CoolTime_Cnt = 0;
+
+				// 스컬은 다시 머리가 있는 타입으로 변한다. 
+				if (type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+				{
+					type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+
+					//bool_V.idle_Cheack = false;
+					//bool_V.walk_Cheack = false;
+				}
+
+			}
+
+		}
+
+		// 스킬 B가 사용중이라면 true
+		if (bool_V.useing_Skill_B)
+		{
+			// 스킬 B 쿨타임을 돌린다.
+			skill.skill_B_CoolTime_Cnt++;
+
+			// 스킬 A의 쿨타임이 다 돌았을때
+			if (skill.skill_B_CoolTime_Cnt >= skill.skill_B_CoolTime)
+			{
+				// 스킬을 다시 사용 가능하도록 false로 바꿔준다.
+				bool_V.useing_Skill_B = false;
+
+				// 다음 연산을 위해 쿨타임 초기화
+				skill.skill_B_CoolTime_Cnt = 0;
+
+				// 스컬은 다시 머리가 있는 타입으로 변한다. 
+				if (type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+				{
+					type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+
+
+				}
+
+
+			}
+
+		}
+
 	}
 
 	// 애니메이션 체인저

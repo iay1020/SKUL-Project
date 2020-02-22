@@ -1,7 +1,7 @@
 #pragma once
 
 // 스컬의 머리가 사라지는 시간
-#define SKUL_HEAD_DELETE_TIME 100
+#define SKUL_HEAD_DELETE_TIME 300
 
 // 파티클이 사라지는 시간
 #define PARTICLE_DELETE_TIME 50

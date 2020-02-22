@@ -511,6 +511,12 @@ void MoveState::Move(Player * player)
 		{
 			Attack_A(player);
 		}
+
+		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
+		if (KEYMANAGER->isOnceKeyDown('A'))
+		{
+			Skill_A(player);
+		}
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
@@ -579,6 +585,12 @@ void MoveState::Move(Player * player)
 		if (KEYMANAGER->isOnceKeyDown('X'))
 		{
 			Attack_A(player);
+		}
+
+		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
+		if (KEYMANAGER->isOnceKeyDown('A'))
+		{
+			Skill_A(player);
 		}
 	}
 
@@ -762,6 +774,14 @@ void MoveState::Attack_C(Player * player)
 
 void MoveState::Skill_A(Player * player)
 {
+	// 스킬 A의 애니메이션으로 교체
+	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 스킬 A 상태로 교체 
+	player->set_State(Skill_A_State::getInstance());
+	player->get_State()->update(player);
+
 }
 
 void MoveState::Skill_B(Player * player)
@@ -894,6 +914,12 @@ void JumpState::Move(Player * player)
 			// 애니메이션 교체를 위해 JumpAttack 함수 호출
 			JumpAttack(player);
 		}
+
+		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
+		if (KEYMANAGER->isOnceKeyDown('A'))
+		{
+			Skill_A(player);
+		}
 	}
 }
 
@@ -978,6 +1004,12 @@ void JumpState::Jump(Player * player)
 		{
 			// 애니메이션 교체를 위해 JumpAttack 함수 호출
 			JumpAttack(player);
+		}
+
+		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
+		if (KEYMANAGER->isOnceKeyDown('A'))
+		{
+			Skill_A(player);
 		}
 
 		// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
@@ -1098,6 +1130,14 @@ void JumpState::Attack_C(Player * player)
 
 void JumpState::Skill_A(Player * player)
 {
+	// 스킬 A의 애니메이션으로 교체
+	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 스킬 A 상태로 교체 
+	player->set_State(Skill_A_State::getInstance());
+	player->get_State()->update(player);
+
 }
 
 void JumpState::Skill_B(Player * player)
@@ -1284,6 +1324,12 @@ void FallState::Move(Player * player)
 		JumpAttack(player);
 	}
 
+	// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
+	if (KEYMANAGER->isOnceKeyDown('A'))
+	{
+		Skill_A(player);
+	}
+
 	// 카메라 위치 갱신
 	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
 
@@ -1461,6 +1507,12 @@ void FallState::Fall(Player * player)
 			// 점프 공격 애니메이션으로 바꾸기 위해 함수 호출
 			JumpAttack(player);
 		}
+
+		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
+		if (KEYMANAGER->isOnceKeyDown('A'))
+		{
+			Skill_A(player);
+		}
 		
 		// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
 		if (DATAMANAGER->Collision_PlayerFall_Ground())
@@ -1565,6 +1617,14 @@ void FallState::Attack_C(Player * player)
 
 void FallState::Skill_A(Player * player)
 {
+	// 스킬 A의 애니메이션으로 교체
+	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 스킬 A 상태로 교체 
+	player->set_State(Skill_A_State::getInstance());
+	player->get_State()->update(player);
+
 }
 
 void FallState::Skill_B(Player * player)
@@ -2325,6 +2385,9 @@ Skill_A_State * Skill_A_State::getInstance()
 
 void Skill_A_State::Idle(Player * player)
 {
+	// 불값 초기화
+	player->set_Info()->bool_State_Reset();
+
 	// 대기 애니메이션으로 교체
 	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 	player->set_Info()->img.ani->start();
@@ -2399,6 +2462,9 @@ void Skill_A_State::Skill_A(Player * player)
 	// 스컬이 머리를 날리는 애니메이션이 끝나면 스컬 머리가 없는 애니메이션 타입으로 교체 후 대기 상태로
 	if (player->get_Info().img.ani->getFramePos().x == 480)
 	{
+		// 점프 초기화 (스킬이 끝난 후 대기 -> 추락으로 넘어갈 경우)
+		player->set_Info()->jump.jump_Value = 0;
+
 		player->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
 		Skill_A_State::Idle(player);
 	}

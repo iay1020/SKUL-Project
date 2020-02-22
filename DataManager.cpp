@@ -811,3 +811,20 @@ void DataManager::Lerp_Enemy()
 
 	// bool 값 끄기
 }
+
+bool DataManager::Collision_FlyingObject_Wall()
+{
+	// 투사체의 옆에 벽이 있을 경우
+
+	// 투사체의 옆에 벽이 없을 경우
+	return false;
+}
+
+bool DataManager::Collision_FlyingObject_Ground()
+{
+	// 투사체의 아래에 땅이 있을 경우
+	// 투사체가 추락중인 상태일때만 체크해야한다. 그렇지 않으면 날아가는 도중에 무조건 땅에 떨어질꺼다.
+
+	// 투사체의 아래에 땅이 없을 경우.
+	return false;
+}

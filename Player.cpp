@@ -39,7 +39,11 @@ void Player::update()
 	// 스컬 대쉬 쿨타임 함수
 	info.dash_CoolTime();
 
-	state->update(this);							// 상태 업데이트
+	// 스컬 스킬 쿨타임 함수
+	info.skil_CoolTime();
+
+	// 상태 업데이트
+	state->update(this);							
 }
 
 void Player::release()
