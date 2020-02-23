@@ -812,15 +812,54 @@ void DataManager::Lerp_Enemy()
 	// bool 값 끄기
 }
 
-bool DataManager::Collision_FlyingObject_Wall()
+bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)
 {
-	// 투사체의 옆에 벽이 있을 경우
+	// 투사체의 타일 인덱스를 저장할 공간
+	short fObj_TilePos_X, fObj_TilePos_Y;
 
-	// 투사체의 옆에 벽이 없을 경우
+	// 투사체가 위치한 타일의 인덱스를 구한다.
+	fObj_TilePos_X = fObj->center.x / TILE_SIZE_X;
+	fObj_TilePos_Y = fObj->center.y / TILE_SIZE_Y;
+
+	// 투사체가 날아가는 방향에 따라 다른 연산
+	if (fObj->dir == FLYINGOBJECT_DIRECTION::LEFT)
+	{
+		// 투사체가 바라보는 방향에 벽이 있다면
+		if (_tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		{
+			cout << "왼쪽벽" << endl;
+			// 투사체의 Left가 벽의 Right보다 작으면
+			if ((fObj->rc.left + CAMERAMANAGER->Use_Func()->get_CameraXY().x) - 5 < _tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right)
+			{
+				cout << "왼쪽벽" << endl;
+				return true;
+			}
+		}
+	}
+
+	// 투사체가 날아가는 방향에 따라 다른 연산
+	if (fObj->dir == FLYINGOBJECT_DIRECTION::RIGHT)
+	{
+		// 투사체가 바라보는 방향에 벽이 있다면
+		if (_tileList[(fObj_TilePos_X + 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		{
+			cout << "오른쪽벽" << endl;
+			// 투사체의 Right가 벽의 Left보다 크면
+			if ((fObj->rc.right + CAMERAMANAGER->Use_Func()->get_CameraXY().x) + 5 > _tileList[(fObj_TilePos_X + 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.left)
+			{
+				cout << "오른쪽벽" << endl;
+
+				return true;
+			}
+		}
+	}
+
+
+	//투사체가 충돌하지 않았다면 false 반환
 	return false;
 }
 
-bool DataManager::Collision_FlyingObject_Ground()
+bool DataManager::Collision_FlyingObject_Ground(FlyingObjectInfo* fObj)
 {
 	// 투사체의 아래에 땅이 있을 경우
 	// 투사체가 추락중인 상태일때만 체크해야한다. 그렇지 않으면 날아가는 도중에 무조건 땅에 떨어질꺼다.

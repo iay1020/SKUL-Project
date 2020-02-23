@@ -110,6 +110,8 @@ struct CharacterBool
 
 	bool				useing_Skill_A;		// 캐릭터가 A 스킬을 사용중인지 체크하는 변수
 	bool				useing_Skill_B;		// 캐릭터가 B 스킬을 사용중인지 체크하는 변수
+
+	bool				now_Ani_Change;		// 타입이 바뀌었을때 애니메이션을 바로 바꿔야할때
 };
 
 // 캐릭터의 스킬 쿨타임
@@ -210,6 +212,8 @@ struct CharacterInfo
 		bool_V.useing_Skill_A = false;
 		bool_V.useing_Skill_B = false;
 
+		bool_V.now_Ani_Change = false;
+
 		// 점프 초기화
 		jump.jump_Value = 0;
 		jump.Jump_Count = PLAYER_JUMP_COUNT;
@@ -232,6 +236,7 @@ struct CharacterInfo
 
 		skill.skill_B_CoolTime = 0;
 		skill.skill_B_CoolTime_Cnt = 0;
+
 	}
 
 	// 캐릭터 bool 초기화
@@ -256,6 +261,7 @@ struct CharacterInfo
 		bool_V.useing_Skill_A = false;
 		bool_V.useing_Skill_B = false;
 
+		bool_V.now_Ani_Change = false;
 	}
 
 	// 캐릭터 상태 bool 초기화
@@ -405,6 +411,7 @@ struct CharacterInfo
 				{
 					type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
 
+					bool_V.now_Ani_Change = true;
 					//bool_V.idle_Cheack = false;
 					//bool_V.walk_Cheack = false;
 				}
@@ -433,7 +440,7 @@ struct CharacterInfo
 				{
 					type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
 
-
+					bool_V.now_Ani_Change = true;
 				}
 
 

@@ -91,11 +91,11 @@ public:
 	// 투사체 출력
 	void show_FlyingObject() { _flyObj_Manager->Show_FlyingObj(); }
 
-	// 투사체가 날아가는 방향에 벽이 있는지 체크
-	bool Collision_FlyingObject_Wall();
+	// 투사체가 날아가는 방향에 벽이 있는지 체크 (매개변수 : 투사체 주소)
+	bool Collision_FlyingObject_Wall(FlyingObjectInfo* fObj);
 
-	// 투사체가 떨어지는 곳에 땅이 있는지 체크
-	bool Collision_FlyingObject_Ground();
+	// 투사체가 떨어지는 곳에 땅이 있는지 체크 (매개변수 : 투사체 주소)
+	bool Collision_FlyingObject_Ground(FlyingObjectInfo* fObj);
 
 };
 

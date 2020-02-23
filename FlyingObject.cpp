@@ -24,6 +24,7 @@ void FlyingObject::update()
 {
 	// 투사체 이동 함수
 	Move_FlyingObj();
+
 }
 
 void FlyingObject::render()
@@ -32,12 +33,13 @@ void FlyingObject::render()
 	Show_FlyingObj();
 }
 
-void FlyingObject::Create_FlyingObj(string imgName, string aniName, FLYINFOBJECT_TYPE type_V, float x, float y, float angle_V, float speed_V, bool Frame)
+void FlyingObject::Create_FlyingObj(string imgName, string aniName, FLYINFOBJECT_TYPE type_V, FLYINGOBJECT_DIRECTION dir,
+	float x, float y, float angle_V, float speed_V, bool Frame)
 {
 	// 투사체 오브젝트를 만든다.
 	FlyingObjectInfo new_FlyingObj;
 	new_FlyingObj.reset();
-	new_FlyingObj.setting_Info(imgName, aniName, type_V, x, y, angle_V, speed_V, Frame);
+	new_FlyingObj.setting_Info(imgName, aniName, type_V, dir, x, y, angle_V, speed_V, Frame);
 
 	vFlyingObj.push_back(new_FlyingObj);
 
@@ -47,9 +49,53 @@ void FlyingObject::Move_FlyingObj()
 {
 	for (viFlyingObj = vFlyingObj.begin(); viFlyingObj != vFlyingObj.end();)
 	{
+		// 투사체의 타입이 스컬의 머리이고, 벽을 발견하면 반대 각도로 바꿔준다. 또한 중력을 추가해서 떨어지도록 한다. 추락중으로 바꿔준다.
+		if ((*viFlyingObj).type == FLYINFOBJECT_TYPE::SKUL_HEAD)
+		{
+			// 추락중이지 않을때
+			if (!(*viFlyingObj).isFalling)
+			{
+				// 벽을 발견하면 각도를 반대각도로 바꿔주고, 중력을 추가하여 떨어지도록 한다. 또한 추락중으로 바꿔준다.
+				if(DATAMANAGER->Collision_FlyingObject_Wall(&(*viFlyingObj)))
+				{
+					// 투사체의 방향에 따라 다른 연산
+					if ((*viFlyingObj).dir == FLYINGOBJECT_DIRECTION::LEFT)
+					{
+						(*viFlyingObj).angle = 0;								// 반대 각도로 바꿔준다.
+						(*viFlyingObj).speed = 5;
+						(*viFlyingObj).gravity = FLYINGOBJECT_GRAVITY;			// 중력 추가
+						(*viFlyingObj).dir = FLYINGOBJECT_DIRECTION::RIGHT;		// 방향을 반대로 바꿔준다.
+						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
+					}
+					
+
+					else if ((*viFlyingObj).dir == FLYINGOBJECT_DIRECTION::RIGHT)
+					{
+						(*viFlyingObj).angle = 3.14;							// 반대 각도로 바꿔준다.
+						(*viFlyingObj).speed = 5;
+						(*viFlyingObj).gravity = FLYINGOBJECT_GRAVITY;			// 중력 추가
+						(*viFlyingObj).dir = FLYINGOBJECT_DIRECTION::LEFT;		// 방향을 반대로 바꿔준다.
+						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
+					}
+				}
+			}
+
+			// 투사체의 타입이 스컬의 머리이고, 추락중이며 땅을 발견하면 스피드를 없애버린다. 또한 애니메이션을 끈다.
+			if ((*viFlyingObj).isFalling)
+			{
+				// 땅을 발견하면 스피드를 없애버리고, 애니메이션을 종료한다.
+				(*viFlyingObj).gravity += FLYINGOBJECT_GRAVITY;
+
+			}
+
+		}
+
 		// 투사체 이동
 		(*viFlyingObj).center.x += cosf((*viFlyingObj).angle) * (*viFlyingObj).speed;
-		(*viFlyingObj).center.y += -sinf((*viFlyingObj).angle) * (*viFlyingObj).speed;
+		(*viFlyingObj).center.y += -sinf((*viFlyingObj).angle) * (*viFlyingObj).speed + (*viFlyingObj).gravity;
+
+		// 렉트 갱신
+		(*viFlyingObj).update_Rect();
 
 		// 투사체 삭제 카운트 증가
 		(*viFlyingObj).Delete_Timer++;
@@ -72,16 +118,16 @@ void FlyingObject::Show_FlyingObj()
 
 	for (viFlyingObj = vFlyingObj.begin(); viFlyingObj != vFlyingObj.end(); ++viFlyingObj)
 	{
+		// 카메라 보정
+		tempRC = (*viFlyingObj).rc;
+		tempRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+		tempRC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+		tempRC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+		tempRC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 	
 		// 프레임 이미지가 아니라면
 		if (!(*viFlyingObj).isFrame)
 		{
-			tempRC = (*viFlyingObj).rc;
-			tempRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-			tempRC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-			tempRC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-			tempRC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-
 			(*viFlyingObj).img->render(getMemDC(), tempRC.left, tempRC.top);
 		}
 
@@ -92,8 +138,6 @@ void FlyingObject::Show_FlyingObj()
 				(*viFlyingObj).center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x, 
 				(*viFlyingObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
 				(*viFlyingObj).ani);
-
-			cout << (*viFlyingObj).ani->getFramePos().x << endl;
 
 		}
 	}

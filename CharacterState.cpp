@@ -28,6 +28,15 @@ IdleState * IdleState::getInstance()
 
 void IdleState::Idle(Player * player)
 {
+	// 만약 true의 값이라면 애니메이션 교체 스타트
+	if (player->get_Info().bool_V.now_Ani_Change)
+	{
+		player->set_Info()->ani_Changer("Idle", player->get_InputKey());
+		player->set_Info()->img.ani->start();
+
+		player->set_Info()->bool_V.now_Ani_Change = false;
+	}
+
 	// 플레이어의 아래에 땅 타일이 없다면 추락 상태로 바꿔준다.
 	if (!DATAMANAGER->Collision_PlayerFall_Ground())
 	{
@@ -438,6 +447,15 @@ void MoveState::Idle(Player * player)
 
 void MoveState::Move(Player * player)
 {
+	// 만약 true의 값이라면 애니메이션 교체 스타트
+	if (player->get_Info().bool_V.now_Ani_Change)
+	{
+		player->set_Info()->ani_Changer("Move", player->get_InputKey());
+		player->set_Info()->img.ani->start();
+
+		player->set_Info()->bool_V.now_Ani_Change = false;
+	}
+
 	// 플레이어의 아래에 땅 타일이 없다면 추락 상태로 바꿔준다.
 	if (!DATAMANAGER->Collision_PlayerFall_Ground())
 	{
@@ -925,6 +943,15 @@ void JumpState::Move(Player * player)
 
 void JumpState::Jump(Player * player)
 {
+	// 만약 true의 값이라면 애니메이션 교체 스타트
+	if (player->get_Info().bool_V.now_Ani_Change)
+	{
+		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
+		player->set_Info()->img.ani->start();
+
+		player->set_Info()->bool_V.now_Ani_Change = false;
+	}
+
 	// 만약 계속 이동중이라면 true값
 	if (player->get_Info().bool_V.walking_Cheack) Move(player);
 
@@ -1386,6 +1413,15 @@ void FallState::Jump(Player * player)
 
 void FallState::Fall(Player * player)
 {
+	// 만약 true의 값이라면 애니메이션 교체 스타트
+	if (player->get_Info().bool_V.now_Ani_Change)
+	{
+		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
+		player->set_Info()->img.ani->start();
+
+		player->set_Info()->bool_V.now_Ani_Change = false;
+	}
+
 	// 추락 루프 애니메이션으로 교체하는 시점 (스컬 추락 애니메이션 중에만)
 	if (player->get_Info().img.imgName == "skul_Fall" ||
 		player->get_Info().img.imgName == "skul_Fall_NoHead")
@@ -2443,14 +2479,16 @@ void Skill_A_State::Skill_A(Player * player)
 		// 스컬의 머리를 생성해준다. (방향에 따라 다른 이미지, 다른 각도)
 		if (player->get_InputKey() == PRESS_RIGHT)
 		{
-			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_R", FLYINFOBJECT_TYPE::SKUL_HEAD,
+			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_R", 
+				FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::RIGHT,
 				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
 				0.f, PLAYER_HEAD_SPEED, true);
 		}
 
 		if (player->get_InputKey() == PRESS_LEFT)
 		{
-			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_L", FLYINFOBJECT_TYPE::SKUL_HEAD,
+			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_L", 
+				FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::LEFT,
 				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
 				3.14f, PLAYER_HEAD_SPEED, true);
 		}
