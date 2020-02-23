@@ -61,10 +61,13 @@ void FlyingObject::Move_FlyingObj()
 					// 투사체의 방향에 따라 다른 연산
 					if ((*viFlyingObj).dir == FLYINGOBJECT_DIRECTION::LEFT)
 					{
-						cout << "2" << endl;
 						(*viFlyingObj).angle = 0;								// 반대 각도로 바꿔준다.
 						(*viFlyingObj).speed = 5;
 						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
+
+						// 투사체와 충돌한 벽에 이펙트를 만든다.
+						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_R_Effect", EffectType::THROW_HEAD, (*viFlyingObj).center.x - 10, (*viFlyingObj).center.y);
+
 					}
 					
 
@@ -73,6 +76,10 @@ void FlyingObject::Move_FlyingObj()
 						(*viFlyingObj).angle = 3.14;							// 반대 각도로 바꿔준다.
 						(*viFlyingObj).speed = 5;
 						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
+
+						// 투사체와 충돌한 벽에 이펙트를 만든다.
+						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_L_Effect", EffectType::THROW_HEAD, (*viFlyingObj).center.x + 40, (*viFlyingObj).center.y);
+
 					}
 				}
 			}

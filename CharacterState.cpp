@@ -113,6 +113,9 @@ void IdleState::Idle(Player * player)
 		// 점프중이라면 ture
 		player->set_Info()->bool_V.jumping_Cheack = true;
 
+		// 점프 이펙트를 만들어준다.
+		DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Jump_Effect", "skul_Jump_Ani_Effect", EffectType::JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y);
+
 		// Jump함수 호출
 		IdleState::Jump(player);
 	}
@@ -156,6 +159,10 @@ void IdleState::Idle(Player * player)
 	
 			// 대쉬 애니메이션 교체를 해야 하니까 false로
 			player->set_Info()->bool_V.dash_Cheack = false;
+
+			// 대쉬 이펙트를 만들어 준다.
+			if (player->get_InputKey() == PRESS_LEFT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect","skul_Dash_Left_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
+			if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 	
 			// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 			IdleState::Dash(player);
@@ -485,6 +492,10 @@ void MoveState::Move(Player * player)
 				// 점프키를 눌렀다면 true로 바꿔준다.
 				player->set_Info()->bool_V.jumping_Cheack = true;
 
+				// 점프 이펙트를 만들어준다.
+				DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Jump_Effect", "skul_Jump_Ani_Effect", EffectType::JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y);
+
+
 				// 점프 애니메이션 교체를 위해 Jump함수 호출
 				MoveState::Jump(player);
 			}
@@ -519,6 +530,10 @@ void MoveState::Move(Player * player)
 		
 				// 대쉬 애니메이션 교체를 해야 하니까 false로
 				player->set_Info()->bool_V.dash_Cheack = false;
+
+				// 대쉬 이펙트를 만들어 준다.
+				if (player->get_InputKey() == PRESS_LEFT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Left_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
+				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 				Dash(player);
@@ -559,6 +574,9 @@ void MoveState::Move(Player * player)
 				// 점프키를 눌렀다면 true로 바꿔준다.
 				player->set_Info()->bool_V.jumping_Cheack = true;
 
+				// 점프 이펙트를 만들어준다.
+				DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Jump_Effect", "skul_Jump_Ani_Effect", EffectType::JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y);
+
 				// 점프 애니메이션 교체를 위해 Jump함수 호출
 				MoveState::Jump(player);
 			}
@@ -594,6 +612,10 @@ void MoveState::Move(Player * player)
 		
 				// 대쉬 애니메이션 교체를 해야 하니까 false로
 				player->set_Info()->bool_V.dash_Cheack = false;
+
+				// 대쉬 이펙트를 만들어 준다.
+				if (player->get_InputKey() == PRESS_LEFT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Left_Effect", EffectType::JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
+				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 				Dash(player);
@@ -898,6 +920,9 @@ void JumpState::Move(Player * player)
 		{
 			if (player->get_Info().jump.Jump_Count > 0)
 			{
+				// 점프 이펙트를 만들어준다.
+				DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Double_Jump_Effect", "skul_Double_Jump_Ani_Effect", EffectType::DOUBLE_JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y);
+
 				// 점프 카운트를 감소 시켜주고, 점프 수치 회복
 				player->set_Info()->jump.Jump_Count--;
 				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
@@ -922,6 +947,10 @@ void JumpState::Move(Player * player)
 		
 				// 대쉬 애니메이션 교체를 해야 하니까 false로
 				player->set_Info()->bool_V.dash_Cheack = false;
+
+				// 대쉬 이펙트를 만들어 준다.
+				if (player->get_InputKey() == PRESS_LEFT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Left_Effect", EffectType::DOUBLE_JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
+				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DOUBLE_JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 				Dash(player);
@@ -998,6 +1027,9 @@ void JumpState::Jump(Player * player)
 		{
 			if (player->get_Info().jump.Jump_Count > 0)
 			{
+				// 점프 이펙트를 만들어준다.
+				DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Double_Jump_Effect", "skul_Double_Jump_Ani_Effect", EffectType::DOUBLE_JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y);
+
 				// 점프 카운트를 감소 시켜주고, 점프 수치 회복
 				player->set_Info()->jump.Jump_Count--;
 				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
@@ -1022,6 +1054,10 @@ void JumpState::Jump(Player * player)
 		
 				// 대쉬 애니메이션 교체를 해야 하니까 false로
 				player->set_Info()->bool_V.dash_Cheack = false;
+
+				// 대쉬 이펙트를 만들어 준다.
+				if (player->get_InputKey() == PRESS_LEFT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Left_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
+				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 				Dash(player);
@@ -1312,6 +1348,9 @@ void FallState::Move(Player * player)
 	{
 		if (player->get_Info().jump.Jump_Count > 0)
 		{
+			// 점프 이펙트를 만들어준다.
+			DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Double_Jump_Effect", "skul_Double_Jump_Ani_Effect", EffectType::DOUBLE_JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y);
+
 			// 점프 카운트를 감소 시켜주고, 점프 수치 회복
 			player->set_Info()->jump.Jump_Count--;
 			player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
@@ -1342,6 +1381,10 @@ void FallState::Move(Player * player)
 	
 			// 대쉬 애니메이션 교체를 해야 하니까 false로
 			player->set_Info()->bool_V.dash_Cheack = false;
+
+			// 대쉬 이펙트를 만들어 준다.
+			if (player->get_InputKey() == PRESS_LEFT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Left_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
+			if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 	
 			// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 			Dash(player);
@@ -1505,6 +1548,9 @@ void FallState::Fall(Player * player)
 		{
 			if (player->get_Info().jump.Jump_Count > 0)
 			{
+				// 점프 이펙트를 만들어준다.
+				DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Double_Jump_Effect", "skul_Double_Jump_Ani_Effect", EffectType::DOUBLE_JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y);
+
 				// 점프 카운트를 감소 시켜주고, 점프 수치 회복
 				player->set_Info()->jump.Jump_Count--;
 				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
@@ -1535,6 +1581,10 @@ void FallState::Fall(Player * player)
 		
 				// 대쉬 애니메이션 교체를 해야 하니까 false로
 				player->set_Info()->bool_V.dash_Cheack = false;
+
+				// 대쉬 이펙트를 만들어 준다.
+				if (player->get_InputKey() == PRESS_LEFT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Left_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
+				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
 				Dash(player);
@@ -2136,7 +2186,7 @@ Attack_A_State * Attack_A_State::getInstance()
 void Attack_A_State::Idle(Player * player)
 {
 	// 사용했던 변수 초기화
-	player->set_Info()->bool_Value_Reset();
+	player->set_Info()->bool_State_Reset();
 
 	// 대기 애니메이션을 넣어준다.
 	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
@@ -2268,7 +2318,7 @@ Attack_B_State * Attack_B_State::getInstance()
 void Attack_B_State::Idle(Player * player)
 {
 	// 사용한 변수 초기화
-	player->set_Info()->bool_Value_Reset();
+	player->set_Info()->bool_State_Reset();
 
 	// 대기 애니메이션으로 교체 해준다.
 	player->set_Info()->ani_Changer("Idle", player->get_InputKey());

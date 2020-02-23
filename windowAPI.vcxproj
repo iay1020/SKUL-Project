@@ -161,6 +161,8 @@
     <ClInclude Include="DataManager.h" />
     <ClInclude Include="Data_Library.h" />
     <ClInclude Include="effect.h" />
+    <ClInclude Include="EffectMaker.h" />
+    <ClInclude Include="EffectMaker_Library.h" />
     <ClInclude Include="effectManager.h" />
     <ClInclude Include="FlyingObject.h" />
     <ClInclude Include="FlyingObject_Library.h" />
@@ -202,6 +204,7 @@
     <ClCompile Include="collisionUtil.cpp" />
     <ClCompile Include="DataManager.cpp" />
     <ClCompile Include="effect.cpp" />
+    <ClCompile Include="EffectMaker.cpp" />
     <ClCompile Include="effectManager.cpp" />
     <ClCompile Include="FlyingObject.cpp" />
     <ClCompile Include="gameNode.cpp" />

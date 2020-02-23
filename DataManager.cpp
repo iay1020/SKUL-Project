@@ -14,6 +14,7 @@ HRESULT DataManager::init()
 {
 	// 투사체 매니저 할당
 	_flyObj_Manager = new FlyingObject;
+	_effect_Maker = new EffectMaker;
 
 	return S_OK;
 }
@@ -29,6 +30,9 @@ void DataManager::update()
 
 	// 투사체 매니저 업데이트
 	_flyObj_Manager->update();
+
+	// 투사체 충돌 함수
+	Collision_Skul_Head();
 
 	// 테스트용 캐릭터 클래스 체인지
 	if (KEYMANAGER->isOnceKeyDown('I'))
@@ -880,4 +884,55 @@ bool DataManager::Collision_FlyingObject_Ground(FlyingObjectInfo* fObj)
 
 	// 투사체의 아래에 땅이 없을 경우.
 	return false;
+}
+
+void DataManager::Collision_Skul_Head()
+{
+	// 스컬이 자신의 머리와 충돌 했을 경우에는
+	// 스컬이 머리가 있는 상태로 바꿔줘야한다.
+	// 또한 스킬을 사용 가능하게 만들어야 하고, 쿨타임 또한 초기화 해야한다.
+	// 투사체로 사용한 스컬 머리 또한 삭제 해야한다.
+
+	// 투사체 벡터 정보를 받아온다.
+	vector<FlyingObjectInfo>* vFObj = _flyObj_Manager->get_vFlyingObj_Address();
+	vector<FlyingObjectInfo>::iterator viFObj, viEnd;
+	RECT tempRC;
+
+	viEnd = vFObj->end();
+
+	for (viFObj = vFObj->begin(); viFObj != viEnd;)
+	{
+		// 투사체의 타입이 스컬의 머리라면
+		if ((*viFObj).type == FLYINFOBJECT_TYPE::SKUL_HEAD)
+		{
+			tempRC = (*viFObj).rc;
+			tempRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			tempRC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			tempRC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+			tempRC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+			// 스컬과 충돌을 했다면
+			RECT temp;
+			if (IntersectRect(&temp, &tempRC, &_skul->set_Info()->pos.rc) && (*viFObj).isFalling)
+			{
+				// 투사체 삭제
+				viFObj = vFObj->erase(viFObj);
+
+				// 스컬의 쿨타임 초기화, 스컬의 스킬 사용 초기화, 스컬의 상태 이미지 변화
+				_skul->set_Info()->bool_V.useing_Skill_A = false;
+				_skul->set_Info()->skill.skill_A_CoolTime_Cnt = 0;
+
+				_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+				_skul->set_Info()->bool_V.now_Ani_Change = true;
+
+				break;
+			}
+
+			else viFObj++;
+		}
+
+		else viFObj++;
+
+	}
+
 }

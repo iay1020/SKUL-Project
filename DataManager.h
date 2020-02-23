@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "CharacterState.h"
 #include "FlyingObject.h"
+#include "EffectMaker.h"
 
 class DataManager : public singletonBase<DataManager>
 {
@@ -15,6 +16,7 @@ private:
 	Player*						_skul;									// 스컬 정보
 
 	FlyingObject*				_flyObj_Manager;						// 투사체 매니저
+	EffectMaker*				_effect_Maker;							// 이펙트 매니저
 
 public:
 	DataManager();		// 생성자
@@ -96,6 +98,19 @@ public:
 
 	// 투사체가 떨어지는 곳에 땅이 있는지 체크 (매개변수 : 투사체 주소)
 	bool Collision_FlyingObject_Ground(FlyingObjectInfo* fObj);
+
+	// 투사체(스컬 머리)가 스컬과 충돌 했을 경우
+	void Collision_Skul_Head();
+
+	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 이펙트 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+	// 이펙트 매니저의 주소를 얻는다.
+	EffectMaker* effect_Maker_Address() { return _effect_Maker; }
+
+	// 이펙트 출력
+	void show_Effect() { _effect_Maker->render(); }
+
+
 
 };
 

@@ -60,6 +60,9 @@ void test_Room::render()
 
 	// 투사체 출력
 	DATAMANAGER->show_FlyingObject();
+
+	// 이펙트 출력
+	DATAMANAGER->show_Effect();
 }
 
 void test_Room::testControl()

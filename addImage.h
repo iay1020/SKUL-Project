@@ -98,6 +98,9 @@ struct tagAddImage
 		{
 			IMAGEMANAGER->addFrameImage("skul_Dash", "./image/skul/Dash/skul_Dash.bmp", 320, 238, 2, 2, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("skul_Dash_NoHead", "./image/skul/Dash/skul_Dash_NoHead.bmp", 320, 238, 2, 2, true, RGB(255, 0, 255));
+
+			IMAGEMANAGER->addFrameImage("skul_Dash_Effect", "./image/effect/Dash/skul_Dash_Effect.bmp", 4654, 398, 13, 2, true, RGB(255, 0, 255));
+	
 		}
 
 		// <Jump>
@@ -107,6 +110,12 @@ struct tagAddImage
 			IMAGEMANAGER->addFrameImage("skul_Jump_NoHead", "./image/skul/Jump/skul_Jump_NoHead.bmp", 320, 238, 2, 2, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("skul_Jump_Attack", "./image/skul/Jump/skul_Jump_Attack.bmp", 640, 238, 4, 2, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("skul_Jump_NoHead_Attack", "./image/skul/Jump/skul_Jump_NoHead_Attack.bmp", 640, 238, 4, 2, true, RGB(255, 0, 255));
+
+			// 점프 이펙트
+			IMAGEMANAGER->addFrameImage("skul_Jump_Effect", "./image/effect/Jump/skul_Jump_Effect.bmp", 4654, 199, 13, 1, true, RGB(255, 0, 255));
+			// 더블 점프 이펙트
+			IMAGEMANAGER->addFrameImage("skul_Double_Jump_Effect", "./image/effect/Jump/skul_Double_Jump_Effect.bmp", 3580, 199, 10, 1, true, RGB(255, 0, 255));
+			
 		}
 
 		// <Fall>
@@ -129,6 +138,10 @@ struct tagAddImage
 		{
 			IMAGEMANAGER->addFrameImage("skul_Skill", "./image/skul/Skill/skul_Skill.bmp", 640, 238, 4, 2, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("skul_Skill_Head", "./image/skul/Skill/skul_Skill_Head.bmp", 120, 60, 4, 2, true, RGB(255, 0, 255));
+
+			// throw Skul Skill
+			IMAGEMANAGER->addFrameImage("throw_Head_Effect", "./image/effect/Hit_Skul/Hit_Skul.bmp", 1000, 224, 10, 2, true, RGB(255, 0, 255));
+
 		}
 
 		// <Loading Skul>
@@ -195,12 +208,22 @@ struct tagAddImage
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Right_NoHead", "skul_Jump_NoHead", jump_R_NoHead, 2, 10, false);
 
 
+
 			// jump Left NoWeapon Ani
 			int jump_L_NoWeapon[] = { 3, 2 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_NoWeapon", "skul_Jump", jump_L_NoWeapon, 2, 10, false);
 			// jump Left NoHead Ani
 			int jump_L_NoHead[] = { 3, 2 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Left_NoHead", "skul_Jump_NoHead", jump_L_NoHead, 2, 10, false);
+
+
+			// jump Effect ani
+			int jump_Effect[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Jump_Ani_Effect", "skul_Jump_Effect", jump_Effect, 8, 10, false);
+			// Double Jump Effect ani
+			int double_Jump_Effect[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Double_Jump_Ani_Effect", "skul_Double_Jump_Effect", double_Jump_Effect, 10, 10, false);
+
 		}
 
 		// <Jump Attack>
@@ -247,11 +270,16 @@ struct tagAddImage
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Right", "skul_Dash", dash_R, 2, 10, true);
 			int dash_R_NoHead[] = { 0, 1 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Right_NoHead", "skul_Dash_NoHead", dash_R_NoHead, 2, 10, true);
+			int dash_R_Effect[] = { 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Right_Effect", "skul_Dash_Effect", dash_R_Effect, 13, 10, false);
 
 			int dash_L[] = { 2, 3 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Left", "skul_Dash", dash_L, 2, 10, true);
 			int dash_L_NoHead[] = { 2, 3 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Left_NoHead", "skul_Dash_NoHead", dash_L_NoHead, 2, 10, true);
+			int dash_L_Effect[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+			KEYANIMANAGER->addArrayFrameAnimation("skul_Dash_Left_Effect", "skul_Dash_Effect", dash_L_Effect, 13, 10, false);
+		
 		}
 
 		// <Attack A, B>
@@ -286,14 +314,24 @@ struct tagAddImage
 			int throw_Head_R[] = { 0, 1, 2, 3 };
 			KEYANIMANAGER->addArrayFrameAnimation("throw_Head_R", "skul_Skill", throw_Head_R, 4, 10, false);
 
-			int throw_Head_L[] = { 4, 5, 6, 7 };
-			KEYANIMANAGER->addArrayFrameAnimation("throw_Head_L", "skul_Skill", throw_Head_L, 4, 10, false);
-
 			int skill_Head_R[] = { 0, 1, 2, 3 };
 			KEYANIMANAGER->addArrayFrameAnimation("skill_Head_R", "skul_Skill_Head", skill_Head_R, 4, 10, true);
 
+
+			int throw_Head_L[] = { 4, 5, 6, 7 };
+			KEYANIMANAGER->addArrayFrameAnimation("throw_Head_L", "skul_Skill", throw_Head_L, 4, 10, false);
+
 			int skill_Head_L[] = { 4, 5, 6, 7 };
 			KEYANIMANAGER->addArrayFrameAnimation("skill_Head_L", "skul_Skill_Head", skill_Head_L, 4, 10, true);
+
+
+			// Throw Head Skill Effect
+			int throw_Head_R_Effect[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+			KEYANIMANAGER->addArrayFrameAnimation("throw_Head_R_Effect", "throw_Head_Effect", throw_Head_R_Effect, 10, 10, false);
+
+			int throw_Head_L_Effect[] = { 19, 18, 17, 16, 15, 14, 13, 12, 11, 10 };
+			KEYANIMANAGER->addArrayFrameAnimation("throw_Head_L_Effect", "throw_Head_Effect", throw_Head_L_Effect, 10, 10, false);
+
 
 		}
 

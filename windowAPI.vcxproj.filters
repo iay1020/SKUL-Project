@@ -76,6 +76,9 @@
     <Filter Include="playGround\FlyingObject">
       <UniqueIdentifier>{81877399-eb7c-4077-bc8d-1e5d7c59c5fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\EffectMaker">
+      <UniqueIdentifier>{9ace945e-dd03-4268-99ce-43821ca08ca5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -210,6 +213,12 @@
     <ClInclude Include="FlyingObject_Library.h">
       <Filter>playGround\FlyingObject</Filter>
     </ClInclude>
+    <ClInclude Include="EffectMaker.h">
+      <Filter>playGround\EffectMaker</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectMaker_Library.h">
+      <Filter>playGround\EffectMaker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -301,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="FlyingObject.cpp">
       <Filter>playGround\FlyingObject</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectMaker.cpp">
+      <Filter>playGround\EffectMaker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
