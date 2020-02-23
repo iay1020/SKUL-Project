@@ -61,10 +61,9 @@ void FlyingObject::Move_FlyingObj()
 					// 투사체의 방향에 따라 다른 연산
 					if ((*viFlyingObj).dir == FLYINGOBJECT_DIRECTION::LEFT)
 					{
+						cout << "2" << endl;
 						(*viFlyingObj).angle = 0;								// 반대 각도로 바꿔준다.
 						(*viFlyingObj).speed = 5;
-						(*viFlyingObj).gravity = FLYINGOBJECT_GRAVITY;			// 중력 추가
-						(*viFlyingObj).dir = FLYINGOBJECT_DIRECTION::RIGHT;		// 방향을 반대로 바꿔준다.
 						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
 					}
 					
@@ -73,8 +72,6 @@ void FlyingObject::Move_FlyingObj()
 					{
 						(*viFlyingObj).angle = 3.14;							// 반대 각도로 바꿔준다.
 						(*viFlyingObj).speed = 5;
-						(*viFlyingObj).gravity = FLYINGOBJECT_GRAVITY;			// 중력 추가
-						(*viFlyingObj).dir = FLYINGOBJECT_DIRECTION::LEFT;		// 방향을 반대로 바꿔준다.
 						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
 					}
 				}
@@ -83,11 +80,18 @@ void FlyingObject::Move_FlyingObj()
 			// 투사체의 타입이 스컬의 머리이고, 추락중이며 땅을 발견하면 스피드를 없애버린다. 또한 애니메이션을 끈다.
 			if ((*viFlyingObj).isFalling)
 			{
-				// 땅을 발견하면 스피드를 없애버리고, 애니메이션을 종료한다.
-				(*viFlyingObj).gravity += FLYINGOBJECT_GRAVITY;
+				// 땅을 만나기 전까지는 중력을 받아 떨어진다.
+				if (!DATAMANAGER->Collision_FlyingObject_Ground(&(*viFlyingObj))) (*viFlyingObj).gravity += FLYINGOBJECT_GRAVITY;
 
+				// 땅을 만나면 추락 연산을 모두 종료하고 애니메이션을 멈춰준다.
+				if (DATAMANAGER->Collision_FlyingObject_Ground(&(*viFlyingObj)))
+				{
+					(*viFlyingObj).speed = 0;
+					(*viFlyingObj).gravity = 0;
+					(*viFlyingObj).ani->stop();
+
+				}
 			}
-
 		}
 
 		// 투사체 이동

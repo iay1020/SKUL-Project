@@ -43,7 +43,8 @@ void Player::update()
 	info.skil_CoolTime();
 
 	// 상태 업데이트
-	state->update(this);							
+	state->update(this);	
+
 }
 
 void Player::release()

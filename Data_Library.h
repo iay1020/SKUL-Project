@@ -396,7 +396,7 @@ struct CharacterInfo
 		{
 			// 스킬 A 쿨타임을 돌린다.
 			skill.skill_A_CoolTime_Cnt++;
-
+			
 			// 스킬 A의 쿨타임이 다 돌았을때
 			if (skill.skill_A_CoolTime_Cnt >= skill.skill_A_CoolTime)
 			{
@@ -412,8 +412,6 @@ struct CharacterInfo
 					type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
 
 					bool_V.now_Ani_Change = true;
-					//bool_V.idle_Cheack = false;
-					//bool_V.walk_Cheack = false;
 				}
 
 			}

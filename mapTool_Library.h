@@ -1277,7 +1277,7 @@ public:
 							{
 								// 벽 속성을 넣어준다.
 								(*TileList)[i].tile_Collision_Type = COLLISION_TILE_TYPE::WALL_TYPE;
-								
+							
 							}
 						}
 						break;
@@ -1356,15 +1356,6 @@ public:
 				// 안 쓰는 타입은 제외한다.
 				if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
 				{
-					// 백 그라운드를 그려준다.
-					//if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::BACKGROUND)
-					//{
-					//	if ((*_vTileList)[y * mapInfo.tile_Count.x + x].useTile)
-					//	{
-					//		IMAGEMANAGER->findImage((*_vTileList)[y * mapInfo.tile_Count.x + x].tileName.backGroundImgName)->render(getMemDC, rc.left, rc.top);
-					//		
-					//	}
-					//}
 
 					// 지형을 그려준다.
 					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)

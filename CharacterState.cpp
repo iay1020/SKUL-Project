@@ -119,7 +119,7 @@ void IdleState::Idle(Player * player)
 
 
 	// 멈춰있는 상태에서 스킬을 눌렀다면 스킬 상태로 바꿔준다.
-	if (KEYMANAGER->isOnceKeyDown('A'))
+	if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 	{
 		// 스킬 A의 애니메이션으로 교체 해준다.
 		IdleState::Skill_A(player);
@@ -372,6 +372,7 @@ void IdleState::Attack_C(Player * player)
 
 void IdleState::Skill_A(Player * player)
 {
+
 	// 스킬 A의 애니메이션으로 교체
 	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();
@@ -531,7 +532,7 @@ void MoveState::Move(Player * player)
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A'))
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
 			Skill_A(player);
 		}
@@ -606,7 +607,7 @@ void MoveState::Move(Player * player)
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A'))
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
 			Skill_A(player);
 		}
@@ -792,6 +793,7 @@ void MoveState::Attack_C(Player * player)
 
 void MoveState::Skill_A(Player * player)
 {
+
 	// 스킬 A의 애니메이션으로 교체
 	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();
@@ -934,7 +936,7 @@ void JumpState::Move(Player * player)
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A'))
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
 			Skill_A(player);
 		}
@@ -1034,7 +1036,7 @@ void JumpState::Jump(Player * player)
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A'))
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
 			Skill_A(player);
 		}
@@ -1157,6 +1159,7 @@ void JumpState::Attack_C(Player * player)
 
 void JumpState::Skill_A(Player * player)
 {
+
 	// 스킬 A의 애니메이션으로 교체
 	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();
@@ -1258,7 +1261,8 @@ void FallState::Move(Player * player)
 		player->update_Ani_Rect();
 		
 		// 나가기 전에 새 연산을 위해 모두 초기화
-		player->set_Info()->bool_Value_Reset();
+		//player->set_Info()->bool_Value_Reset();
+		player->set_Info()->bool_State_Reset();
 
 		player->set_Info()->jump.jump_Value = 0;
 		
@@ -1352,7 +1356,7 @@ void FallState::Move(Player * player)
 	}
 
 	// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-	if (KEYMANAGER->isOnceKeyDown('A'))
+	if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 	{
 		Skill_A(player);
 	}
@@ -1545,7 +1549,7 @@ void FallState::Fall(Player * player)
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A'))
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
 			Skill_A(player);
 		}
@@ -1562,7 +1566,8 @@ void FallState::Fall(Player * player)
 			player->update_Ani_Rect();
 
 			// 나가기 전에 새 연산을 위해 모두 초기화
-			player->set_Info()->bool_Value_Reset();
+			//player->set_Info()->bool_Value_Reset();
+			player->set_Info()->bool_State_Reset();
 
 			player->set_Info()->jump.jump_Value = 0;
 
@@ -1653,6 +1658,7 @@ void FallState::Attack_C(Player * player)
 
 void FallState::Skill_A(Player * player)
 {
+
 	// 스킬 A의 애니메이션으로 교체
 	player->set_Info()->ani_Changer("Skill_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();

@@ -710,8 +710,6 @@ bool DataManager::Collision_Player_FootHold()
 	// 플레이어의 위에 발판이 있다면
 	if (_tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
 	{
-		cout << "플레이어 bottom : " <<  _skul->get_Info().pos.rc.bottom + CAMERAMANAGER->Use_Func()->get_CameraXY().y << endl;
-		cout << "발판의 bottom : " << _tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].rc.bottom << endl;
 
 		// 플레이어의 Top이 벽의 Bottom보다 크면
 		if ((_skul->get_Info().pos.rc.bottom + CAMERAMANAGER->Use_Func()->get_CameraXY().y) > _tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].rc.bottom)
@@ -815,25 +813,27 @@ void DataManager::Lerp_Enemy()
 bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)
 {
 	// 투사체의 타일 인덱스를 저장할 공간
-	short fObj_TilePos_X, fObj_TilePos_Y;
+	int fObj_TilePos_X, fObj_TilePos_Y;
 
 	// 투사체가 위치한 타일의 인덱스를 구한다.
-	fObj_TilePos_X = fObj->center.x / TILE_SIZE_X;
-	fObj_TilePos_Y = fObj->center.y / TILE_SIZE_Y;
+	fObj_TilePos_X = (int)fObj->center.x / TILE_SIZE_X;
+	fObj_TilePos_Y = (int)fObj->center.y / TILE_SIZE_Y;
 
 	// 투사체가 날아가는 방향에 따라 다른 연산
 	if (fObj->dir == FLYINGOBJECT_DIRECTION::LEFT)
 	{
 		// 투사체가 바라보는 방향에 벽이 있다면
-		if (_tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		if (_tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
 		{
-			cout << "왼쪽벽" << endl;
-			// 투사체의 Left가 벽의 Right보다 작으면
-			if ((fObj->rc.left + CAMERAMANAGER->Use_Func()->get_CameraXY().x) - 5 < _tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right)
+			if (_tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right > fObj->rc.left - PLAYER_HEAD_SPEED)
 			{
-				cout << "왼쪽벽" << endl;
+				//cout << "t rc : " << _tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right << endl;
+				//cout << "o rc : " << fObj->rc.left << endl;
+				//cout << " == " << endl;
+
 				return true;
 			}
+		
 		}
 	}
 
@@ -841,16 +841,17 @@ bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)
 	if (fObj->dir == FLYINGOBJECT_DIRECTION::RIGHT)
 	{
 		// 투사체가 바라보는 방향에 벽이 있다면
-		if (_tileList[(fObj_TilePos_X + 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		if (_tileList[(fObj_TilePos_X + 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
 		{
-			cout << "오른쪽벽" << endl;
-			// 투사체의 Right가 벽의 Left보다 크면
-			if ((fObj->rc.right + CAMERAMANAGER->Use_Func()->get_CameraXY().x) + 5 > _tileList[(fObj_TilePos_X + 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.left)
+			if (_tileList[(fObj_TilePos_X + 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.left < fObj->rc.right + PLAYER_HEAD_SPEED)
 			{
-				cout << "오른쪽벽" << endl;
+				//cout << "t rc : " << _tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right << endl;
+				//cout << "o rc : " << fObj->rc.left << endl;
+				//cout << " == " << endl;
 
 				return true;
 			}
+			
 		}
 	}
 
@@ -861,8 +862,21 @@ bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)
 
 bool DataManager::Collision_FlyingObject_Ground(FlyingObjectInfo* fObj)
 {
-	// 투사체의 아래에 땅이 있을 경우
-	// 투사체가 추락중인 상태일때만 체크해야한다. 그렇지 않으면 날아가는 도중에 무조건 땅에 떨어질꺼다.
+	// 투사체의 타일 인덱스를 저장할 공간
+	short fObj_TilePos_X, fObj_TilePos_Y;
+
+	// 투사체가 위치한 타일의 인덱스를 구한다.
+	fObj_TilePos_X = fObj->center.x / TILE_SIZE_X;
+	fObj_TilePos_Y = fObj->center.y / TILE_SIZE_Y;
+
+	// 투사체의 아래 타일이 땅이라면
+	if (_tileList[fObj_TilePos_X + (fObj_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND ||
+		_tileList[fObj_TilePos_X + (fObj_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE &&
+		_tileList[fObj_TilePos_X + (fObj_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Collision_Type != COLLISION_TILE_TYPE::WALL_TYPE)
+	{
+		if (_tileList[fObj_TilePos_X + (fObj_TilePos_Y + 1) * _mapInfo.tile_Count.x].rc.top < fObj->rc.bottom)	return true;
+
+	}
 
 	// 투사체의 아래에 땅이 없을 경우.
 	return false;
