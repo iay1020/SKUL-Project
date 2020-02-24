@@ -148,20 +148,21 @@ struct EnemyInfo
 		img.ani = KEYANIMANAGER->findAnimation(aniName);
 		img.ani->start();
 
-		// 좌표 생성
 		// 중점 저장
-		pos.center.x = x_V;
-		pos.center.y = y_V;
+		pos.center.x = x_V * TILE_SIZE_X + TILE_SIZE_X / 2;
+		pos.center.y = y_V * TILE_SIZE_Y + TILE_SIZE_Y / 2;
 
 		// 이미지 저장 (계산을 편하게 하기 위해)
 		image* temp_Img = new image;
 		temp_Img = IMAGEMANAGER->findImage(img.imgName);
 
 		// 애니메이션을 그릴때 사용하는 렉트
-		pos.ani_Rc = RectMakeCenter(x_V, y_V, temp_Img->getFrameWidth(), temp_Img->getFrameHeight());
+		pos.ani_Rc = RectMakeCenter(pos.center.x, pos.center.y, temp_Img->getFrameWidth(), temp_Img->getFrameHeight());
+		pos.ani_Rc.bottom -= 10;
+		pos.ani_Rc.top -= 10;
 
 		// 에너미의 피격 범위 렉트
-		pos.hit_Range_Rc = RectMakeCenter(x_V, y_V, temp_Img->getFrameWidth() / 2, temp_Img->getFrameHeight() / 2);
+		pos.hit_Range_Rc = RectMakeCenter(pos.center.x, pos.center.y, temp_Img->getFrameWidth() / 2, temp_Img->getFrameHeight() / 2);
 	}
 
 };

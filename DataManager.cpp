@@ -26,11 +26,15 @@ void DataManager::release()
 
 void DataManager::update()
 {
+	// 에너미 매니저 업데이트
+	_enemyManager->update();
+
 	// 스컬 상태 업데이트
 	_skul->update();
 
 	// 투사체 매니저 업데이트
 	_flyObj_Manager->update();
+
 
 	// 투사체 충돌 함수
 	Collision_Skul_Head();
@@ -654,6 +658,34 @@ bool DataManager::Collision_PlayerFall_Ground()
 		{
 			// 플레이어의 위치 수정
 			 _skul->set_Info()->pos.center.y = _tileList[player_TilePos_X + (player_TilePos_Y + 1) * _mapInfo.tile_Count.x].rc.top - TILE_SIZE_Y / 2;
+
+			return true;
+		}
+	}
+
+	// 플레이어가 충돌하지 않았다면 false 반환
+	return false;
+}
+
+bool DataManager::Collision_PlayerJump_Ground()
+{
+	// 캐릭터의 타일 인덱스를 저장할 공간
+	short player_TilePos_X, player_TilePos_Y;
+
+	// 캐릭터가 위치한 타일의 인덱스를 구한다.
+	player_TilePos_X = (int)_skul->get_Info().pos.center.x / TILE_SIZE_X;
+	player_TilePos_Y = (int)_skul->get_Info().pos.center.y / TILE_SIZE_Y;
+
+	// 플레이어의 위 타일이 땅이라면
+	if (_tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND &&
+		_tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].tile_Collision_Type != COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
+	{
+
+		// 플레이어의 bottom이 땅 top보다 작을때만
+		if ((_skul->get_Info().pos.rc.top + CAMERAMANAGER->Use_Func()->get_CameraXY().y) - 10 < _tileList[player_TilePos_X + (player_TilePos_Y - 1) * _mapInfo.tile_Count.x].rc.bottom)
+		{
+			// 플레이어가 벽에 충돌 했을때 점프 수치를 없애준다.
+			_skul->set_Info()->jump.jump_Value = 0;
 
 			return true;
 		}

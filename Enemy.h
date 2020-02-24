@@ -12,7 +12,7 @@ public:
 
 	void init();
 	void update();
-	void render();
+	void render(HDC getMemDC);
 
 	// 겟터 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 	// 에너미 정보 주소를 받아온다.

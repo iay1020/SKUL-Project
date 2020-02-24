@@ -880,6 +880,7 @@ void JumpState::Move(Player * player)
 		if (player->get_Info().jump.jump_Value > 0)
 		{
 			// 점프 수치만큼 캐릭터의 y좌표를 뺀다.
+			if (!DATAMANAGER->Collision_PlayerJump_Ground())
 			player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
 
 			// 점프 수치를 중력만큼 뺀다. (최대 추락 속도보다 클때만)
@@ -1081,6 +1082,7 @@ void JumpState::Jump(Player * player)
 		if (player->get_Info().jump.jump_Value > 0)
 		{
 			// 점프 수치만큼 캐릭터의 y좌표를 뺀다.
+			if (!DATAMANAGER->Collision_PlayerJump_Ground())
 			player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
 
 			// 점프 수치를 중력만큼 뺀다. (최대 추락 속도보다 클때만)

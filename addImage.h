@@ -344,7 +344,7 @@ struct tagAddImage
 		
 		//¡á¡á¡á¡á¡á¡á¡á¡á Enemy ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 		// <soldier Idle>
-		IMAGEMANAGER->addFrameImage("soldier_Idle", "./image/enemy/soldier/Idle/soldier_Idle.bmp", 840, 240, 5, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("soldier_Idle", "./image/enemy/soldier/Idle/soldier_Idle.bmp", 860, 240, 5, 2, true, RGB(255, 0, 255));
 		
 		// <soldier Walk>
 		IMAGEMANAGER->addFrameImage("soldier_Walk", "./image/enemy/soldier/Walk/soldier_Walk.bmp", 1376, 240, 7, 2, true, RGB(255, 0, 255));

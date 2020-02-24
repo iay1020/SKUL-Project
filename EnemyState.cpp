@@ -9,6 +9,7 @@ HitState_E* HitState_E::instance;
 Attack_A_State_E* Attack_A_State_E::instance;
 Attack_B_State_E* Attack_B_State_E::instance;
 Skill_A_State_E* Skill_A_State_E::instance;
+Skill_B_State_E* Skill_B_State_E::instance;
 
 IdleState_E * IdleState_E::getInstance()
 {
@@ -22,6 +23,7 @@ IdleState_E * IdleState_E::getInstance()
 
 void IdleState_E::Idle(Enemy * enemy)
 {
+	// 인식 범위에 플레이어가 있다면 플레이어가 있는 방향으로 걸어간다.
 }
 
 void IdleState_E::Move(Enemy * enemy)
@@ -345,7 +347,7 @@ void Attack_A_State_E::Skill_B(Enemy * enemy)
 
 void Attack_A_State_E::update(Enemy * enemy)
 {
-	Attack_A_State_E(enemy);
+	Attack_A(enemy);
 
 }
 
@@ -404,7 +406,7 @@ void Attack_B_State_E::Skill_B(Enemy * enemy)
 
 void Attack_B_State_E::update(Enemy * enemy)
 {
-	Attack_B_State_E(enemy);
+	Attack_B(enemy);
 
 }
 
@@ -462,7 +464,7 @@ void Skill_A_State_E::Skill_B(Enemy * enemy)
 
 void Skill_A_State_E::update(Enemy * enemy)
 {
-	Skill_A_State_E(enemy);
+	Skill_A(enemy);
 
 }
 
@@ -519,6 +521,6 @@ void Skill_B_State_E::Skill_B(Enemy * enemy)
 
 void Skill_B_State_E::update(Enemy * enemy)
 {
-	Skill_B_State_E(enemey);
+	Skill_B(enemy);
 
 }

@@ -1,5 +1,7 @@
 #pragma once
-class EnemyManager
+#include "gameNode.h"
+
+class EnemyManager : public gameNode
 {
 private:
 	vector<Enemy*>					_vEnemyList;		// 에너미 정보를 담는 벡터

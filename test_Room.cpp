@@ -23,6 +23,8 @@ HRESULT test_Room::init()
 	_skul = DATAMANAGER->skul_Address();	// 스컬 데이터 연결
 	_skul->update_Pos(4, 26);
 
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 27, 17);
+
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
 	// 기본 카메라 위치 설정 (플레이어 중점으로)
 	CAMERAMANAGER->Use_Func()->set_CameraXY(_skul->get_Info().pos.center.x, _skul->get_Info().pos.center.y, true);
@@ -53,6 +55,9 @@ void test_Room::render()
 	DATAMANAGER->map_Render_Datamanager(getMemDC(), loopSpeed);
 
 	showRect(getMemDC());	// 테스트용 렉트
+
+	// 에너미 출력
+	DATAMANAGER->show_Enemy();
 
 	// 플레이어 출력
 	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),

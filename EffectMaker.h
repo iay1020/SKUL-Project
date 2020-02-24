@@ -4,8 +4,8 @@
 class EffectMaker : public gameNode
 {
 private:
-	vector<EffectPosInfo>				_vEffect;		// 이펙트 저장 벡터
-	vector<EffectPosInfo>::iterator		_viEffect;		// 이펙트 벡터 반복자
+	vector<EffectPosInfo*>					_vEffect;		// 이펙트 저장 벡터
+	vector<EffectPosInfo*>::iterator		_viEffect;		// 이펙트 벡터 반복자
 
 public:
 	EffectMaker();

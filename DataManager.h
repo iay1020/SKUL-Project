@@ -72,6 +72,9 @@ public:
 	// 플레이어 아래 타일에 땅이 있는지 체크 (플레이어가 추락 상태일때 사용)
 	bool Collision_PlayerFall_Ground();		
 
+	// 플레이어의 위 타일이 땅이 있는지 체크 (플레이어가 점프 상태일때 사용)
+	bool Collision_PlayerJump_Ground();
+
 	// 플레이어가 바라보는 방향에 벽이 있는지 체크
 	bool Collision_Player_Wall();	
 
@@ -121,6 +124,13 @@ public:
 
 	// 에너미 매니저의 주소를 얻는다.
 	EnemyManager* enemyManager_Address() { return _enemyManager; }
+
+	// 에너미 생성
+	void Create_Enemy(EnemyType type_V, EnemyDirection dir_V, string imgName, string aniName, float x_V, float y_V) 
+	{ _enemyManager->Create_Enemy(type_V, dir_V, imgName, aniName, x_V, y_V); }
+
+	// 에너미 매니저 출력
+	void show_Enemy() { _enemyManager->render(); }
 
 };
 
