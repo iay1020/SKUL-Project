@@ -132,6 +132,16 @@ public:
 	// 에너미 매니저 출력
 	void show_Enemy() { _enemyManager->render(); }
 
+	// 플레이어가 인식범위에 들어왔는지 체크
+	bool find_Player(Enemy* enemy_Address);
+
+	// 에너미가 이동하는 방향에서 플레이어가 사라졌을 경우
+	bool escape_Player(Enemy* enemy_Address);
+
+	// 에너미가 이동하려는 타일이 땅이 아닐 경우
+	bool enemy_Find_Ground(Enemy* enemy_Address);
+
+
 };
 
 

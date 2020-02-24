@@ -972,3 +972,120 @@ void DataManager::Collision_Skul_Head()
 	}
 
 }
+
+bool DataManager::find_Player(Enemy* enemy_Address)
+{
+	// 플레이어가 인식범위 안에 있을때
+	RECT tempRC;
+	RECT skulRC = _skul->set_Info()->pos.rc;
+	skulRC.left += CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	skulRC.right += CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	skulRC.top += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	skulRC.bottom += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	RECT enemyRC = enemy_Address->info_Address()->pos.find_Range_Rc;
+
+	// 스컬이 인식범위에 들어와 있지만 공격 범위 밖에 있을때
+	if (IntersectRect(&tempRC, &skulRC, &enemyRC) && !IntersectRect(&tempRC, &skulRC, &enemy_Address->info_Address()->pos.hit_Range_Rc))
+	{
+		// 플레이어의 x좌표를 비교하여 왼쪽에 있는지 오른쪽에 있는지 방향값을 넣어준다.
+		// 스컬이 왼쪽에 있을때
+		if (_skul->get_Info().pos.center.x <= enemy_Address->info_Address()->pos.center.x)
+		{
+			enemy_Address->info_Address()->status.dir = EnemyDirection::LEFT;
+
+			return true;
+		}
+
+		// 스컬이 오른쪽에 있을때
+		if (_skul->get_Info().pos.center.x  > enemy_Address->info_Address()->pos.center.x)
+		{
+			enemy_Address->info_Address()->status.dir = EnemyDirection::RIGHT;
+
+			return true;
+		}
+	}
+
+	// 스컬이 공격 범위 안에 들어왔을때
+	if (IntersectRect(&tempRC, &skulRC, &enemy_Address->info_Address()->pos.hit_Range_Rc))
+	{
+		// 에너미가 공격 상태로 바뀐다.
+		enemy_Address->info_Address()->bool_V.attackCheck = true;
+
+		return true;
+	}
+
+
+	// 플레이어가 인식범위 밖에 있을떄
+	return false;
+}
+
+bool DataManager::escape_Player(Enemy * enemy_Address)
+{
+	RECT tempRC;
+	RECT skulRC = _skul->set_Info()->pos.rc;
+	skulRC.left += CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	skulRC.right += CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	skulRC.top += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	skulRC.bottom += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+	// 플레이어가 왼쪽에서 사라졌을 경우
+	if (enemy_Address->info_Address()->status.dir == EnemyDirection::LEFT)
+	{
+		// 플레이어의 x가 크다는건 에너미의 오른쪽에 있다는 뜻이다. 
+		if (_skul->get_Info().pos.center.x > enemy_Address->info_Address()->pos.center.x)
+		{
+			return true;
+		}
+
+	}
+
+	// 플레이어가 오른쪽에서 사라졌을 경우
+	if (enemy_Address->info_Address()->status.dir == EnemyDirection::RIGHT)
+	{
+		// 플레이어의 x가 작다는건 에너미의 왼쪽에 있다는 뜻이다. 
+		if (_skul->get_Info().pos.center.x  < enemy_Address->info_Address()->pos.center.x)
+		{
+			return true;
+		}
+
+	}
+
+	// 에너미가 바라보는 방향에 에너미가 그대로 있을 경우
+	return false;
+}
+
+bool DataManager::enemy_Find_Ground(Enemy * enemy_Address)
+{
+	// 에너미의 타일 인덱스를 저장할 공간
+	int enemy_TilePos_X, enemy_TilePos_Y;
+
+	// 에너미가 위치한 타일의 인덱스를 구한다.
+	enemy_TilePos_X = (int)enemy_Address->info_Address()->pos.center.x / TILE_SIZE_X;
+	enemy_TilePos_Y = (int)enemy_Address->info_Address()->pos.center.y / TILE_SIZE_Y;
+
+
+	// 에너미의 방향이 왼쪽일때
+	if (enemy_Address->info_Address()->status.dir == EnemyDirection::LEFT)
+	{
+		// 왼쪽 대각선 타일이 속성이 땅일 경우
+		if (_tileList[(enemy_TilePos_X - 1) + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		{
+			// 에너미의 대각선 타일이 땅일 경우에는 ture 
+			return true;
+		}
+	}
+
+	// 에너미의 방향이 오른쪽일때
+	if (enemy_Address->info_Address()->status.dir == EnemyDirection::RIGHT)
+	{
+		// 오른쪽 대각선 타일이 속성이 땅일 경우
+		if (_tileList[(enemy_TilePos_X + 1) + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND)
+		{
+			// 에너미의 대각선 타일이 땅일 경우에는 ture 
+			return true;
+		}
+	}
+
+	// 땅이 아니라면 false
+	return false;
+}

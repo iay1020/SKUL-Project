@@ -23,7 +23,7 @@ HRESULT test_Room::init()
 	_skul = DATAMANAGER->skul_Address();	// 스컬 데이터 연결
 	_skul->update_Pos(4, 26);
 
-	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 27, 17);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 30, 17);
 
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
 	// 기본 카메라 위치 설정 (플레이어 중점으로)
@@ -88,6 +88,16 @@ void test_Room::testControl()
 		}
 	}
 
+	if (KEYMANAGER->isOnceKeyDown(VK_F8))
+	{
+		if (_skul->get_InputKey() == PRESS_RIGHT)
+			DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani",
+			(_skul->get_Info().pos.center.x / TILE_SIZE_X) + 3, (int)(_skul->get_Info().pos.center.y) / TILE_SIZE_X);
+
+		if (_skul->get_InputKey() == PRESS_LEFT)
+			DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani",
+			(_skul->get_Info().pos.center.x / TILE_SIZE_X) - 3, (int)(_skul->get_Info().pos.center.y) / TILE_SIZE_X);
+	}
 }
 
 void test_Room::showRect(HDC getMemDC)
