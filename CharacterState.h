@@ -23,8 +23,6 @@ public:
 	virtual void Skill_A(Player* player)	= 0;
 	virtual void Skill_B(Player* player)	= 0;
 	virtual void update(Player* player)		= 0;
-	
-protected:
 
 protected:
 	void set_PlayerState(Player* player, CharacterState* state)

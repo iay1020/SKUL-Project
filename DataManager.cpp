@@ -15,6 +15,7 @@ HRESULT DataManager::init()
 	// 투사체 매니저 할당
 	_flyObj_Manager = new FlyingObject;
 	_effect_Maker = new EffectMaker;
+	_enemyManager = new EnemyManager;
 
 	return S_OK;
 }
@@ -33,6 +34,9 @@ void DataManager::update()
 
 	// 투사체 충돌 함수
 	Collision_Skul_Head();
+
+	// 키애니매니저 업데이트
+	KEYANIMANAGER->update();
 
 	// 테스트용 캐릭터 클래스 체인지
 	if (KEYMANAGER->isOnceKeyDown('I'))

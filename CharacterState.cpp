@@ -398,7 +398,7 @@ void IdleState::update(Player * player)
 {
 	Idle(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 
@@ -834,7 +834,7 @@ void MoveState::update(Player * player)
 {	
 	Move(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 
@@ -1214,7 +1214,7 @@ void JumpState::update(Player * player)
 {
 	Jump(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 
@@ -1977,7 +1977,7 @@ void DashState::update(Player * player)
 {
 	DashState::Dash(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 
@@ -2165,7 +2165,7 @@ void JumpAttackState::update(Player * player)
 {
 	JumpAttack(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 
@@ -2296,7 +2296,7 @@ void Attack_A_State::update(Player * player)
 {
 	Attack_A(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 
@@ -2388,7 +2388,7 @@ void Attack_B_State::update(Player * player)
 {
 	Attack_B(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 
@@ -2573,7 +2573,7 @@ void Skill_A_State::update(Player * player)
 {
 	Skill_A(player);
 
-	KEYANIMANAGER->update();
+	//KEYANIMANAGER->update();
 }
 
 

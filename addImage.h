@@ -340,5 +340,54 @@ struct tagAddImage
 
 
 		// ¸Þ·Õ
+
+		
+		//¡á¡á¡á¡á¡á¡á¡á¡á Enemy ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
+		// <soldier Idle>
+		IMAGEMANAGER->addFrameImage("soldier_Idle", "./image/enemy/soldier/Idle/soldier_Idle.bmp", 840, 240, 5, 2, true, RGB(255, 0, 255));
+		
+		// <soldier Walk>
+		IMAGEMANAGER->addFrameImage("soldier_Walk", "./image/enemy/soldier/Walk/soldier_Walk.bmp", 1376, 240, 7, 2, true, RGB(255, 0, 255));
+		
+		// <soldier Hit>
+		IMAGEMANAGER->addFrameImage("soldier_Hit", "./image/enemy/soldier/Hit/soldier_Hit.bmp", 344, 240, 2, 2, true, RGB(255, 0, 255));
+		
+		// <soldier Attack>
+		IMAGEMANAGER->addFrameImage("soldier_Attack", "./image/enemy/soldier/Attack/soldier_Attack.bmp", 860, 240, 5, 2, true, RGB(255, 0, 255));
+		
+		
+		//¡á¡á¡á¡á¡á¡á¡á¡á Enemy Ani ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
+		// <soldier Idle Ani>
+		int soldier_Idle_Right[] = { 0, 1, 2, 3, 4 };
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Idle_Right_Ani", "soldier_Idle", soldier_Idle_Right, 5, 10, true);
+		
+		int soldier_Idle_Left[] = { 5, 6, 7, 8, 9 };
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Idle_Left_Ani", "soldier_Idle", soldier_Idle_Left, 5, 10, true);
+		
+		
+		// <soldier Walk Ani>
+		int soldier_Walk_Right[] = { 0, 1, 2, 3, 4, 5, 6, 7 };
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Walk_Right_Ani", "soldier_Walk", soldier_Walk_Right, 8, 10, true);
+		
+		int soldier_Walk_Left[] = { 15, 14, 13, 12, 11, 10, 9, 8 };
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Walk_Left_Ani", "soldier_Walk", soldier_Walk_Left, 8, 10, true);
+		
+		
+		// <soldier Hit Ani>
+		int soldier_Hit_Right[] = { 0, 1 };   
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Hit_Right_Ani", "soldier_Hit", soldier_Hit_Right, 2, 10, true);
+		
+		int soldier_Hit_Left[] = { 2, 3 };
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Hit_Left_Ani", "soldier_Hit", soldier_Hit_Left, 2, 10, true);
+		
+		
+		// <soldier Attack Ani>
+		int soldier_Attack_Right[] = { 0, 1, 2, 3, 4 };
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Attack_Right_Ani", "soldier_Attack", soldier_Attack_Right, 5, 10, false);
+		
+		int soldier_Attack_Left[] = { 5, 6, 7, 8, 9 };
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Attack_Left_Ani", "soldier_Attack", soldier_Attack_Left, 5, 10, false);
+
+
 	}
 };

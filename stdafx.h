@@ -74,4 +74,5 @@ extern BOOL			_leftButtonDown;
 #include "Data_Library.h"
 #include "FlyingObject_Library.h"
 #include "EffectMaker_Library.h"
+#include "EnemyManager_Library.h"
 #include "DataManager.h"

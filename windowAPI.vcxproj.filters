@@ -79,6 +79,15 @@
     <Filter Include="playGround\EffectMaker">
       <UniqueIdentifier>{9ace945e-dd03-4268-99ce-43821ca08ca5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\EnemyManager">
+      <UniqueIdentifier>{0a8b52bd-17bb-48c2-b9b4-e19a24dacf0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\EnemyManager\Enemy">
+      <UniqueIdentifier>{fbbab7b4-5057-4f7e-9f79-55de167bb8b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\EnemyManager\EnemyState">
+      <UniqueIdentifier>{f4e76c92-78d3-46ac-b8dc-f14a61f6efda}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -219,6 +228,18 @@
     <ClInclude Include="EffectMaker_Library.h">
       <Filter>playGround\EffectMaker</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyManager.h">
+      <Filter>playGround\EnemyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyManager_Library.h">
+      <Filter>playGround\EnemyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>playGround\EnemyManager\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>playGround\EnemyManager\EnemyState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -313,6 +334,15 @@
     </ClCompile>
     <ClCompile Include="EffectMaker.cpp">
       <Filter>playGround\EffectMaker</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyManager.cpp">
+      <Filter>playGround\EnemyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>playGround\EnemyManager\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>playGround\EnemyManager\EnemyState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

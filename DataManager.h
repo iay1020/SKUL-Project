@@ -3,8 +3,11 @@
 #include "mapTool_Library.h"
 #include "Player.h"
 #include "CharacterState.h"
+#include "Enemy.h"
+#include "EnemyState.h"
 #include "FlyingObject.h"
 #include "EffectMaker.h"
+#include "EnemyManager.h"
 
 class DataManager : public singletonBase<DataManager>
 {
@@ -17,6 +20,9 @@ private:
 
 	FlyingObject*				_flyObj_Manager;						// 투사체 매니저
 	EffectMaker*				_effect_Maker;							// 이펙트 매니저
+
+	EnemyManager*				_enemyManager;							// 에너미 매니저
+
 
 public:
 	DataManager();		// 생성자
@@ -111,6 +117,10 @@ public:
 	void show_Effect() { _effect_Maker->render(); }
 
 
+	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 에너미 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+	// 에너미 매니저의 주소를 얻는다.
+	EnemyManager* enemyManager_Address() { return _enemyManager; }
 
 };
 
