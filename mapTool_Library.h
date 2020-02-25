@@ -37,11 +37,8 @@ enum class BUTTON_TYPE
 	ERASER,							// 지우개 버튼을 눌렀다면
 	GROUND,							// 지형 버튼을 눌렀다면
 	DECORATION,						// 데코 버튼을 눌렀다면
-	HIT_OBJECT,						// 파괴 가능 오브젝트 버튼을 눌렀다면
 	DOOR,							// 문 버튼을 눌렀다면
 	CHARACTER,						// 캐릭터 버튼을 눌렀다면
-	ITEM,							// 아이템 버튼을 눌렀다면
-	TRAP,							// 트랩 버튼을 눌렀다면
 	BACKGROUND,						// 백 그라운드 버튼을 눌렀다면
 	RECT_ADD_OR_MINUS,				// 렉트 추가 삭제 버튼
 	FOOTHOLDTYPE_CHECK,				// 발판 타입이라는 속성을 넣는 버튼
@@ -62,11 +59,8 @@ struct tagPalletBar
 {
 	RECT Ground_Pallet_Bar;												// 바닥 팔렛트 바
 	RECT Decoration_Pallet_Bar;											// 데코 팔렛트 바
-	RECT Hit_Object_Bar;												// 파괴 오브젝트 바
 	RECT Door_Pallet_Bar;												// 도어 팔렛트 바
 	RECT Character_Pallet_Bar;											// 캐릭터 팔렛트 바
-	RECT Item_Bar;														// 아이템 오브젝트 바
-	RECT Trap_Bar;														// 트랙 팔렛트 바
 	RECT Back_Ground_Bar;												// 백그라운드 바
 
 	// 팔렛트 바를 이동 시킬 함수 (잠시 중단)
@@ -81,11 +75,8 @@ struct tagTileName
 {
 	string groundName;
 	string decorationName;
-	string hitObjectName;
 	string doorName;
 	string characterName;
-	string itemName;
-	string trapName;
 	string backGroundName;
 	string backGroundImgName;
 
@@ -93,11 +84,8 @@ struct tagTileName
 	{
 		groundName = {};
 		decorationName = {};
-		hitObjectName = {};
 		doorName = {};
 		characterName = {};
-		itemName = {};
-		trapName = {};
 		backGroundName = {};
 	}
 };
@@ -122,12 +110,10 @@ struct tagPalletKinds
 {
 	tagPallet_INFO	Ground_Pallet[GROUND_SIZEX * GROUND_SIZEY];					// 지형 팔렛트
 	tagPallet_INFO	Decoration_Pallet[2];										// 장식 팔렛트
-	tagPallet_INFO	Hit_Object_Pallet[2];										// 파괴 오브젝트 팔렛트
 	tagPallet_INFO	Door_Pallet[2];												// 도어 팔렛트
 	tagPallet_INFO	Character_Pallet[2];										// 캐릭터 팔렛트
-	tagPallet_INFO	Item_Pallet[2];												// 아이템 팔렛트
-	tagPallet_INFO  Trap_Pallet[2];												// 트랩 팔렛트
 	tagPallet_INFO	back_Ground_Pallet[BACKGROUND_COUNTX * BACKGROUND_COUNTY];	// 백 그라운드 팔렛트
+
 };
 
 
@@ -379,6 +365,15 @@ struct tagPallets
 				// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 			break;
 
+			case BUTTON_TYPE::CHARACTER:
+
+				// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 캐릭터 설정 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+				// 팔렛트 바의 위치를 정해준다.
+				// 캐릭터 팔렛트 바 셋팅
+
+
+				break;
+
 			case BUTTON_TYPE::BACKGROUND:
 
 				// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 백 그라운드 설정 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -473,19 +468,11 @@ struct tagPallets
 
 				break;
 
-			case BUTTON_TYPE::HIT_OBJECT:
-
-				break;
-
 			case BUTTON_TYPE::DOOR:
 
 				break;
 
 			case BUTTON_TYPE::CHARACTER:
-
-				break;
-
-			case BUTTON_TYPE::ITEM:
 
 				break;
 
@@ -529,23 +516,12 @@ struct tagPallets
 
 					break;
 
-				case BUTTON_TYPE::HIT_OBJECT:
-
-					break;
-
 				case BUTTON_TYPE::DOOR:
 
 					break;
 
 				case BUTTON_TYPE::CHARACTER:
 
-					break;
-
-				case BUTTON_TYPE::ITEM:
-
-					break;
-
-				case BUTTON_TYPE::TRAP:
 					break;
 
 				case BUTTON_TYPE::BACKGROUND:
@@ -599,11 +575,8 @@ struct tagButton_Info
 	// 팔렛트 버튼
 	RECT			BT_Ground;			// 지형 이미지 버튼
 	RECT			BT_Decoration;		// 데코레이션 이미지 버튼
-	RECT			BT_Hit_Object;		// 파괴 가능 이미지 버튼
 	RECT			BT_Door;			// 문 이미지 버튼
 	RECT			BT_Character;		// 캐릭터 이미지 버튼
-	RECT			BT_Item;			// 아이템 이미지 버튼
-	RECT			BT_Trap;			// 함정 이미지 버튼
 	RECT			BT_BackGround;		// 백그라운드 이미지 버튼
 
 	// 기억 변수
@@ -645,14 +618,11 @@ struct tagButton_Info
 		BT_Eraser = RectMake(start_Pos * 3 + button_Size * 2, 10, 52, 52);
 		BT_Ground = RectMake(start_Pos * 4 + button_Size * 3, 10, 52, 52);
 		BT_Decoration = RectMake(start_Pos * 5 + button_Size * 4, 10, 52, 52);
-		BT_Hit_Object = RectMake(start_Pos * 6 + button_Size * 5, 10, 52, 52);
-		BT_Trap = RectMake(start_Pos * 7 + button_Size * 6, 10, 52, 52);
-		BT_Door = RectMake(start_Pos * 8 + button_Size * 7, 10, 52, 52);
-		BT_Character = RectMake(start_Pos * 9 + button_Size * 8, 10, 52, 52);
-		BT_Item = RectMake(start_Pos * 10 + button_Size * 9, 10, 52, 52);
-		BT_BackGround = RectMake(start_Pos * 11 + button_Size * 10, 10, 52, 52);
-		BT_RectPlus = RectMake(start_Pos * 12 + button_Size * 11, 10, 52, 52);
-		BT_FootHold_Check = RectMake(start_Pos * 13 + button_Size * 12, 10, 32, 30);
+		BT_Door = RectMake(start_Pos * 6 + button_Size * 5, 10, 52, 52);
+		BT_Character = RectMake(start_Pos * 7 + button_Size * 6, 10, 52, 52);
+		BT_BackGround = RectMake(start_Pos * 8 + button_Size * 7, 10, 52, 52);
+		BT_RectPlus = RectMake(start_Pos * 9 + button_Size * 8, 10, 52, 52);
+		BT_FootHold_Check = RectMake(start_Pos * 10 + button_Size * 11, 10, 32, 30);
 		BT_Wall_Check = RectMake(BT_FootHold_Check.right, 10, 32, 30);
 		BT_Trap_Check = RectMake(BT_Wall_Check.right, 10, 32, 30);
 
@@ -678,9 +648,6 @@ struct tagButton_Info
 
 			break;
 
-		case BUTTON_TYPE::HIT_OBJECT:
-
-			break;
 
 		case BUTTON_TYPE::DOOR:
 
@@ -688,13 +655,6 @@ struct tagButton_Info
 
 		case BUTTON_TYPE::CHARACTER:
 
-			break;
-
-		case BUTTON_TYPE::ITEM:
-
-			break;
-
-		case BUTTON_TYPE::TRAP:
 			break;
 
 		case BUTTON_TYPE::BACKGROUND:
@@ -727,11 +687,8 @@ struct tagButton_Info
 			Rectangle(getDC, BT_Eraser);
 			Rectangle(getDC, BT_Ground);
 			Rectangle(getDC, BT_Decoration);
-			Rectangle(getDC, BT_Hit_Object);
-			Rectangle(getDC, BT_Trap);
 			Rectangle(getDC, BT_Door);
 			Rectangle(getDC, BT_Character);
-			Rectangle(getDC, BT_Item);
 			Rectangle(getDC, BT_BackGround);
 			Rectangle(getDC, BT_Next);
 			Rectangle(getDC, BT_Prev); 
@@ -757,11 +714,8 @@ struct tagButton_Info
 		{
 			IMAGEMANAGER->findImage("ground_Icon")->render(getDC, BT_Ground.left, BT_Ground.top);
 			IMAGEMANAGER->findImage("decoration_Icon")->render(getDC, BT_Decoration.left, BT_Decoration.top);
-			IMAGEMANAGER->findImage("hit_Object_Icon")->render(getDC, BT_Hit_Object.left, BT_Hit_Object.top);
-			IMAGEMANAGER->findImage("trap_Icon")->render(getDC, BT_Trap.left, BT_Trap.top);
 			IMAGEMANAGER->findImage("door_Icon")->render(getDC, BT_Door.left, BT_Door.top);
 			IMAGEMANAGER->findImage("character_Icon")->render(getDC, BT_Character.left, BT_Character.top);
-			IMAGEMANAGER->findImage("item_Icon")->render(getDC, BT_Item.left, BT_Item.top);
 			IMAGEMANAGER->findImage("back_Ground_Icon")->render(getDC, BT_BackGround.left, BT_BackGround.top);
 		}
 
@@ -770,11 +724,8 @@ struct tagButton_Info
 		{
 			IMAGEMANAGER->findImage("ground_E_Icon")->render(getDC, BT_Ground.left, BT_Ground.top);
 			IMAGEMANAGER->findImage("decoration_E_Icon")->render(getDC, BT_Decoration.left, BT_Decoration.top);
-			IMAGEMANAGER->findImage("hit_Object_E_Icon")->render(getDC, BT_Hit_Object.left, BT_Hit_Object.top);
-			IMAGEMANAGER->findImage("trap_E_Icon")->render(getDC, BT_Trap.left, BT_Trap.top);
 			IMAGEMANAGER->findImage("door_E_Icon")->render(getDC, BT_Door.left, BT_Door.top);
 			IMAGEMANAGER->findImage("character_E_Icon")->render(getDC, BT_Character.left, BT_Character.top);
-			IMAGEMANAGER->findImage("item_E_Icon")->render(getDC, BT_Item.left, BT_Item.top);
 			IMAGEMANAGER->findImage("back_Ground_E_Icon")->render(getDC, BT_BackGround.left, BT_BackGround.top);
 		}
 
@@ -818,11 +769,8 @@ struct tagButton_Info
 
 			if (PtInRect(&BT_Ground, _ptMouse)) { BT_Type = BUTTON_TYPE::GROUND; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; ImgCnt = GROUND_IMAGE_CONUT - 1; }	// 클릭 할때마다 첫 이미지를 가리켜야 하기 때문에 값을 초기화 해준다.
 			if (PtInRect(&BT_Decoration, _ptMouse)) { BT_Type = BUTTON_TYPE::DECORATION; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
-			if (PtInRect(&BT_Hit_Object, _ptMouse)) { BT_Type = BUTTON_TYPE::HIT_OBJECT; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_Door, _ptMouse)) { BT_Type = BUTTON_TYPE::DOOR; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_Character, _ptMouse)) { BT_Type = BUTTON_TYPE::CHARACTER;  BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
-			if (PtInRect(&BT_Item, _ptMouse)) { BT_Type = BUTTON_TYPE::ITEM; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
-			if (PtInRect(&BT_Trap, _ptMouse)) { BT_Type = BUTTON_TYPE::TRAP; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_BackGround, _ptMouse)) { BT_Type = BUTTON_TYPE::BACKGROUND; BT_ImgNumber = IMAGE_COUNT::Zero_Img; ImgNumber = 0; BT_FindNoTile = true; }
 			if (PtInRect(&BT_RectPlus, _ptMouse)) { BT_Type = BUTTON_TYPE::RECT_ADD_OR_MINUS; BT_FindNoTile = true; }
 			if (PtInRect(&BT_FootHold_Check, _ptMouse)) { BT_Type = BUTTON_TYPE::FOOTHOLDTYPE_CHECK; BT_FindNoTile = true; }
@@ -1202,11 +1150,6 @@ public:
 
 						break;
 
-					case BUTTON_TYPE::HIT_OBJECT:
-
-
-						break;
-
 					case BUTTON_TYPE::DOOR:
 
 
@@ -1215,14 +1158,6 @@ public:
 					case BUTTON_TYPE::CHARACTER:
 
 
-						break;
-
-					case BUTTON_TYPE::ITEM:
-
-
-						break;
-
-					case BUTTON_TYPE::TRAP:
 						break;
 
 					case BUTTON_TYPE::BACKGROUND:
@@ -1325,25 +1260,11 @@ public:
 			}
 		}
 
-		//if (_vBackGround_Info->size() > 0)
-		//{
-		//	for (int i = 0; i < _vBackGround_Info->size();++i)
-		//	{
-		//		RECT rc = (_vBackGround_Info[0])[i].rc;
-		//		rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-		//		rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-		//		rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-		//		rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-		//		IMAGEMANAGER->findImage((_vBackGround_Info[0])[i].imageName)->render(getMemDC, rc.left, rc.top);
-		//	}
-		//}
-
 		// 마우스가 클릭한 타일을 찾아준다. (내 화면에 있는 타일만 찾아서)
 		for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
 		{
 			for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
 			{
-				//cout << y * mapInfo.tile_Count.x + x << ":" << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.x << "," << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.y << endl;
 
 				RECT rc = (*_vTileList)[y * mapInfo.tile_Count.x + x].rc;
 				POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
@@ -1381,11 +1302,6 @@ public:
 					// 발판 타입을 표시해준다.
 					if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
 					{
-						//if ((*_vTileList)[y * mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
-						//{
-						//	IMAGEMANAGER->findImage((*_vTileList)[y * mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
-						//		(*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.x, (*_vTileList)[y * mapInfo.tile_Count.x + x].frame.ground.y);
-						//}
 						IMAGEMANAGER->findImage("footHoldType_Check")->render(getMemDC, rc.left, rc.top);
 					}
 

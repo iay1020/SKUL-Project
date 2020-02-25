@@ -12,6 +12,9 @@
 // 에너미의 피격 시간
 #define ENEMYKNOCKBACK_TIME	50
 
+// 에너미의 중력
+#define ENEMY_GRAVITY	0.5f
+
 
 // 에너미 타입 enum
 enum class EnemyType
@@ -54,6 +57,8 @@ struct EnemyPos
 	RECT				attack_Range_Rc;	// 에너미 공격 범위
 
 	RECT				Attack_Rc;			// 에너미 공격 렉트
+
+	float				fall_Power;			// 에너미의 추락 연산 변수
 
 };
 
@@ -123,6 +128,7 @@ struct EnemyInfo
 		pos.find_Range_Rc = { 0, 0, 0, 0 };
 		pos.attack_Range_Rc = { 0, 0, 0, 0 };
 		pos.Attack_Rc = { 0, 0, 0, 0 };
+		pos.fall_Power = 0;
 
 		// bool 초기화
 		bool_V.idleCheck = false;

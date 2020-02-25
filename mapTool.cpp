@@ -137,9 +137,6 @@ void mapTool::Find_Worker()
 
 			break;
 
-		case BUTTON_TYPE::HIT_OBJECT:
-
-			break;
 
 		case BUTTON_TYPE::DOOR:
 
@@ -149,13 +146,6 @@ void mapTool::Find_Worker()
 
 			break;
 
-		case BUTTON_TYPE::ITEM:
-
-			break;
-
-		case BUTTON_TYPE::TRAP:
-
-			break;
 			
 	}
 }

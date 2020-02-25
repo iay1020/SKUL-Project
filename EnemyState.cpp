@@ -145,6 +145,13 @@ void MoveState_E::Idle(Enemy * enemy)
 
 void MoveState_E::Move(Enemy * enemy)
 {
+	// 바닥에 땅이 없을 경우 추락
+	if (!DATAMANAGER->enemy_find_Down_Gorund(enemy))
+	{
+		// 추락상태
+		MoveState_E::Fall(enemy);
+	}
+
 	// 플레이어에게 맞았을 경우
 	if (enemy->info_Address()->bool_V.player_Attack_Hit)
 	{
@@ -189,6 +196,10 @@ void MoveState_E::Jump(Enemy * enemy)
 
 void MoveState_E::Fall(Enemy * enemy)
 {
+	// 추락 애니메이션이 없기 때문에 바로 추락 상태로 변경시켜준다.
+	enemy->set_State(FallState_E::getInstance());
+	enemy->get_State()->update(enemy);
+
 }
 
 void MoveState_E::Hit(Enemy * enemy)
@@ -309,6 +320,23 @@ FallState_E * FallState_E::getInstance()
 
 void FallState_E::Idle(Enemy * enemy)
 {
+	// 추락에 사용했던 변수 초기화
+	enemy->info_Address()->pos.fall_Power = 0;
+
+	// 피격 쿨타임 초기화
+	enemy->info_Address()->cool_Time.knockBack_Time = 0;
+
+	// 맞았다는 bool값 초기화
+	enemy->info_Address()->bool_V.player_Attack_Hit = false;
+
+	// 대기 애니메이션을 넣는다.
+	enemy->info_Address()->ani_Changer("Idle");
+	enemy->info_Address()->img.ani->start();
+
+	// 대기 상태로 교체
+	enemy->set_State(IdleState_E::getInstance());
+	enemy->get_State()->update(enemy);
+
 }
 
 void FallState_E::Move(Enemy * enemy)
@@ -328,8 +356,9 @@ void FallState_E::Fall(Enemy * enemy)
 		FallState_E::Idle(enemy);
 	}
 
-
-	
+	enemy->info_Address()->pos.center.y -= enemy->info_Address()->pos.fall_Power;
+	enemy->info_Address()->pos.fall_Power -= ENEMY_GRAVITY;
+	enemy->info_Address()->update_Rect();
 }
 
 void FallState_E::Hit(Enemy * enemy)
@@ -395,6 +424,10 @@ void HitState_E::Jump(Enemy * enemy)
 
 void HitState_E::Fall(Enemy * enemy)
 {
+	// 추락 애니메이션이 없기 때문에 바로 추락 상태로 변경시켜준다.
+	enemy->set_State(FallState_E::getInstance());
+	enemy->get_State()->update(enemy);
+
 }
 
 void HitState_E::Hit(Enemy * enemy)
@@ -425,6 +458,13 @@ void HitState_E::Hit(Enemy * enemy)
 
 		// 렉트 갱신
 		enemy->info_Address()->update_Rect();
+	}
+
+	// 바닥에 땅이 없을 경우 추락
+	if (!DATAMANAGER->enemy_find_Down_Gorund(enemy))
+	{
+		// 추락상태
+		HitState_E::Fall(enemy);
 	}
 
 	// 에너미의 피격 시간이 끝났다면

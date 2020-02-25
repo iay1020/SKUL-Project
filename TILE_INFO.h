@@ -20,6 +20,9 @@
 // 오브젝트 이미지의 갯수
 
 // 캐릭터 이미지의 갯수
+#define CHARACTER_SIZEX 2
+#define CHARACTER_SIZEY 2
+
 
 // 백그라운드 가로 세로 크기
 #define BACKGROUND_COUNTX 3
