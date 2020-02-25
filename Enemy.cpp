@@ -21,7 +21,7 @@ void Enemy::update()
 {
 	// 상태 업데이트
 	state->update(this);
-
+	DATAMANAGER->skul_Attack_Range_Enemy(this);
 }
 
 void Enemy::render(HDC getMemDC)
@@ -39,6 +39,13 @@ void Enemy::render(HDC getMemDC)
 	temp_HitRange_Rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
 	temp_HitRange_Rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 	temp_HitRange_Rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	RECT temp_Attack_Rc = info.pos.Attack_Rc;
+	temp_Attack_Rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	temp_Attack_Rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	temp_Attack_Rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	temp_Attack_Rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
 	if(KEYMANAGER->isToggleKey('0'))	Rectangle(getMemDC, temp_AniRC);
 	if(KEYMANAGER->isToggleKey('9'))	Rectangle(getMemDC, temp_HitRange_Rc);
+	if (KEYMANAGER->isToggleKey('8'))	Rectangle(getMemDC, temp_Attack_Rc);
 }

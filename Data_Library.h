@@ -68,6 +68,8 @@ struct CharacterPos
 	POINTFLOAT			center;		// 캐릭터의 중점을 저장한다.
 	RECT				rc;			// 캐릭터의 렉트를 저장한다.
 
+	RECT				Attack_RC;	// 캐릭터의 공격 렉트
+
 };
 
 // 캐릭터의 이미지 구조체
@@ -112,6 +114,9 @@ struct CharacterBool
 	bool				useing_Skill_B;		// 캐릭터가 B 스킬을 사용중인지 체크하는 변수
 
 	bool				now_Ani_Change;		// 타입이 바뀌었을때 애니메이션을 바로 바꿔야할때
+
+	bool				Attack_Success;		// 공격 성공
+
 };
 
 // 캐릭터의 스킬 쿨타임
@@ -180,6 +185,7 @@ struct CharacterInfo
 		// 좌표 초기화
 		pos.center.x = pos.center.y = 0;
 		pos.rc = RectMake(0, 0, 0, 0);
+		pos.Attack_RC = RectMake(0, 0, 0, 0);
 
 		// 이미지 초기화
 		img.imgName = "";
@@ -213,6 +219,8 @@ struct CharacterInfo
 		bool_V.useing_Skill_B = false;
 
 		bool_V.now_Ani_Change = false;
+
+		bool_V.Attack_Success = false;
 
 		// 점프 초기화
 		jump.jump_Value = 0;
@@ -447,6 +455,45 @@ struct CharacterInfo
 		}
 
 	}
+
+
+
+	// 공격 렉트를 만든다. (매개변수 : 방향)
+	void create_Attack_Rect(InputKey Key)
+	{
+		// 플레이어의 공격 렉트를 만든다.
+
+		// 플레이어 이미지를 임시로 받아온다. (연산 편하게하기 위해)
+		image* tempImg = IMAGEMANAGER->findImage(img.imgName);
+
+		// 방향에 따라 그쪽 방향으로 렉트를 만들어준다.
+		if (Key == PRESS_LEFT)
+		{
+			pos.Attack_RC = RectMake(pos.center.x - tempImg->getFrameWidth() / 2, pos.center.y - tempImg->getFrameHeight() / 2,
+				tempImg->getFrameWidth() / 2, tempImg->getFrameHeight());
+		}
+
+		if (Key == PRESS_RIGHT)
+		{
+			pos.Attack_RC = RectMake(pos.center.x, pos.center.y - tempImg->getFrameHeight() / 2,
+				tempImg->getFrameWidth() / 2, tempImg->getFrameHeight());
+		}
+
+	}
+
+
+	// 플레이어 렉트 출력
+	void show_Attack_Rect(HDC getMemDC)
+	{
+		RECT showRC = pos.Attack_RC;
+		showRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+		showRC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+		showRC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+		showRC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+		Rectangle(getMemDC, showRC);
+	}
+
 
 	// 애니메이션 체인저
 	void ani_Changer(string StateName, InputKey Key)

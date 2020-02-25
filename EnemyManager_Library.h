@@ -1,8 +1,17 @@
 #pragma once
 
+// 에너미의 기본 이동속도
 #define ENEMYSPEED	3
 
-#define ENEMYATTACKCOOLTIME 100
+// 에너미의 공격 쿨타임
+#define ENEMYATTACKCOOLTIME 50
+
+// 에너미의 피격 시 틱당 밀려나는 거리
+#define ENEMYKNOCKBACK_RANGE	1
+
+// 에너미의 피격 시간
+#define ENEMYKNOCKBACK_TIME	50
+
 
 // 에너미 타입 enum
 enum class EnemyType
@@ -44,6 +53,7 @@ struct EnemyPos
 	RECT				find_Range_Rc;		// 에너미 인식 범위
 	RECT				attack_Range_Rc;	// 에너미 공격 범위
 
+	RECT				Attack_Rc;			// 에너미 공격 렉트
 
 };
 
@@ -59,10 +69,15 @@ struct EnemyImage
 // 에너미의 bool 구조체
 struct EnemyBoolValue
 {
-	bool				idleCheck;		// 대기 애니메이션 교체 체크
-	bool				walkCheck;		// 이동 애니메이션 교체 체크
-	bool				attackCheck;	// 공격 애니메이션 교체 체크
-	bool				hitCheck;		// 피격 애미네이션 교체 체크
+	bool				idleCheck;			// 대기 애니메이션 교체 체크
+	bool				walkCheck;			// 이동 애니메이션 교체 체크
+	bool				attackCheck;		// 공격 애니메이션 교체 체크
+	bool				hitCheck;			// 피격 애미네이션 교체 체크
+
+	bool				Attack_Hit;			// 공격이 맞았는지
+
+	bool				player_Attack_Hit;	// 플레이어의 공격을 맞았는지
+
 };
 
 // 에너미 쿨타임
@@ -70,6 +85,9 @@ struct EnemyCoolTime
 {
 	short				attack_CoolTime;		// 공격 쿨타임
 	short				attack_CoolTime_Cnt;	// 공격 쿨타임 카운터
+
+	short				knockBack_Time;			// 넉백 시간
+
 };
 
 // 에너미의 정보 구조체
@@ -102,8 +120,9 @@ struct EnemyInfo
 		pos.center.x = pos.center.y = 0;
 		pos.ani_Rc = { 0, 0, 0, 0 };
 		pos.hit_Range_Rc = { 0, 0, 0, 0 };
-		pos.find_Range_Rc = { 0,0,0,0 };
-		pos.attack_Range_Rc = { 0,0,0,0 };
+		pos.find_Range_Rc = { 0, 0, 0, 0 };
+		pos.attack_Range_Rc = { 0, 0, 0, 0 };
+		pos.Attack_Rc = { 0, 0, 0, 0 };
 
 		// bool 초기화
 		bool_V.idleCheck = false;
@@ -111,9 +130,15 @@ struct EnemyInfo
 		bool_V.attackCheck = false;
 		bool_V.hitCheck = false;
 
+		bool_V.Attack_Hit = false;
+
+		bool_V.player_Attack_Hit = false;
+
 		// CoolTime 초기화
 		cool_Time.attack_CoolTime = 0;
 		cool_Time.attack_CoolTime_Cnt = 0;
+
+		cool_Time.knockBack_Time = 0;
 
 	}
 
@@ -136,6 +161,9 @@ struct EnemyInfo
 		bool_V.attackCheck = false;
 		bool_V.hitCheck = false;
 
+		bool_V.Attack_Hit = false;
+
+		bool_V.player_Attack_Hit = false;
 	}
 
 	// 에너미의 타입에 따라 스텟을 넣어준다.
@@ -246,7 +274,7 @@ struct EnemyInfo
 					// 이동
 					if (StateName == "Walk") set_Ani("soldier_Walk", "soldier_Walk_Left_Ani");
 					// 피격
-					if (StateName == "Hit") set_Ani("soldier_Hit", "soldier_Hit_Left_Ani");
+					if (StateName == "Hit") set_Ani("soldier_Hit", "soldier_Hit_Right_Ani");
 					// 공격
 					if (StateName == "Attack_A") set_Ani("soldier_Attack", "soldier_Attack_Left_Ani");
 
@@ -259,13 +287,32 @@ struct EnemyInfo
 					// 이동
 					if (StateName == "Walk") set_Ani("soldier_Walk", "soldier_Walk_Right_Ani");
 					// 피격
-					if (StateName == "Hit") set_Ani("soldier_Hit", "soldier_Hit_Right_Ani");
+					if (StateName == "Hit") set_Ani("soldier_Hit", "soldier_Hit_Left_Ani");
 					// 공격
 					if (StateName == "Attack_A") set_Ani("soldier_Attack", "soldier_Attack_Right_Ani");
 
 				}
 
 				break;
+		}
+	}
+
+	// 공격 렉트 생성
+	void make_Attack_Rect()
+	{
+		image* tempImg = IMAGEMANAGER->findImage(img.imgName);
+
+		// 방향에 따라 그쪽 방향으로 렉트를 만들어준다.
+		if (status.dir == EnemyDirection::LEFT)
+		{
+			pos.Attack_Rc = RectMake(pos.center.x - tempImg->getFrameWidth() / 2, pos.center.y - tempImg->getFrameHeight() / 2,
+				tempImg->getFrameWidth() / 2, tempImg->getFrameHeight());
+		}
+
+		if (status.dir == EnemyDirection::RIGHT)
+		{
+			pos.Attack_Rc = RectMake(pos.center.x, pos.center.y - tempImg->getFrameHeight() / 2,
+				tempImg->getFrameWidth() / 2, tempImg->getFrameHeight());
 		}
 	}
 };

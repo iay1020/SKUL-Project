@@ -40,7 +40,7 @@ void IdleState::Idle(Player * player)
 	// 플레이어의 아래에 땅 타일이 없다면 추락 상태로 바꿔준다.
 	if (!DATAMANAGER->Collision_PlayerFall_Ground())
 	{
-		Fall(player);  // 추락함수 호출
+		IdleState::Fall(player);  // 추락함수 호출
 	}
 
 	// 멈춰있는 상태에서 왼쪽을 눌렀다면 왼쪽 이동 상태로 바꿔준다.
@@ -185,16 +185,6 @@ void IdleState::Move(Player * player)
 		if (!player->get_Info().bool_V.walk_Cheack)
 		{
 			// 애니메이션 교체
-			//if(player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
-			//	player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
-			//
-			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			//	player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Left_HaveWeapon");
-			//
-			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			//	player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Left_HaveWeapon_NoHead");
-			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
-			//	player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Left_NoWeapon");
 			player->set_Info()->ani_Changer("Move", player->get_InputKey());
 
 			player->set_Info()->img.ani->start();
@@ -215,14 +205,6 @@ void IdleState::Move(Player * player)
 		{
 
 			// 애니메이션 교체
-			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
-			//	player->set_Info()->set_Ani("skul_Walk_NoWeapon", "skul_Walk_Right_NoWeapon");
-			//
-			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-			//	player->set_Info()->set_Ani("skul_Walk_Weapon", "skul_Walk_Right_HaveWeapon");
-			//
-			//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-			//	player->set_Info()->set_Ani("skul_Walk_NoHead_Weapon", "skul_Walk_Right_HaveWeapon_NoHead");
 			player->set_Info()->ani_Changer("Move", player->get_InputKey());
 
 			player->set_Info()->img.ani->start();
@@ -244,12 +226,6 @@ void IdleState::Jump(Player * player)
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
 		// 애니메이션 교체
-		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON || 
-		//	player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-		//	player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
-		//
-		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-		//	player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Jump_Left_NoHead");
 		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
 		player->set_Info()->img.ani->start();
@@ -258,12 +234,6 @@ void IdleState::Jump(Player * player)
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
 		// 애니메이션 교체
-		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-		//	player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-		//	player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
-		//
-		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
-		//	player->set_Info()->set_Ani("skul_Jump_NoHead", "skul_Right_Left_NoHead");
 		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 
 		player->set_Info()->img.ani->start();
@@ -279,16 +249,14 @@ void IdleState::Fall(Player * player)
 	// 캐릭터의 방향에 따라 추락 애니메이션을 넣어주고 추락 상태로 교체해준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		//if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON ||
-		//	player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON)
-		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Left_NoWeapon");
+
 		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		//player->set_Info()->set_Ani("skul_Fall", "skul_Fall_Right_NoWeapon");
+
 		player->set_Info()->ani_Changer("Fall", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 	}
@@ -303,7 +271,7 @@ void IdleState::DownJump(Player * player)
 	// 점프 애니메이션으로 교체 한다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Left_NoWeapon");
+	
 		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 
@@ -311,7 +279,7 @@ void IdleState::DownJump(Player * player)
 
 	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		//player->set_Info()->set_Ani("skul_Jump", "skul_Jump_Right_NoWeapon");
+	
 		player->set_Info()->ani_Changer("Jump", player->get_InputKey());
 		player->set_Info()->img.ani->start();
 
@@ -329,7 +297,7 @@ void IdleState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Left");
+		
 			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
@@ -341,7 +309,7 @@ void IdleState::Dash(Player * player)
 	{
 		if (!player->get_Info().bool_V.dash_Cheack)
 		{
-			//player->set_Info()->set_Ani("skul_Dash", "skul_Dash_Right");
+		
 			player->set_Info()->ani_Changer("Dash", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
@@ -363,6 +331,9 @@ void IdleState::Attack_A(Player * player)
 	// 공격 A 애니메이션으로 교체
 	player->set_Info()->ani_Changer("Attack_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();
+
+	// 공격 렉트를 만들어준다.
+	player->set_Info()->create_Attack_Rect(player->get_InputKey());
 
 	// 공격 A 상태로 교체해준다.
 	player->set_State(Attack_A_State::getInstance());
@@ -396,7 +367,7 @@ void IdleState::Skill_B(Player * player)
 
 void IdleState::update(Player * player)
 {
-	Idle(player);
+	IdleState::Idle(player);
 
 	//KEYANIMANAGER->update();
 }
@@ -424,7 +395,6 @@ void MoveState::Idle(Player * player)
 		if (!player->get_Info().bool_V.idle_Cheack)
 		{
 			// 애니메이션 교체
-			//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Left_NoWeapon");
 			player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
@@ -439,7 +409,6 @@ void MoveState::Idle(Player * player)
 		if (!player->get_Info().bool_V.idle_Cheack)
 		{
 			// 애니메이션 교체
-			//player->set_Info()->set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
 			player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 			player->set_Info()->img.ani->start();
 
@@ -467,7 +436,7 @@ void MoveState::Move(Player * player)
 	// 플레이어의 아래에 땅 타일이 없다면 추락 상태로 바꿔준다.
 	if (!DATAMANAGER->Collision_PlayerFall_Ground())
 	{
-		Fall(player);  // 추락함수 호출
+		MoveState::Fall(player);  // 추락함수 호출
 	}
 
 	if (player->get_InputKey() == PRESS_LEFT)
@@ -536,20 +505,20 @@ void MoveState::Move(Player * player)
 				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-				Dash(player);
+				MoveState::Dash(player);
 			}
 		}
 
 		// 이동 상태에서 공격을 눌렀다면 공격 상태로 바꿔준다.
 		if (KEYMANAGER->isOnceKeyDown('X'))
 		{
-			Attack_A(player);
+			MoveState::Attack_A(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
 		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
-			Skill_A(player);
+			MoveState::Skill_A(player);
 		}
 	}
 
@@ -618,20 +587,20 @@ void MoveState::Move(Player * player)
 				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-				Dash(player);
+				MoveState::Dash(player);
 			}
 		}
 
 		// 이동 상태에서 공격을 눌렀다면 공격 상태로 바꿔준다.
 		if (KEYMANAGER->isOnceKeyDown('X'))
 		{
-			Attack_A(player);
+			MoveState::Attack_A(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
 		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
-			Skill_A(player);
+			MoveState::Skill_A(player);
 		}
 	}
 
@@ -800,6 +769,9 @@ void MoveState::Attack_A(Player * player)
 	player->set_Info()->ani_Changer("Attack_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();
 
+	// 공격 렉트를 만들어준다.
+	player->set_Info()->create_Attack_Rect(player->get_InputKey());
+
 	// 공격 A 상태로 바꿔준다.
 	player->set_State(Attack_A_State::getInstance());
 	player->get_State()->update(player);
@@ -832,7 +804,7 @@ void MoveState::Skill_B(Player * player)
 
 void MoveState::update(Player * player)
 {	
-	Move(player);
+	MoveState::Move(player);
 
 	//KEYANIMANAGER->update();
 }
@@ -913,7 +885,7 @@ void JumpState::Move(Player * player)
 			player->set_Info()->bool_V.jump_Cheack = false;
 
 			// 이동이 끝났다면 다른 연산을 하기 위해 Jump로 돌아간다.
-			Jump(player);
+			JumpState::Jump(player);
 		}
 
 		// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
@@ -954,7 +926,7 @@ void JumpState::Move(Player * player)
 				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DOUBLE_JUMP, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-				Dash(player);
+				JumpState::Dash(player);
 			}
 		}
 
@@ -962,13 +934,13 @@ void JumpState::Move(Player * player)
 		if (KEYMANAGER->isOnceKeyDown('X'))
 		{
 			// 애니메이션 교체를 위해 JumpAttack 함수 호출
-			JumpAttack(player);
+			JumpState::JumpAttack(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
 		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
-			Skill_A(player);
+			JumpState::Skill_A(player);
 		}
 	}
 }
@@ -1004,7 +976,7 @@ void JumpState::Jump(Player * player)
 			player->set_Info()->bool_V.walking_Cheack = true;
 
 			// 이동 + 점프 연산을 위해 Move 호출
-			Move(player);
+			JumpState::Move(player);
 		}
 
 		if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
@@ -1020,7 +992,7 @@ void JumpState::Jump(Player * player)
 			player->set_Info()->bool_V.walking_Cheack = true;
 
 			// 이동 + 점프 연산을 위해 Move 호출
-			Move(player);
+			JumpState::Move(player);
 		}
 
 		// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
@@ -1061,7 +1033,7 @@ void JumpState::Jump(Player * player)
 				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-				Dash(player);
+				JumpState::Dash(player);
 			}
 		}
 
@@ -1069,13 +1041,13 @@ void JumpState::Jump(Player * player)
 		if (KEYMANAGER->isOnceKeyDown('X'))
 		{
 			// 애니메이션 교체를 위해 JumpAttack 함수 호출
-			JumpAttack(player);
+			JumpState::JumpAttack(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
 		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
-			Skill_A(player);
+			JumpState::Skill_A(player);
 		}
 
 		// 점프 연산을 시작한다. 점프 수치가 0 이상일때만
@@ -1178,6 +1150,9 @@ void JumpState::JumpAttack(Player * player)
 	player->set_Info()->ani_Changer("JumpAttack", player->get_InputKey());
 	player->set_Info()->img.ani->start();
 
+	// 공격 렉트를 만들어준다.
+	player->set_Info()->create_Attack_Rect(player->get_InputKey());
+
 	// 점프어택 상태로 바꿔준다.
 	player->set_State(JumpAttackState::getInstance());
 	player->get_State()->update(player);
@@ -1214,7 +1189,7 @@ void JumpState::Skill_B(Player * player)
 
 void JumpState::update(Player * player)
 {
-	Jump(player);
+	JumpState::Jump(player);
 
 	//KEYANIMANAGER->update();
 }
@@ -1308,7 +1283,7 @@ void FallState::Move(Player * player)
 		player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
 		
 		// Idle 애니메이션 교체를 위해 호출
-		Idle(player);
+		FallState::Idle(player);
 	}
 
 	// 추락연산
@@ -1330,7 +1305,7 @@ void FallState::Move(Player * player)
 		player->set_Info()->bool_V.fall_Cheack = false;
 
 		// 이동이 끝났으니 다른 연산을 위해 Fall 함수 호출
-		Fall(player);
+		FallState::Fall(player);
 	}
 
 	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT))
@@ -1342,7 +1317,7 @@ void FallState::Move(Player * player)
 		player->set_Info()->bool_V.fall_Cheack = false;
 
 		// 이동이 끝났으니 다른 연산을 위해 Fall 함수 호출
-		Fall(player);
+		FallState::Fall(player);
 	}
 
 	// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
@@ -1358,7 +1333,7 @@ void FallState::Move(Player * player)
 			player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
 
 			// 점프 애니메이션 교체를 위해 호출
-			Jump(player);
+			FallState::Jump(player);
 		}
 	}
 
@@ -1389,7 +1364,7 @@ void FallState::Move(Player * player)
 			if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 	
 			// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-			Dash(player);
+			FallState::Dash(player);
 		}
 	}
 
@@ -1397,13 +1372,13 @@ void FallState::Move(Player * player)
 	if (KEYMANAGER->isOnceKeyDown('X'))
 	{
 		// 점프 공격 애니메이션으로 바꾸기 위해 함수 호출
-		JumpAttack(player);
+		FallState::JumpAttack(player);
 	}
 
 	// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
 	if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 	{
-		Skill_A(player);
+		FallState::Skill_A(player);
 	}
 
 	// 카메라 위치 갱신
@@ -1520,7 +1495,7 @@ void FallState::Fall(Player * player)
 				player->set_Info()->bool_V.walking_Cheack = true;
 
 				// 이동 + 추락 연산을 위해 Jall함수 다시 호출
-				Fall(player);
+				FallState::Fall(player);
 			}
 		}
 
@@ -1541,7 +1516,7 @@ void FallState::Fall(Player * player)
 				player->set_Info()->bool_V.walking_Cheack = true;
 
 				// 이동 + 추락 연산을 위해 Jall함수 다시 호출
-				Fall(player);
+				FallState::Fall(player);
 			}
 		}
 
@@ -1558,7 +1533,7 @@ void FallState::Fall(Player * player)
 				player->set_Info()->jump.jump_Value = PLAYER_JUMPPOWER;
 
 				// 점프 애니메이션 교체를 위해 호출
-				Jump(player);
+				FallState::Jump(player);
 			}
 		}
 
@@ -1589,7 +1564,7 @@ void FallState::Fall(Player * player)
 				if (player->get_InputKey() == PRESS_RIGHT)	DATAMANAGER->effect_Maker_Address()->Create_Effect("skul_Dash_Effect", "skul_Dash_Right_Effect", EffectType::DASH, player->get_Info().pos.center.x, player->get_Info().pos.center.y - 10);
 		
 				// 애니메이션 교체와 상태 변환을 위해 Dash 함수 호출
-				Dash(player);
+				FallState::Dash(player);
 			}
 		}
 
@@ -1597,13 +1572,13 @@ void FallState::Fall(Player * player)
 		if (KEYMANAGER->isOnceKeyDown('X'))
 		{
 			// 점프 공격 애니메이션으로 바꾸기 위해 함수 호출
-			JumpAttack(player);
+			FallState::JumpAttack(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
 		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
 		{
-			Skill_A(player);
+			FallState::Skill_A(player);
 		}
 		
 		// 만약 땅에 닿았으면 추락 상태에서 빠져나간다.
@@ -1627,7 +1602,7 @@ void FallState::Fall(Player * player)
 			player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
 
 			// Idle 애니메이션 교체를 위해 호출
-			Idle(player);
+			FallState::Idle(player);
 		}
 
 		// 추락연산
@@ -1691,6 +1666,9 @@ void FallState::JumpAttack(Player * player)
 	player->set_Info()->ani_Changer("JumpAttack", player->get_InputKey());
 	player->set_Info()->img.ani->start();
 
+	// 공격 렉트를 만들어준다.
+	player->set_Info()->create_Attack_Rect(player->get_InputKey());
+
 	// 점프어택 상태로 바꿔준다.
 	player->set_State(JumpAttackState::getInstance());
 	player->get_State()->update(player);
@@ -1727,7 +1705,7 @@ void FallState::Skill_B(Player * player)
 
 void FallState::update(Player * player)
 {
-	Fall(player);
+	FallState::Fall(player);
 
 	KEYANIMANAGER->update();
 }
@@ -1846,7 +1824,7 @@ void DownJumpState::Skill_B(Player * player)
 
 void DownJumpState::update(Player * player)
 {
-	DownJump(player);
+	DownJumpState::DownJump(player);
 
 	KEYANIMANAGER->update();
 }
@@ -1933,7 +1911,7 @@ void DashState::Dash(Player * player)
 		// 아래 땅이 없다면 추락 함수 호출
 		if (!DATAMANAGER->Collision_PlayerFall_Ground())
 		{
-			Fall(player);
+			DashState::Fall(player);
 		}
 		
 		// 아래 땅이 있다면 대기 함수 호출
@@ -1945,7 +1923,7 @@ void DashState::Dash(Player * player)
 			player->set_Info()->jump.Jump_Count = player->get_Info().jump.Jump_Count_Save;
 			player->set_Info()->jump.jump_Value = 0;
 			
-			Idle(player);
+			DashState::Idle(player);
 		}
 	}
 	
@@ -1977,9 +1955,8 @@ void DashState::Skill_B(Player * player)
 
 void DashState::update(Player * player)
 {
-	DashState::Dash(player);
+	DashState::Dash(player); 
 
-	//KEYANIMANAGER->update();
 }
 
 
@@ -2032,7 +2009,7 @@ void JumpAttackState::Move(Player * player)
 	{
 		player->set_Info()->bool_V.walking_Cheack = false;
 
-		JumpAttack(player);
+		JumpAttackState::JumpAttack(player);
 	}
 
 	// 방향키에 맞게 플레이어를 이동시켜준다.
@@ -2065,6 +2042,9 @@ void JumpAttackState::Jump(Player * player)
 
 void JumpAttackState::Fall(Player * player)
 {
+	// 공격 렉트 초기화
+	player->set_Info()->pos.Attack_RC = { 0, 0, 0, 0 };
+
 	// 점프어택 카운트 초기화
 	player->set_Info()->jump.jump_Attack_Count = 0;
 
@@ -2112,7 +2092,7 @@ void JumpAttackState::JumpAttack(Player * player)
 			player->set_Info()->bool_V.walking_Cheack = true;
 
 			// 이동을 같이 해야 하기 때문에 재호출
-			JumpAttack(player);
+			JumpAttackState::JumpAttack(player);
 		}
 
 		if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
@@ -2122,7 +2102,7 @@ void JumpAttackState::JumpAttack(Player * player)
 			player->set_Info()->bool_V.walking_Cheack = true;
 
 			// 이동을 같이 해야 하기 때문에 재호출
-			JumpAttack(player);
+			JumpAttackState::JumpAttack(player);
 		}
 
 		player->set_Info()->pos.center.y -= player->get_Info().jump.jump_Value;
@@ -2138,6 +2118,9 @@ void JumpAttackState::JumpAttack(Player * player)
 
 	// 점프 공격 인터벌용
 	player->set_Info()->jump.jump_Attack_Count++;
+
+	// 공격 렉트를 만들어준다.
+	player->set_Info()->create_Attack_Rect(player->get_InputKey());
 
 	// 점프 공격을 시작하면 일정 시간이 지난 후 추락중 애니메이션으로 바뀐다.
 	if (player->get_Info().jump.jump_Attack_Count >= PLAYER_JUMPATTACK_COOLTIME) Fall(player);
@@ -2165,7 +2148,7 @@ void JumpAttackState::Skill_B(Player * player)
 
 void JumpAttackState::update(Player * player)
 {
-	JumpAttack(player);
+	JumpAttackState::JumpAttack(player);
 
 	//KEYANIMANAGER->update();
 }
@@ -2187,6 +2170,12 @@ Attack_A_State * Attack_A_State::getInstance()
 
 void Attack_A_State::Idle(Player * player)
 {
+	// 공격 렉트 초기화
+	player->set_Info()->pos.Attack_RC = { 0, 0, 0, 0 };
+
+	// 다음 공격을 위해 공격 bool 초기화
+	player->set_Info()->bool_V.Attack_Success = false;
+
 	// 사용했던 변수 초기화
 	player->set_Info()->bool_State_Reset();
 
@@ -2230,7 +2219,7 @@ void Attack_A_State::Attack_A(Player * player)
 	{
 		if (player->get_InputKey() == PRESS_LEFT)
 		{
-			player->set_Info()->pos.center.x -= PLAYER_SPEED * 2;
+			player->set_Info()->pos.center.x -= PLAYER_SPEED * 3;
 
 			// 한번만 움직여야하기 때문에 false로 바꿔준다.
 			player->set_Info()->bool_V.walking_Cheack = false;
@@ -2238,7 +2227,7 @@ void Attack_A_State::Attack_A(Player * player)
 
 		if (player->get_InputKey() == PRESS_RIGHT)
 		{
-			player->set_Info()->pos.center.x += PLAYER_SPEED * 2;
+			player->set_Info()->pos.center.x += PLAYER_SPEED * 3;
 
 			// 한번만 움직여야하기 때문에 false로 바꿔준다.
 			player->set_Info()->bool_V.walking_Cheack = false;
@@ -2273,9 +2262,15 @@ void Attack_A_State::Attack_A(Player * player)
 
 void Attack_A_State::Attack_B(Player * player)
 {
+	// 다음 공격이 가능하게 bool값 초기화
+	player->set_Info()->bool_V.Attack_Success = false;
+
 	// 공격 B 애니메이션으로 교체해준다.
 	player->set_Info()->ani_Changer("Attack_B", player->get_InputKey());
 	player->set_Info()->img.ani->start();
+
+	// 공격 렉트를 만들어준다.
+	player->set_Info()->create_Attack_Rect(player->get_InputKey());
 
 	// 공격 B 상태로 교체해준다.
 	player->set_State(Attack_B_State::getInstance());
@@ -2296,9 +2291,8 @@ void Attack_A_State::Skill_B(Player * player)
 
 void Attack_A_State::update(Player * player)
 {
-	Attack_A(player);
+	Attack_A_State::Attack_A(player);
 
-	//KEYANIMANAGER->update();
 }
 
 
@@ -2319,8 +2313,13 @@ Attack_B_State * Attack_B_State::getInstance()
 
 void Attack_B_State::Idle(Player * player)
 {
+	// 공격 렉트 초기화
+	player->set_Info()->pos.Attack_RC = { 0, 0, 0, 0 };
+
 	// 사용한 변수 초기화
 	player->set_Info()->bool_State_Reset();
+
+	player->set_Info()->bool_V.next_Attack_B = false;
 
 	// 대기 애니메이션으로 교체 해준다.
 	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
@@ -2370,7 +2369,8 @@ void Attack_B_State::Attack_B(Player * player)
 	// 공격 애니메이션의 마지막 프레임일때
 	if (player->get_Info().img.ani->getFramePos().x == 640)
 	{
-		Idle(player);
+		// 대기 상태로 돌아간다.
+		Attack_B_State::Idle(player);
 	}
 }
 
@@ -2388,9 +2388,8 @@ void Attack_B_State::Skill_B(Player * player)
 
 void Attack_B_State::update(Player * player)
 {
-	Attack_B(player);
+	Attack_B_State::Attack_B(player);
 
-	//KEYANIMANAGER->update();
 }
 
 
@@ -2573,7 +2572,7 @@ void Skill_A_State::Skill_B(Player * player)
 
 void Skill_A_State::update(Player * player)
 {
-	Skill_A(player);
+	Skill_A_State::Skill_A(player);
 
 	//KEYANIMANAGER->update();
 }

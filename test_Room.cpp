@@ -63,6 +63,9 @@ void test_Room::render()
 	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
 		_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
 
+	// 플레이어 공격 렉트 출력
+	//_skul->set_Info()->show_Attack_Rect(getMemDC());
+
 	// 투사체 출력
 	DATAMANAGER->show_FlyingObject();
 

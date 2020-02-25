@@ -67,6 +67,9 @@ public:
 	// 스컬의 주소를 얻는다.
 	Player* skul_Address() { return _skul; }
 
+	// 스컬의 공격 렉트에 에너미의 렉트가 충돌 됐는지
+	void skul_Attack_Range_Enemy(Enemy* enemy_Address);
+
 	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 충돌체크 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 	
 	// 플레이어 아래 타일에 땅이 있는지 체크 (플레이어가 추락 상태일때 사용)
@@ -135,13 +138,23 @@ public:
 	// 플레이어가 인식범위에 들어왔는지 체크
 	bool find_Player(Enemy* enemy_Address);
 
+	// 플레이어가 공격범위에 들어왔는지 체크
+	bool find_Attack_Range(Enemy* enemy_Address);
+
 	// 에너미가 이동하는 방향에서 플레이어가 사라졌을 경우
 	bool escape_Player(Enemy* enemy_Address);
 
 	// 에너미가 이동하려는 타일이 땅이 아닐 경우
 	bool enemy_Find_Ground(Enemy* enemy_Address);
 
+	// 에너미의 공격 렉트에 플레이어가 충돌 했을때
+	void enemy_Attack_Hit(Enemy* enemy_Address);
 
+	// 에너미가 이동하려는 타일이 벽이 아닐 경우
+	bool enemy_Move_Wall(Enemy* enemy_Address, EnemyDirection dir);
+
+	// 에너미의 아래 타일이 땅이 아닐 경우
+	bool enemy_find_Down_Gorund(Enemy* enemy_Address);
 };
 
 

@@ -375,10 +375,10 @@ struct tagAddImage
 		
 		// <soldier Hit Ani>
 		int soldier_Hit_Right[] = { 0, 1 };   
-		KEYANIMANAGER->addArrayFrameAnimation("soldier_Hit_Right_Ani", "soldier_Hit", soldier_Hit_Right, 2, 10, true);
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Hit_Right_Ani", "soldier_Hit", soldier_Hit_Right, 2, 10, false);
 		
 		int soldier_Hit_Left[] = { 2, 3 };
-		KEYANIMANAGER->addArrayFrameAnimation("soldier_Hit_Left_Ani", "soldier_Hit", soldier_Hit_Left, 2, 10, true);
+		KEYANIMANAGER->addArrayFrameAnimation("soldier_Hit_Left_Ani", "soldier_Hit", soldier_Hit_Left, 2, 10, false);
 		
 		
 		// <soldier Attack Ani>

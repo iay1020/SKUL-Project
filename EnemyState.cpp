@@ -28,6 +28,21 @@ IdleState_E * IdleState_E::getInstance()
 
 void IdleState_E::Idle(Enemy * enemy)
 {
+	// 플레이어에게 맞았을 경우
+	if (enemy->info_Address()->bool_V.player_Attack_Hit)
+	{
+		// 피격 애니메이션을 넣어준다.
+		IdleState_E::Hit(enemy);
+
+	}
+
+	// 바닥에 땅이 없을 경우 추락
+	if (!DATAMANAGER->enemy_find_Down_Gorund(enemy))
+	{
+		// 추락상태
+		IdleState_E::Fall(enemy);
+	}
+
 
 	// 인식 범위에 플레이어가 있다면 플레이어가 있는 방향으로 걸어간다.
 	if (DATAMANAGER->find_Player(enemy))
@@ -44,19 +59,8 @@ void IdleState_E::Idle(Enemy * enemy)
 void IdleState_E::Move(Enemy * enemy)
 {
 	// 에너미의 방향에 맞는 애니메이션을 넣어준다.
-	if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
-	{
-		enemy->info_Address()->ani_Changer("Walk");
-		enemy->info_Address()->img.ani->start();
-
-	}
-
-	if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
-	{
-		enemy->info_Address()->ani_Changer("Walk");
-		enemy->info_Address()->img.ani->start();
-
-	}
+	enemy->info_Address()->ani_Changer("Walk");
+	enemy->info_Address()->img.ani->start();
 
 	// 에너미의 상태를 무브 상태로 교체한다.
 	enemy->set_State(MoveState_E::getInstance());
@@ -69,18 +73,24 @@ void IdleState_E::Jump(Enemy * enemy)
 
 void IdleState_E::Fall(Enemy * enemy)
 {
+	// 추락 애니메이션이 없기 때문에 바로 추락 상태로 변경시켜준다.
+	enemy->set_State(FallState_E::getInstance());
+	enemy->get_State()->update(enemy);
+
 }
 
 void IdleState_E::Hit(Enemy * enemy)
 {
+	// 에너미의 피격 애니메이션을 넣어준다.
+	enemy->info_Address()->ani_Changer("Hit");
+	enemy->info_Address()->img.ani->start();
+
+	enemy->set_State(HitState_E::getInstance());
+	enemy->get_State()->update(enemy);
 }
 
 void IdleState_E::Attack_A(Enemy * enemy)
 {
-	// 공격 애니메이션을 넣어준다.
-	enemy->info_Address()->ani_Changer("Attack_A");
-	enemy->info_Address()->img.ani->start();
-
 	// 공격 상태로 교체한다.
 	enemy->set_State(Attack_A_State_E::getInstance());
 	enemy->get_State()->update(enemy);
@@ -135,6 +145,14 @@ void MoveState_E::Idle(Enemy * enemy)
 
 void MoveState_E::Move(Enemy * enemy)
 {
+	// 플레이어에게 맞았을 경우
+	if (enemy->info_Address()->bool_V.player_Attack_Hit)
+	{
+		// 피격 애니메이션을 넣어준다.
+		MoveState_E::Hit(enemy);
+
+	}
+
 	// 만약 플레이어가 에너미가 바라보는 방향에서 사라졌을 경우에는 대기 상태로 바꿔준다.
 	if (DATAMANAGER->escape_Player(enemy))
 	{
@@ -175,12 +193,18 @@ void MoveState_E::Fall(Enemy * enemy)
 
 void MoveState_E::Hit(Enemy * enemy)
 {
+	// 에너미의 피격 애니메이션을 넣어준다.
+	enemy->info_Address()->ani_Changer("Hit");
+	enemy->info_Address()->img.ani->start();
+
+	enemy->set_State(HitState_E::getInstance());
+	enemy->get_State()->update(enemy);
 }
 
 void MoveState_E::Attack_A(Enemy * enemy)
 {
-	// 공격 애니메이션을 넣어준다.
-	enemy->info_Address()->ani_Changer("Attack_A");
+	// 일단 대기 상태에서 공격 상태로 전환
+	enemy->info_Address()->ani_Changer("Idle");
 	enemy->info_Address()->img.ani->start();
 
 	// 공격 상태로 교체한다.
@@ -297,6 +321,15 @@ void FallState_E::Jump(Enemy * enemy)
 
 void FallState_E::Fall(Enemy * enemy)
 {
+	// 아래에 땅을 발견할때까지 추락한다.
+	// 땅을 발견하면 Idle으로 교체
+	if (DATAMANAGER->enemy_find_Down_Gorund(enemy))
+	{
+		FallState_E::Idle(enemy);
+	}
+
+
+	
 }
 
 void FallState_E::Hit(Enemy * enemy)
@@ -342,6 +375,14 @@ HitState_E * HitState_E::getInstance()
 
 void HitState_E::Idle(Enemy * enemy)
 {
+	// 대기 애니메이션으로 교체
+	enemy->info_Address()->ani_Changer("Idle");
+	enemy->info_Address()->img.ani->start();
+
+	// 대기 상태로 교체
+	enemy->set_State(IdleState_E::getInstance());
+	enemy->get_State()->update(enemy);
+
 }
 
 void HitState_E::Move(Enemy * enemy)
@@ -358,6 +399,45 @@ void HitState_E::Fall(Enemy * enemy)
 
 void HitState_E::Hit(Enemy * enemy)
 {
+	// 플레이어에게 맞으면 자신이 바라보는 방향 뒤쪽으로 살짝 밀려난다.
+	if (enemy->info_Address()->bool_V.player_Attack_Hit)
+	{
+		// 에너미의 피격 쿨타임을 돌린다.
+		enemy->info_Address()->cool_Time.knockBack_Time++;
+
+		if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+		{
+			// 반대방향으로 이동한다.
+			if (DATAMANAGER->enemy_Move_Wall(enemy, EnemyDirection::RIGHT))
+			{
+				enemy->info_Address()->pos.center.x += ENEMYKNOCKBACK_RANGE;
+			}
+		}
+
+		if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
+		{
+			// 반대방향으로 이동한다.
+			if (DATAMANAGER->enemy_Move_Wall(enemy, EnemyDirection::LEFT))
+			{
+				enemy->info_Address()->pos.center.x -= ENEMYKNOCKBACK_RANGE;
+			}
+		}
+
+		// 렉트 갱신
+		enemy->info_Address()->update_Rect();
+	}
+
+	// 에너미의 피격 시간이 끝났다면
+	if (enemy->info_Address()->cool_Time.knockBack_Time >= ENEMYKNOCKBACK_TIME)
+	{
+		// 피격 쿨타임 초기화
+		enemy->info_Address()->cool_Time.knockBack_Time = 0;
+
+		// 맞았다는 bool값 초기화
+		enemy->info_Address()->bool_V.player_Attack_Hit = false;
+
+		HitState_E::Idle(enemy);
+	}
 }
 
 void HitState_E::Attack_A(Enemy * enemy)
@@ -423,32 +503,68 @@ void Attack_A_State_E::Fall(Enemy * enemy)
 
 void Attack_A_State_E::Hit(Enemy * enemy)
 {
+	// 에너미의 피격 애니메이션을 넣어준다.
+	enemy->info_Address()->ani_Changer("Hit");
+	enemy->info_Address()->img.ani->start();
+
+	enemy->set_State(HitState_E::getInstance());
+	enemy->get_State()->update(enemy);
+
 }
 
 void Attack_A_State_E::Attack_A(Enemy * enemy)
 {
-	//// 공격 쿨타임까지 공격 애니메이션을 재생하지 않는다.
-	//if (enemy->info_Address()->bool_V.attackCheck)	enemy->info_Address()->cool_Time.attack_CoolTime_Cnt++;
-	//
-	//if (enemy->info_Address()->cool_Time.attack_CoolTime <= enemy->info_Address()->cool_Time.attack_CoolTime_Cnt)
-	//{
-	//	// 애니메이션을 재생한다.
-	//	enemy->info_Address()->img.ani->start();
-	//
-	//	// 다시 공격 가능하게 false로 바꾼다.
-	//	enemy->info_Address()->bool_V.attackCheck = false;
-	//
-	//	// 쿨타임 초기화
-	//	enemy->info_Address()->cool_Time.attack_CoolTime_Cnt = 0;
-	//}
+	// 플레이어에게 맞았을 경우
+	if (enemy->info_Address()->bool_V.player_Attack_Hit)
+	{
+		// 피격 애니메이션을 넣어준다.
+		Attack_A_State_E::Hit(enemy);
+
+	}
+
+	// 플레이어가 인식범위 밖에 있다면 대기 상태로 바꿔준다.
+	if (!DATAMANAGER->find_Attack_Range(enemy))
+	{
+		enemy->info_Address()->bool_V.attackCheck = false;
+		enemy->info_Address()->cool_Time.attack_CoolTime_Cnt = 0;
+	
+		Idle(enemy);
+	}
+
+	// 공격 쿨타임까지 공격 애니메이션을 재생하지 않는다.
+	if (enemy->info_Address()->bool_V.attackCheck)	enemy->info_Address()->cool_Time.attack_CoolTime_Cnt++;
+	
+	if (enemy->info_Address()->cool_Time.attack_CoolTime <= enemy->info_Address()->cool_Time.attack_CoolTime_Cnt &&
+		enemy->info_Address()->bool_V.attackCheck)
+	{
+		// 애니메이션을 재생한다.
+		enemy->info_Address()->ani_Changer("Attack_A");
+		enemy->info_Address()->img.ani->start();
+	
+		// 다시 공격 가능하게 false로 바꾼다.
+		enemy->info_Address()->bool_V.attackCheck = false;
+
+		// 다시 공격 가능하게 false로 바꿔준다. (플레이어 공격)
+		enemy->info_Address()->bool_V.Attack_Hit = false;
+	
+		// 쿨타임 초기화
+		enemy->info_Address()->cool_Time.attack_CoolTime_Cnt = 0;
+
+		
+	}
+	
+	
 
 	// 공격 프레임이 모두 끝나면 대기 상태로
 	if (enemy->info_Address()->img.ani->getFramePos().x == 688)
 	{
-		// 다시 공격 가능하게 false로 바꾼다.
-		enemy->info_Address()->bool_V.attackCheck = false;
+		// 에너미 공격 렉트를 그려준다.
+		enemy->info_Address()->make_Attack_Rect();
 
-		Idle(enemy);
+		// 에너미의 공격 렉트에 플레이어가 맞았는지 연산
+		DATAMANAGER->enemy_Attack_Hit(enemy);
+
+		Attack_A_State_E::Idle(enemy);
 
 	}
 
