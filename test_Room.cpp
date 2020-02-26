@@ -23,6 +23,10 @@ HRESULT test_Room::init()
 	_skul = DATAMANAGER->skul_Address();	// 스컬 데이터 연결
 	_skul->update_Pos(4, 26);
 
+	// ui 셋팅
+	DATAMANAGER->setting_ui(_skul);
+
+	// 테스트 에너미 생성
 	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 30, 17);
 
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
@@ -71,6 +75,9 @@ void test_Room::render()
 
 	// 이펙트 출력
 	DATAMANAGER->show_Effect();
+
+	// ui 출력
+	DATAMANAGER->show_Ui();
 }
 
 void test_Room::testControl()

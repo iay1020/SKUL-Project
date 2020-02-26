@@ -88,6 +88,9 @@
     <Filter Include="playGround\EnemyManager\EnemyState">
       <UniqueIdentifier>{f4e76c92-78d3-46ac-b8dc-f14a61f6efda}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\Ui_Manager">
+      <UniqueIdentifier>{2b23bffe-0b2e-4c08-a6fa-bfd3d2672701}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -240,6 +243,12 @@
     <ClInclude Include="EnemyState.h">
       <Filter>playGround\EnemyManager\EnemyState</Filter>
     </ClInclude>
+    <ClInclude Include="Ui_Manager.h">
+      <Filter>playGround\Ui_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Ui_Manager_Library.h">
+      <Filter>playGround\Ui_Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -343,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="EnemyState.cpp">
       <Filter>playGround\EnemyManager\EnemyState</Filter>
+    </ClCompile>
+    <ClCompile Include="Ui_Manager.cpp">
+      <Filter>playGround\Ui_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

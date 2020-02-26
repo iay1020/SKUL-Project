@@ -194,6 +194,8 @@
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="txtData.h" />
+    <ClInclude Include="Ui_Manager.h" />
+    <ClInclude Include="Ui_Manager_Library.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="windowAPI.h" />
     <ClInclude Include="WorkList.h" />
@@ -236,6 +238,7 @@
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="txtData.cpp" />
+    <ClCompile Include="Ui_Manager.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="windowAPI.cpp" />
   </ItemGroup>

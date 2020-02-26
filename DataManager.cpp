@@ -16,6 +16,8 @@ HRESULT DataManager::init()
 	_flyObj_Manager = new FlyingObject;
 	_effect_Maker = new EffectMaker;
 	_enemyManager = new EnemyManager;
+	_ui_Manager = new Ui_Manager;
+
 
 	return S_OK;
 }

@@ -65,6 +65,12 @@ struct tagAddImage
 			IMAGEMANAGER->addImage("trapType_Check_Button", "./image/mapTool/icon/TrapType_Check_Button.bmp", 32, 30, true, RGB(255, 0, 255));
 		}
 
+		// 치킨은 사회 악이다
+		// 치킨을 먹으면 건강이 나빠진당
+		// 치킨 말고 모든 영양소를 가진 햄버거를 먹쟝
+		// -혜완-
+
+
 		// mapTool <tile Pallet>
 		{
 			IMAGEMANAGER->addFrameImage("tutorial_Tile", "./image/mapTool/tile/terrain_Tile/Tutorial_Tile.bmp", 576, 256, 9, 4, true, RGB(255, 0, 255));
@@ -78,6 +84,41 @@ struct tagAddImage
 		{
 			IMAGEMANAGER->addFrameImage("backGround_Pallet_0", "./image/mapTool/backGround/backGround_Img_0.bmp", 600, 600, 3, 3, true, RGB(255, 0, 255));
 		}
+
+		//■■■■■■■■ Ui Image ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+		// status 
+		{
+			IMAGEMANAGER->addImage("status_UI", "./image/UI/Status_Ui/status_Ui_img.bmp", 360, 112, true, RGB(255, 0, 255));
+		}
+
+		// character 
+		{
+			IMAGEMANAGER->addImage("skul_Icon", "./image/UI/Character_Icon/skul_Icon.bmp", 90, 90, true, RGB(255, 0, 255));
+		}
+
+		// skill 
+		{
+			IMAGEMANAGER->addImage("skill_Null", "./image/UI/Skill_Img/skill_Null.bmp", 48, 48, false, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("skul_ThrowHead_Skill", "./image/UI/Skill_Img/skul_ThrowHead_Skill_Img.bmp", 48, 48, true, RGB(255, 0, 255));
+		}
+
+		// hp 
+		{
+			IMAGEMANAGER->addImage("skul_HP", "./image/UI/HP_Bar/Hp_Bar.bmp", 280, 20, false, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("skul_HP_Heal", "./image/UI/HP_Bar/Hp_Bar_Heal.bmp", 280, 20, false, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("skul_HP_Hit", "./image/UI/HP_Bar/Hp_Bar_Hit.bmp", 280, 20, false, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("skul_HP_Null", "./image/UI/HP_Bar/Hp_Bar_Null.bmp", 280, 20, false, RGB(255, 0, 255));
+
+		}
+
+		// enemy 
+		{
+			IMAGEMANAGER->addImage("enemy_HP_Bar", "./image/UI/Enemy_HP_Bar/enemy_HP_Bar_Frame.bmp", 125, 12, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("enemy_HP", "./image/UI/Enemy_HP_Bar/enemy_HP.bmp", 125, 12, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("enemy_HP_Hit", "./image/UI/Enemy_HP_Bar/enemy_HP_Hit.bmp", 125, 12, true, RGB(255, 0, 255));
+
+		}
+
 
 		//■■■■■■■■ Skul Image ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 		// <Idle>
@@ -102,6 +143,7 @@ struct tagAddImage
 			IMAGEMANAGER->addFrameImage("skul_Dash_Effect", "./image/effect/Dash/skul_Dash_Effect.bmp", 4654, 398, 13, 2, true, RGB(255, 0, 255));
 	
 		}
+		// 게임을 시작하지 
 
 		// <Jump>
 		{

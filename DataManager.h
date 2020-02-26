@@ -8,6 +8,7 @@
 #include "FlyingObject.h"
 #include "EffectMaker.h"
 #include "EnemyManager.h"
+#include "Ui_Manager.h"
 
 class DataManager : public singletonBase<DataManager>
 {
@@ -23,6 +24,7 @@ private:
 
 	EnemyManager*				_enemyManager;							// 에너미 매니저
 
+	Ui_Manager*					_ui_Manager;							// ui 매니저
 
 public:
 	DataManager();		// 생성자
@@ -155,6 +157,18 @@ public:
 
 	// 에너미의 아래 타일이 땅이 아닐 경우
 	bool enemy_find_Down_Gorund(Enemy* enemy_Address);
+
+	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Ui 매니저 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+	// ui 베이스 셋팅
+	void setting_ui(Player* player_Address) { _ui_Manager->init(player_Address); }
+
+	// ui 출력
+	void show_Ui() { _ui_Manager->render(); }
+
+	
+
+
 };
 
 
