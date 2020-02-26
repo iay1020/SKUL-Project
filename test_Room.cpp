@@ -25,6 +25,9 @@ HRESULT test_Room::init()
 
 	// ui 셋팅
 	DATAMANAGER->setting_ui(_skul);
+	// 미니맵 정보 셋팅
+	DATAMANAGER->ui_Address()->setting_MiniMap();
+	DATAMANAGER->setting_MiniMap();
 
 	// 테스트 에너미 생성
 	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 30, 17);

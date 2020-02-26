@@ -25,6 +25,7 @@ private:
 	EnemyManager*				_enemyManager;							// 에너미 매니저
 
 	Ui_Manager*					_ui_Manager;							// ui 매니저
+	vector<tagTileInfo>			minimap;								// 미니맵
 
 public:
 	DataManager();		// 생성자
@@ -60,6 +61,12 @@ public:
 
 	// 데이터 매니저 정보 겟터
 	vector<tagTileInfo> get_TileList() { return _tileList; }												// 타일맵 정보
+
+	// 맵 정보 겟터
+	tagMapInfo get_MapInfo() { return _mapInfo; }															// 맵 정보
+	
+	// 미니맵 셋팅
+	void setting_MiniMap() { minimap = _ui_Manager->get_miniMap(); }
 
 	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 캐릭터 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
@@ -159,6 +166,9 @@ public:
 	bool enemy_find_Down_Gorund(Enemy* enemy_Address);
 
 	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ Ui 매니저 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+
+	// ui 매니저 주소 겟터
+	Ui_Manager* ui_Address() { return _ui_Manager; }
 
 	// ui 베이스 셋팅
 	void setting_ui(Player* player_Address) { _ui_Manager->init(player_Address); }

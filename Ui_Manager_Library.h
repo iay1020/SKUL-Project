@@ -3,10 +3,10 @@
 
 
 // 체력이 떨어지는 스피드
-#define HP_MINUS_SPEED	5
+#define HP_MINUS_SPEED	2
 
 // 체력이 올라가는 스피드
-#define HP_PLUS_SPEED	5
+#define HP_PLUS_SPEED	2
 
 
 
@@ -131,9 +131,12 @@ struct CharacterStatusUI
 	{
 		// hp 출력
 		hp.img_HP_BG->render(getMemDC, hp.rc_HP_BG.left, hp.rc_HP_BG.top);
-		//hp.img_HP_Back->render(getMemDC, hp.rc_HP_Back.left, hp.rc_HP_Back.top);
-		//hp.img_HP_Back->render(;)
-		//hp.img_HP_Front->render(getMemDC, hp.rc_HP_Front.left, hp.rc_HP_Front.top);
+
+		hp.img_HP_Back->render(getMemDC, hp.rc_HP_Back.left, hp.rc_HP_Back.top,
+			0, 0, hp.rc_HP_Back.right - hp.rc_HP_Back.left, hp.img_HP_Back->getHeight());
+
+		hp.img_HP_Front->render(getMemDC, hp.rc_HP_Front.left, hp.rc_HP_Front.top,
+			0, 0, hp.rc_HP_Front.right - hp.rc_HP_Front.left, hp.img_HP_Front->getHeight());
 		
 		// ui 출력
 		ui.img->render(getMemDC, ui.rc.left, ui.rc.top);
@@ -191,7 +194,6 @@ struct CharacterStatusUI
 	// 체력 게이지 업데이트
 	void update_HP()
 	{
-
 		// 체력이 회복하고 있는중
 		if (hp.state == HP_UPDATE_STATE::HEAL)
 		{
@@ -215,39 +217,28 @@ struct CharacterStatusUI
 			}
 		}
 
-		//// 현재 체력이 줄어들면 front HP는 바로 갱신한다.
-		//hp.curHP = DATAMANAGER->skul_Address()->get_Info().status.HP;
-		//
-		//// 상태에 따라 다른 연산을 한다.
-		//
-		//// 체력이 감소하고 있는중)
-		//if (hp.state == HP_UPDATE_STATE::HIT)
-		//{
-		//	// 감소중일때 back 이미지 교체
-		//	hp.img_HP_Back = IMAGEMANAGER->findImage("skul_HP_Hit");
-		//
-		//
-		//
-		//
-		//	// back HP는 현재 체력이 값이 스컬 체력보다 작을때
-		//	if (hp.curHP > DATAMANAGER->skul_Address()->get_Info().status.HP)
-		//	{
-		//		// back HP의 right를 현재 체력과 같아질때까지 감소시켜준다.	
-		//		hp.rc_HP_Back.right -= HP_MINUS_SPEED;
-		//
-		//		// back HP 렉트의 right가 front HP right보다 작아 졌을때 값을 보정해주고 멈춰준다.
-		//		if (hp.rc_HP_Back.right < hp.rc_HP_Front.right)
-		//		{
-		//			// 넘어 갔을 경우가 있으니 보정
-		//			hp.rc_HP_Back.right = hp.rc_HP_Front.right;
-		//
-		//			// maxHP를 현재 체력으로 갱신해준다.
-		//			hp.maxHP = DATAMANAGER->skul_Address()->get_Info().status.HP;
-		//
-		//		}
-		//	}
-		//}
+		// 체력이 감소하는 중이다.
+		if (hp.state == HP_UPDATE_STATE::HIT)
+		{
+			// 감소중일때 back 이미지 교체
+			hp.img_HP_Back = IMAGEMANAGER->findImage("skul_HP_Hit");
 
+			// 감소중일때는 front right가 바로 갱신 된다.
+			hp.rc_HP_Front.right = hp.rc_HP_Front.left + (hp.curHP * hp.img_HP_Front->getWidth() / hp.maxHP);
+
+			// 감소중일때는 back right가 천천히 감소한다.
+			hp.rc_HP_Back.right -= HP_MINUS_SPEED;
+
+			// back right가 front right와 같거나 그 이하라면 
+			if (hp.rc_HP_Back.right <= hp.rc_HP_Front.right)
+			{
+				// 넘어갔을 경우 값 보정
+				hp.rc_HP_Back.right = hp.rc_HP_Front.right;
+
+				// 체력 상태를 교체한다.
+				hp.state = HP_UPDATE_STATE::EMPTY;
+			}
+		}
 	}
 
 };

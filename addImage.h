@@ -119,6 +119,20 @@ struct tagAddImage
 
 		}
 
+		// miniMap
+		{
+			IMAGEMANAGER->addImage("miniMap_Player", "./image/UI/miniMap/player_MiniMap.bmp", 8, 16, false, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("miniMap_Enemy", "./image/UI/miniMap/enemy_MiniMap.bmp", 8, 16, false, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("miniMap_Door", "./image/UI/miniMap/door_miniMap.bmp", 16, 32, false, RGB(255, 0, 255));
+
+			IMAGEMANAGER->addFrameImage("stage1_Tile_S", "./image/UI/miniMap/Stage1_Tile_S.bmp", 144, 64, 9, 4, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("stage2_Tile_S", "./image/UI/miniMap/Stage2_Tile_S.bmp", 144, 64, 9, 4, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("tutorial_Tile_S", "./image/UI/miniMap/Tutorial_Tile_S.bmp", 144, 64, 9, 4, true, RGB(255, 0, 255));
+
+			IMAGEMANAGER->addImage("miniMap_Frame", "./image/UI/miniMap/Minimap_Frame.bmp", 400, 240, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("miniMap_BG", "./image/UI/miniMap/miniMap_BG.bmp", 400, 240, false, RGB(255, 0, 255));
+		}
+
 
 		//¡á¡á¡á¡á¡á¡á¡á¡á Skul Image ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 		// <Idle>

@@ -3,8 +3,11 @@
 
 class Ui_Manager : public gameNode
 {
-	CharacterStatusUI	skul_UI_Info;
+private:
+	CharacterStatusUI	skul_UI;
 	Player*				skul_Address;
+	
+	vector<tagTileInfo>	miniMap;
 
 public:
 	Ui_Manager();
@@ -15,6 +18,15 @@ public:
 	void update();
 	void render();
 
+	// 스컬 UI 정보 주소
+	CharacterStatusUI*	get_UI_Address() { return &skul_UI; }
+
+	// 미니맵 렉트를 만든다.
+	void setting_MiniMap();
+
+	// 미니맵 정보 겟터
+	//vector<tagTileInfo> get_miniMap() { return miniMap; }
+	vector<tagTileInfo>& get_miniMap() { return miniMap; }
 
 };
 

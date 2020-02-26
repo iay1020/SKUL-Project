@@ -34,6 +34,9 @@ void DataManager::update()
 	// 스컬 상태 업데이트
 	_skul->update();
 
+	// UI 업데이트
+	_ui_Manager->update();
+
 	// 투사체 매니저 업데이트
 	_flyObj_Manager->update();
 
@@ -515,7 +518,7 @@ void DataManager::map_Render_Datamanager(HDC getMemDC)
 void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 {
 	CAMERAMANAGER->Use_Func()->find_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X, CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_Y);	// 카메라 안에 들어온 타일을 찾아서 저장한다.
-
+	
 	short loopSpeed[5];
 
 	for (int i = 0; i < 5; ++i)
@@ -523,8 +526,6 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 		loopSpeed[i] = loopSpd[i];
 	}
 
-	// 맨날 치킨 먹는다면서 치킨 안먹는 사람 
-	// 저요 저요!
 
 	// 백그라운드를 그려준다.
 	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
@@ -550,9 +551,8 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 	{
 		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
 		{
-			//cout << y * mapInfo.tile_Count.x + x << ":" << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.x << "," << (*_vTileList)[y * mapInfo.tile_Count.x + x].index.y << endl;
-
 			RECT rc = _tileList[y * _mapInfo.tile_Count.x + x].rc;
+			RECT mRc = minimap[y * _mapInfo.tile_Count.x + x].rc;
 			POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
 
 			rc.left -= camera.x;
@@ -560,27 +560,31 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 			rc.top -= camera.y;
 			rc.bottom -= camera.y;
 
+
+
 			// 안 쓰는 타입은 제외한다.
 			if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
 			{
 
 				// 지형을 그려준다.
-if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
-{
-	if (_tileList[y * _mapInfo.tile_Count.x + x].useTile)
-	{
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
+				{
+					if (_tileList[y * _mapInfo.tile_Count.x + x].useTile)
+					{
 
-		IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
-			_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
-	}
-}
+						IMAGEMANAGER->findImage(_tileList[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, rc.left, rc.top,
+							_tileList[y * _mapInfo.tile_Count.x + x].frame.ground.x, _tileList[y * _mapInfo.tile_Count.x + x].frame.ground.y);
 
-// 데코를 그려준다.
-if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::DECORATION)
-{
+					}
+				}
 
-}
+				// 데코를 그려준다.
+				if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::DECORATION)
+				{
+
+				}
 			}
+
 
 			// 충돌 타입이 없다면 제외한다.
 			if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Collision_Type != COLLISION_TILE_TYPE::NONE_TYPE)
@@ -611,6 +615,46 @@ if (_tileList[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::DECORATION)
 			}
 		}
 	}
+
+
+	for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
+	{
+		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
+		{
+			RECT mRc = minimap[y * _mapInfo.tile_Count.x + x].rc;
+
+			// 미니맵 출력 출력
+			// 안 쓰는 타입은 제외한다.
+			if (minimap[y * _mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
+			{
+
+				// 지형을 그려준다.
+				if (minimap[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
+				{
+					if (minimap[y * _mapInfo.tile_Count.x + x].useTile)
+					{
+					
+						IMAGEMANAGER->findImage(minimap[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, mRc.left , mRc.top ,
+							minimap[y * _mapInfo.tile_Count.x + x].frame.ground.x, minimap[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+
+						//Rectangle(getMemDC, mRc.left, mRc.top, mRc.right, mRc.bottom);
+					}
+				}
+
+
+			}
+		}
+	}
+
+	// 플레이어 렉트
+	int index = (int)((_skul->get_Info().pos.center.x / TILE_SIZE_X)) +
+		((int)(_skul->get_Info().pos.center.y) / TILE_SIZE_Y * _mapInfo.tile_Count.x);
+
+	IMAGEMANAGER->findImage("miniMap_Player")->render(getMemDC, minimap[index].rc.left , minimap[index].rc.top - 8);
+	//Rectangle(getMemDC, minimap[index].rc.left + 1280, minimap[index].rc.top - 8 + 680, minimap[index].rc.right + 1280, minimap[index].rc.bottom + 680);
+
+	// 미니맵 프레임
+	IMAGEMANAGER->findImage("miniMap_Frame")->render(getMemDC, 1175, 700);
 }
 
 void DataManager::Rect_Render_Datamanager(HDC getMemDC)
@@ -1180,6 +1224,8 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 		{
 			// 공격을 실행하고, 공격을 했다는 bool값을 변경해준다.
 			_skul->set_Info()->status.HP -= enemy_Address->info_Address()->status.attack;
+			_ui_Manager->get_UI_Address()->hp.curHP = _skul->get_Info().status.HP;
+			_ui_Manager->get_UI_Address()->hp.state = HP_UPDATE_STATE::HIT;
 
 			// 스컬의 체력이 0 이하로 내려갔다면 0으로 만들어준다.
 			if (_skul->get_Info().status.HP < 0)
@@ -1196,8 +1242,6 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 
 			// 공격이 끝났다면 다음 공격까지 렉트를 초기화한다.
 			enemy_Address->info_Address()->pos.Attack_Rc = { 0,0,0,0 };
-
-			cout << "skul HP : " <<_skul->set_Info()->status.HP << endl;
 		}
 
 	}
