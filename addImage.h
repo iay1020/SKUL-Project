@@ -114,8 +114,8 @@ struct tagAddImage
 		// enemy 
 		{
 			IMAGEMANAGER->addImage("enemy_HP_Bar", "./image/UI/Enemy_HP_Bar/enemy_HP_Bar_Frame.bmp", 125, 12, true, RGB(255, 0, 255));
-			IMAGEMANAGER->addImage("enemy_HP", "./image/UI/Enemy_HP_Bar/enemy_HP.bmp", 125, 12, true, RGB(255, 0, 255));
-			IMAGEMANAGER->addImage("enemy_HP_Hit", "./image/UI/Enemy_HP_Bar/enemy_HP_Hit.bmp", 125, 12, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("enemy_HP", "./image/UI/Enemy_HP_Bar/enemy_HP.bmp", 117, 10, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("enemy_HP_Hit", "./image/UI/Enemy_HP_Bar/enemy_HP_Hit.bmp", 117, 10, true, RGB(255, 0, 255));
 
 		}
 

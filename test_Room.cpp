@@ -81,6 +81,7 @@ void test_Room::render()
 
 	// ui Ãâ·Â
 	DATAMANAGER->show_Ui();
+
 }
 
 void test_Room::testControl()

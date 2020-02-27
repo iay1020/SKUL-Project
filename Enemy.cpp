@@ -21,13 +21,46 @@ void Enemy::update()
 {
 	// 상태 업데이트
 	state->update(this);
+
+	// 스컬의 공격 범위에 에너미가 들어왔다.
 	DATAMANAGER->skul_Attack_Range_Enemy(this);
+
+	// 스컬의 HP 셋팅
+	info.update_HP();
+
+	
 }
 
 void Enemy::render(HDC getMemDC)
 {
-	IMAGEMANAGER->findImage(info.img.imgName)->aniRender(getMemDC, 
-		info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y, info.img.ani);
+	// 피격중이 아닐때
+	if (!info.bool_V.player_Attack_Hit)
+	{
+		IMAGEMANAGER->findImage(info.img.imgName)->aniRender(getMemDC,
+			info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y, info.img.ani);
+	}
+	// 피격중일때 
+	if (info.bool_V.player_Attack_Hit)
+	{
+		IMAGEMANAGER->findImage(info.img.imgName)->frameRender(getMemDC,
+			info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
+			info.img.curX, info.img.curY);
+	}
+
+	// hp 출력
+	if (info.bool_V.im_Hit)
+	{
+		info.hp.img_HP_BG->render(getMemDC, info.hp.rc_HP_BG.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+			info.hp.rc_HP_BG.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+
+		info.hp.img_HP_Back->render(getMemDC, info.hp.rc_HP_Back.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+			info.hp.rc_HP_Back.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
+			0, 0, info.hp.rc_HP_Back.right - info.hp.rc_HP_Back.left, info.hp.img_HP_Back->getHeight());
+
+		info.hp.img_HP_Front->render(getMemDC, info.hp.rc_HP_Front.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x
+			, info.hp.rc_HP_Front.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
+			0, 0, info.hp.rc_HP_Front.right - info.hp.rc_HP_Front.left, info.hp.img_HP_Front->getHeight());
+	}
 
 	RECT temp_AniRC = info.pos.find_Range_Rc;
 	temp_AniRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;

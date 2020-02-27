@@ -622,6 +622,10 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
 		{
 			RECT mRc = minimap[y * _mapInfo.tile_Count.x + x].rc;
+			//mRc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x / 4.f;
+			//mRc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x / 4.f;
+			//mRc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y / 4.f - 250;
+			//mRc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y / 4.f - 250;
 
 			// 미니맵 출력 출력
 			// 안 쓰는 타입은 제외한다.
@@ -706,13 +710,21 @@ void DataManager::skul_Attack_Range_Enemy(Enemy* enemy_Address)
 			
 			// 에너미의 체력이 단다. (스컬의 데미지 만큼)
 			enemy_Address->info_Address()->status.hp -= _skul->get_Info().status.Atk;
-			cout << enemy_Address->info_Address()->status.hp << endl;
+			enemy_Address->info_Address()->hp.curHP = enemy_Address->info_Address()->status.hp;
+			enemy_Address->info_Address()->hp.state = HP_UPDATE_STATE_E::HIT;
+			enemy_Address->info_Address()->bool_V.im_Hit = true;
+
+			// 에너미의 피격 시작 시간을 넣어준다.
+			enemy_Address->info_Address()->pos.lerp_Start = TIMEMANAGER->getWorldTime();
+
 			// 만약 체력이 0 이하라면
-			if (enemy_Address->info_Address()->status.hp < 0)
+			if (enemy_Address->info_Address()->status.hp <= 0)
 			{
 				// 체력 0으로 보정
+				enemy_Address->info_Address()->status.hp = 0;
 
 				// 에너미 사망 bool값 넣어주기.
+				enemy_Address->info_Address()->bool_V.im_Death = true;
 
 			}
 		}
@@ -917,19 +929,43 @@ void DataManager::Lerp_Player()
 
 }
 
-void DataManager::Lerp_Enemy()
+void DataManager::Lerp_Enemy(Enemy* enemy)
 {
-	// true일때만 실행 (에너미 전용)
-
-	// 틱 받기
+	// 경과시간
+	float elapsedTime = TIMEMANAGER->getElapsedTime();
 
 	// 스피드 구하기
+	float lerp_Speed = (elapsedTime / ENEMYKNOCKBACKING_TIME) * ENEMYKNOCKBACK_RANGE;
 
-	// 이동
+	// 이동 (벽이 없을때만 이동 연산을 한다.)
+	if (DATAMANAGER->enemy_Move_Wall(enemy, enemy->info_Address()->status.dir))
+	{
+		if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+		{
+			enemy->info_Address()->pos.center.x += cosf(0) * lerp_Speed;
+		}
+		if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
+		{
+			enemy->info_Address()->pos.center.x += cosf(3.14) * lerp_Speed;
+		}
+
+		// 렉트 갱신
+		enemy->info_Address()->update_Rect();
+		
+	}
 
 	// 멈추는 조건
+	if (enemy->info_Address()->pos.lerp_Start + ENEMYKNOCKBACKING_TIME <= TIMEMANAGER->getWorldTime())
+	{
+	
+		// 현재 시간으로 초기화
+		enemy->info_Address()->pos.lerp_Start = TIMEMANAGER->getWorldTime();
+	
+		// bool 값 끄기
+		enemy->info_Address()->bool_V.hitCheck = false;
+		enemy->info_Address()->bool_V.lerping = false;
 
-	// bool 값 끄기
+	}
 }
 
 bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)

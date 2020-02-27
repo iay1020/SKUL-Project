@@ -36,7 +36,6 @@ void playGround::release()
 void playGround::update()
 {
 	gameNode::update();
-	
 	_sceneChanger->update();	// 씬 체인저 업데이트
 	//_cts->update();
 }
@@ -45,7 +44,7 @@ void playGround::render()
 {
 	//PatBlt(getMemDC(), 0, 0, worSizeX, worSizeY, WHITENESS);
 	//==========================================================	
-
+	
 	_sceneChanger->render();
 	//_cts->render();
 

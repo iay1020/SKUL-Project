@@ -81,9 +81,11 @@ void IdleState_E::Fall(Enemy * enemy)
 
 void IdleState_E::Hit(Enemy * enemy)
 {
-	// 에너미의 피격 애니메이션을 넣어준다.
-	enemy->info_Address()->ani_Changer("Hit");
-	enemy->info_Address()->img.ani->start();
+	// 에너미의 피격 이미지를 넣어준다.
+	enemy->info_Address()->img_Changer();
+
+	// 러프를 시작하려면 true
+	enemy->info_Address()->bool_V.lerping = true;
 
 	enemy->set_State(HitState_E::getInstance());
 	enemy->get_State()->update(enemy);
@@ -151,7 +153,7 @@ void MoveState_E::Move(Enemy * enemy)
 		// 추락상태
 		MoveState_E::Fall(enemy);
 	}
-
+	
 	// 플레이어에게 맞았을 경우
 	if (enemy->info_Address()->bool_V.player_Attack_Hit)
 	{
@@ -204,9 +206,11 @@ void MoveState_E::Fall(Enemy * enemy)
 
 void MoveState_E::Hit(Enemy * enemy)
 {
-	// 에너미의 피격 애니메이션을 넣어준다.
-	enemy->info_Address()->ani_Changer("Hit");
-	enemy->info_Address()->img.ani->start();
+	// 에너미의 피격 이미지를 넣어준다.
+	enemy->info_Address()->img_Changer();
+
+	// 러프를 시작하려면 true
+	enemy->info_Address()->bool_V.lerping = true;
 
 	enemy->set_State(HitState_E::getInstance());
 	enemy->get_State()->update(enemy);
@@ -424,6 +428,12 @@ void HitState_E::Jump(Enemy * enemy)
 
 void HitState_E::Fall(Enemy * enemy)
 {
+	// 피격 쿨타임 초기화
+	enemy->info_Address()->cool_Time.knockBack_Time = 0;
+
+	// 맞았다는 bool값 초기화
+	enemy->info_Address()->bool_V.player_Attack_Hit = false;
+
 	// 추락 애니메이션이 없기 때문에 바로 추락 상태로 변경시켜준다.
 	enemy->set_State(FallState_E::getInstance());
 	enemy->get_State()->update(enemy);
@@ -432,50 +442,31 @@ void HitState_E::Fall(Enemy * enemy)
 
 void HitState_E::Hit(Enemy * enemy)
 {
-	// 플레이어에게 맞으면 자신이 바라보는 방향 뒤쪽으로 살짝 밀려난다.
+	// 플레이어에게 맞았다면
 	if (enemy->info_Address()->bool_V.player_Attack_Hit)
 	{
-		// 에너미의 피격 쿨타임을 돌린다.
-		enemy->info_Address()->cool_Time.knockBack_Time++;
+		// 선형 호출
+		if(enemy->info_Address()->bool_V.lerping)	DATAMANAGER->Lerp_Enemy(enemy);
 
-		if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+		// 바닥에 땅이 없을 경우 추락
+		if (!DATAMANAGER->enemy_find_Down_Gorund(enemy))
 		{
-			// 반대방향으로 이동한다.
-			if (DATAMANAGER->enemy_Move_Wall(enemy, EnemyDirection::RIGHT))
-			{
-				enemy->info_Address()->pos.center.x += ENEMYKNOCKBACK_RANGE;
-			}
+			// 추락상태
+			HitState_E::Fall(enemy);
 		}
-
-		if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
-		{
-			// 반대방향으로 이동한다.
-			if (DATAMANAGER->enemy_Move_Wall(enemy, EnemyDirection::LEFT))
-			{
-				enemy->info_Address()->pos.center.x -= ENEMYKNOCKBACK_RANGE;
-			}
-		}
-
-		// 렉트 갱신
-		enemy->info_Address()->update_Rect();
 	}
 
-	// 바닥에 땅이 없을 경우 추락
-	if (!DATAMANAGER->enemy_find_Down_Gorund(enemy))
-	{
-		// 추락상태
-		HitState_E::Fall(enemy);
-	}
+	enemy->info_Address()->cool_Time.knockBack_Time++;
 
 	// 에너미의 피격 시간이 끝났다면
 	if (enemy->info_Address()->cool_Time.knockBack_Time >= ENEMYKNOCKBACK_TIME)
 	{
 		// 피격 쿨타임 초기화
 		enemy->info_Address()->cool_Time.knockBack_Time = 0;
-
+	
 		// 맞았다는 bool값 초기화
 		enemy->info_Address()->bool_V.player_Attack_Hit = false;
-
+	
 		HitState_E::Idle(enemy);
 	}
 }
@@ -543,9 +534,11 @@ void Attack_A_State_E::Fall(Enemy * enemy)
 
 void Attack_A_State_E::Hit(Enemy * enemy)
 {
-	// 에너미의 피격 애니메이션을 넣어준다.
-	enemy->info_Address()->ani_Changer("Hit");
-	enemy->info_Address()->img.ani->start();
+	// 에너미의 피격 이미지를 넣어준다.
+	enemy->info_Address()->img_Changer();
+
+	// 러프를 시작하려면 true
+	enemy->info_Address()->bool_V.lerping = true;
 
 	enemy->set_State(HitState_E::getInstance());
 	enemy->get_State()->update(enemy);

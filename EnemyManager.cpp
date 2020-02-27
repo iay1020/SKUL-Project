@@ -22,9 +22,18 @@ void EnemyManager::release()
 
 void EnemyManager::update()
 {
-	for (_viEnemyList = _vEnemyList.begin(); _viEnemyList != _vEnemyList.end(); ++_viEnemyList)
+	for (_viEnemyList = _vEnemyList.begin(); _viEnemyList != _vEnemyList.end();)
 	{
+
 		(*_viEnemyList)->update();
+
+		// 만약 죽은 에너미는 삭제한다.
+		if ((*_viEnemyList)->info_Address()->bool_V.im_Death)
+		{
+			_viEnemyList = _vEnemyList.erase(_viEnemyList);
+		}
+		else
+			++_viEnemyList;
 	}
 }
 
@@ -52,4 +61,5 @@ void EnemyManager::Create_Enemy(EnemyType type_V, EnemyDirection dir_V, string i
 
 	// 에너미 정보를 벡터에 저장한다.
 	_vEnemyList.push_back(new_Enemy);
+
 }
