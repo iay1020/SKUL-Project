@@ -411,6 +411,24 @@ struct tagAddImage
 		// <soldier Attack>
 		IMAGEMANAGER->addFrameImage("soldier_Attack", "./image/enemy/soldier/Attack/soldier_Attack.bmp", 860, 240, 5, 2, true, RGB(255, 0, 255));
 		
+
+
+
+		// <archer Idle>
+		IMAGEMANAGER->addFrameImage("archer_Idle", "./image/enemy/archer/Idle/archer_Idle.bmp", 620, 250, 4, 2, true, RGB(255, 0, 255));
+
+		// <archer Walk>
+		IMAGEMANAGER->addFrameImage("archer_Walk", "./image/enemy/archer/Walk/archer_Walk.bmp", 775, 250, 5, 2, true, RGB(255, 0, 255));
+
+		// <archer Hit>
+		IMAGEMANAGER->addFrameImage("archer_Hit", "./image/enemy/archer/Hit/archer_Hit.bmp", 310, 250, 2, 2, true, RGB(255, 0, 255));
+
+		// <archer Attack>
+		IMAGEMANAGER->addFrameImage("archer_Attack", "./image/enemy/archer/Attack/archer_Attack.bmp", 620, 250, 4, 2, true, RGB(255, 0, 255));
+
+
+
+
 		
 		//¡á¡á¡á¡á¡á¡á¡á¡á Enemy Ani ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 		// <soldier Idle Ani>
@@ -445,5 +463,40 @@ struct tagAddImage
 		KEYANIMANAGER->addArrayFrameAnimation("soldier_Attack_Left_Ani", "soldier_Attack", soldier_Attack_Left, 5, 10, false);
 
 
+
+
+
+		// <archer Idle Ani>
+		int archer_Idle_Right[] = { 0, 1, 2, 3 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Idle_Right_Ani", "archer_Idle", archer_Idle_Right, 4, 10, true);
+
+		int archer_Idle_Left[] = { 7, 6, 5, 4 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Idle_Left_Ani", "archer_Idle", archer_Idle_Left, 4, 10, true);
+
+
+		// <archer Walk Ani>
+		int archer_Walk_Right[] = { 0, 1, 2, 3, 4 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Walk_Right_Ani", "archer_Walk", archer_Walk_Right, 5, 10, true);
+
+		int archer_Walk_Left[] = { 9, 8, 7, 6, 5 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Walk_Left_Ani", "archer_Walk", archer_Walk_Left, 5, 10, true);
+
+
+		// <archer Hit Ani>
+		int archer_Hit_Right[] = { 0, 1 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Hit_Right_Ani", "archer_Hit", archer_Hit_Right, 2, 10, false);
+
+		int archer_Hit_Left[] = { 3, 2 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Hit_Left_Ani", "archer_Hit", archer_Hit_Left, 2, 10, false);
+
+
+		// <archer Attack Ani>
+		int archer_Attack_Right[] = { 0, 1, 2, 3 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Attack_Right_Ani", "archer_Attack", archer_Attack_Right, 4, 10, false);
+
+		int archer_Attack_Left[] = { 7, 6, 5, 4 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Attack_Left_Ani", "archer_Attack", archer_Attack_Left, 4, 10, false);
+
+		
 	}
 };

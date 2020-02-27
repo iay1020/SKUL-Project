@@ -22,10 +22,13 @@ void Enemy::update()
 	// 상태 업데이트
 	state->update(this);
 
+	// 공격 렉트 업데이트
+	info.make_Attack_Range();
+
 	// 스컬의 공격 범위에 에너미가 들어왔다.
 	DATAMANAGER->skul_Attack_Range_Enemy(this);
 
-	// 스컬의 HP 셋팅
+	// 에너미의 HP 셋팅
 	info.update_HP();
 
 	
@@ -77,8 +80,14 @@ void Enemy::render(HDC getMemDC)
 	temp_Attack_Rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
 	temp_Attack_Rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 	temp_Attack_Rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	RECT attack_Range_T = info.pos.attack_Range_Rc;
+	attack_Range_T.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	attack_Range_T.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	attack_Range_T.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	attack_Range_T.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 
-	if(KEYMANAGER->isToggleKey('0'))	Rectangle(getMemDC, temp_AniRC);
-	if(KEYMANAGER->isToggleKey('9'))	Rectangle(getMemDC, temp_HitRange_Rc);
+	if (KEYMANAGER->isToggleKey('0'))	Rectangle(getMemDC, temp_AniRC);
+	if (KEYMANAGER->isToggleKey('9'))	Rectangle(getMemDC, temp_HitRange_Rc);
 	if (KEYMANAGER->isToggleKey('8'))	Rectangle(getMemDC, temp_Attack_Rc);
+	if (KEYMANAGER->isToggleKey('7'))	Rectangle(getMemDC, attack_Range_T);
 }

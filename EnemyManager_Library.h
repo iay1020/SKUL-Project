@@ -32,8 +32,8 @@
 enum class EnemyType
 {
 	NONE,			// NULL                                                                            
-	SOLDIER			// 병사
-
+	SOLDIER,		// 병사
+	ARCHER			// 궁수
 };
 
 // 에너미의 방향 enum
@@ -284,7 +284,7 @@ struct EnemyInfo
 		{
 		case EnemyType::SOLDIER:
 			status.hp = 45;
-			status.attack = 10;
+			status.attack = 15;
 			status.def = 0;
 			status.speed = ENEMYSPEED;
 			status.gold = 100;
@@ -293,11 +293,66 @@ struct EnemyInfo
 			cool_Time.attack_CoolTime_Cnt = 0;
 
 			hp.maxHP = status.hp;
-			hp.curHP = status.hp;;
-			hp.backHP = status.hp;;
+			hp.curHP = status.hp;
+			hp.backHP = status.hp;
+
+			break;
+
+		case EnemyType::ARCHER:
+			status.hp = 30;
+			status.attack = 10;
+			status.def = 0;
+			status.speed = ENEMYSPEED;
+			status.gold = 150;
+
+			cool_Time.attack_CoolTime = ENEMYATTACKCOOLTIME;
+			cool_Time.attack_CoolTime_Cnt = 0;
+
+			hp.maxHP = status.hp;
+			hp.curHP = status.hp;
+			hp.backHP = status.hp;
 
 			break;
 		}
+	}
+
+	// 공격 범위를 생성한다.
+	void make_Attack_Range()
+	{
+		image* img_T = new image;
+		img_T = IMAGEMANAGER->findImage(img.imgName);
+
+		switch (status.type)
+		{
+			case EnemyType::SOLDIER:
+				if (status.dir == EnemyDirection::RIGHT)
+				{
+					pos.attack_Range_Rc = RectMake(pos.center.x, pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth(), img_T->getFrameHeight());
+				}
+				if (status.dir == EnemyDirection::LEFT)
+				{
+					pos.attack_Range_Rc = RectMake(pos.center.x - img_T->getFrameWidth(), pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth(), img_T->getFrameHeight());
+				}
+
+				break;
+
+			case EnemyType::ARCHER:
+				if (status.dir == EnemyDirection::RIGHT)
+				{
+					pos.attack_Range_Rc = RectMake(pos.center.x, pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth() * 4, img_T->getFrameHeight());
+				}
+				if (status.dir == EnemyDirection::LEFT)
+				{
+					pos.attack_Range_Rc = RectMake(pos.center.x - img_T->getFrameWidth() * 4, pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth() * 4, img_T->getFrameHeight());
+				}
+			
+				break;
+		}
+		
 	}
 
 	// 에너미 스텟 생성 (매개변수 : 타입, 방향, 이미지 키값, 애니메이션 키값, 중점 x, 중점 y)
@@ -338,6 +393,9 @@ struct EnemyInfo
 
 		// 에너미 인식 범위 렉트
 		pos.find_Range_Rc = RectMakeCenter(pos.center.x, pos.center.y, temp_Img->getFrameWidth() * 3, temp_Img->getFrameHeight());
+
+		// 에너미 공격 범위 렉트
+		make_Attack_Range();
 
 	}
 
@@ -413,6 +471,35 @@ struct EnemyInfo
 				}
 
 				break;
+
+			case EnemyType::ARCHER:
+				if (status.dir == EnemyDirection::LEFT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("archer_Idle", "archer_Idle_Left_Ani");
+					// 이동
+					if (StateName == "Walk") set_Ani("archer_Walk", "archer_Walk_Left_Ani");
+					// 피격
+					if (StateName == "Hit") set_Ani("archer_Hit", "archer_Hit_Right_Ani");
+					// 공격
+					if (StateName == "Attack_A") set_Ani("archer_Attack", "archer_Attack_Left_Ani");
+
+				}
+
+				if (status.dir == EnemyDirection::RIGHT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("archer_Idle", "archer_Idle_Right_Ani");
+					// 이동
+					if (StateName == "Walk") set_Ani("archer_Walk", "archer_Walk_Right_Ani");
+					// 피격
+					if (StateName == "Hit") set_Ani("archer_Hit", "archer_Hit_Left_Ani");
+					// 공격
+					if (StateName == "Attack_A") set_Ani("archer_Attack", "archer_Attack_Right_Ani");
+
+				}
+
+				break;
 		}
 	}
 
@@ -423,12 +510,59 @@ struct EnemyInfo
 		short num;
 		num = RND->getInt(2);
 
-		// 이미지 키값을 넣어준다.
-		img.imgName = "soldier_Hit";
-
 		switch (status.type)
 		{
 			case EnemyType::SOLDIER:
+				// 이미지 키값을 넣어준다.
+				img.imgName = "soldier_Hit";
+
+				// 방향에 맞게 피격 이미지를 넣어준다.
+				if (status.dir == EnemyDirection::LEFT)
+				{
+					// 이미지를 넣어준다.
+					if (num == 0)
+					{
+						img.curX = 0;
+						img.curY = 0;
+					}
+
+					if (num == 1)
+					{
+						img.curX = 1;
+						img.curY = 0;
+					}
+
+					// 이미지를 넣었다는 체크를 켜준다. (중복 방지)
+					bool_V.hitCheck = true;
+
+				}
+
+				if (status.dir == EnemyDirection::RIGHT)
+				{
+					// 이미지를 넣어준다.
+					if (num == 0)
+					{
+						img.curX = 0;
+						img.curY = 1;
+					}
+
+					if (num == 1)
+					{
+						img.curX = 1;
+						img.curY = 1;
+					}
+
+					// 이미지를 넣었다는 체크를 켜준다. (중복 방지)
+					bool_V.hitCheck = true;
+
+				}
+
+				break;
+
+			case EnemyType::ARCHER:
+				// 이미지 키값을 넣어준다.
+				img.imgName = "archer_Hit";
+
 				// 방향에 맞게 피격 이미지를 넣어준다.
 				if (status.dir == EnemyDirection::LEFT)
 				{
