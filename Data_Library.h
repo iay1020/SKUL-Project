@@ -117,6 +117,7 @@ struct CharacterBool
 
 	bool				Attack_Success;		// 공격 성공
 
+				
 };
 
 // 캐릭터의 스킬 쿨타임

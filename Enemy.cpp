@@ -22,6 +22,9 @@ void Enemy::update()
 	// 상태 업데이트
 	state->update(this);
 
+	// 투사체에 피격 했는지
+	DATAMANAGER->Collision_Skul_Head_Enemy(this);
+
 	// 공격 렉트 업데이트
 	info.make_Attack_Range();
 
@@ -45,6 +48,18 @@ void Enemy::render(HDC getMemDC)
 	// 피격중일때 
 	if (info.bool_V.player_Attack_Hit)
 	{
+		// 밀려나는 에너미의 머리 위로 데미지가 따라올라간다.
+		info.pos.damege_Center.x = info.pos.center.x;
+		info.pos.damege_Center.y -= 1;
+
+		// 데미지 출력
+		char HitDmg[20];
+		sprintf_s(HitDmg, 20, "%d", info.status.show_Attack);
+		if (info.bool_V.Critical_Hit) SetTextColor(getMemDC, RGB(255, 0, 0));
+		TextOut(getMemDC, info.pos.damege_Center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+			info.pos.damege_Center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
+			HitDmg, strlen(HitDmg));
+
 		IMAGEMANAGER->findImage(info.img.imgName)->frameRender(getMemDC,
 			info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
 			info.img.curX, info.img.curY);

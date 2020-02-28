@@ -46,6 +46,9 @@ void DataManager::update()
 	// 키애니매니저 업데이트
 	KEYANIMANAGER->update();
 
+	// 이펙트매니저 업데이트
+	EFFECTMANAGER->update();
+
 	// 테스트용 캐릭터 클래스 체인지
 	if (KEYMANAGER->isOnceKeyDown('I'))
 	{
@@ -702,15 +705,91 @@ void DataManager::skul_Attack_Range_Enemy(Enemy* enemy_Address)
 	// 렉트 충돌용
 	if (IntersectRect(&temp, &SkulRC, &enemy_Address->info_Address()->pos.hit_Range_Rc))
 	{
+		short RNum;
+		RNum = RND->getInt(10) + 1;
+
+		bool isCritical = false;
+
+		if (RNum == 1 || RNum == 2 || RNum == 3 || RNum == 4 || RNum == 5) isCritical = true;
+
 		// 아직 맞기 전이라면
 		if (!enemy_Address->info_Address()->bool_V.player_Attack_Hit)
 		{
+			// 피격 데미지가 출력 될 위치를 잡아준다.
+			enemy_Address->info_Address()->pos.damege_Center.x = enemy_Address->info_Address()->pos.center.x;
+			enemy_Address->info_Address()->pos.damege_Center.y = enemy_Address->info_Address()->pos.ani_Rc.top;
+
+			// 피격 이펙트
+			if (!isCritical)
+			{
+				enemy_Address->info_Address()->bool_V.Critical_Hit = false;
+
+				if (_skul->get_InputKey() == PRESS_RIGHT)
+				{
+					EFFECTMANAGER->play("skul_Base_Attack_Right",
+						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+				}
+				if (_skul->get_InputKey() == PRESS_LEFT)
+				{
+					EFFECTMANAGER->play("skul_Base_Attack_Left",
+						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+				}
+
+				// 최소 공격력 ~ 최대 공격력까지 랜덤으로 받는다.
+				short RndAttack = 0;
+				RndAttack = RND->getInt(_skul->get_Info().status.Atk) + (_skul->get_Info().status.Atk - 5);
+
+				// 출력되는 데미지를 넣어준다.
+				enemy_Address->info_Address()->status.show_Attack = RndAttack;
+
+				// 에너미의 체력이 단다. (스컬의 데미지 만큼)
+				enemy_Address->info_Address()->status.hp -= RndAttack;
+				enemy_Address->info_Address()->hp.curHP = enemy_Address->info_Address()->status.hp;
+
+			}
+
+			if (isCritical)
+			{
+				enemy_Address->info_Address()->bool_V.Critical_Hit = true;
+
+				RNum = RND->getInt(2);
+
+				if (_skul->get_InputKey() == PRESS_RIGHT)
+				{
+					if (RNum == 0) EFFECTMANAGER->play("skul_Base_Attack_Cri_1", 
+						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					if(RNum == 1) EFFECTMANAGER->play("skul_Base_Attack_Cri_2", 
+						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+				}
+				if (_skul->get_InputKey() == PRESS_LEFT)
+				{
+					if (RNum == 0) EFFECTMANAGER->play("skul_Base_Attack_Cri_1",
+						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					if (RNum == 1) EFFECTMANAGER->play("skul_Base_Attack_Cri_2",
+						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+				}
+
+				// 최소 공격력 ~ 최대 공격력까지 랜덤으로 받는다.
+				short RndAttack = 0;
+				RndAttack = RND->getInt(_skul->get_Info().status.Atk) + (_skul->get_Info().status.Atk - 5);
+
+				// 출력되는 데미지를 넣어준다.
+				enemy_Address->info_Address()->status.show_Attack = RndAttack;
+
+				// 에너미의 체력이 단다. (스컬의 데미지 만큼)
+				enemy_Address->info_Address()->status.hp -= RndAttack * 2;
+				enemy_Address->info_Address()->hp.curHP = enemy_Address->info_Address()->status.hp;
+			}
+
 			// 피격 bool값을 true로 바꿔준다.
 			enemy_Address->info_Address()->bool_V.player_Attack_Hit = true;
 			
-			// 에너미의 체력이 단다. (스컬의 데미지 만큼)
-			enemy_Address->info_Address()->status.hp -= _skul->get_Info().status.Atk;
-			enemy_Address->info_Address()->hp.curHP = enemy_Address->info_Address()->status.hp;
 			enemy_Address->info_Address()->hp.state = HP_UPDATE_STATE_E::HIT;
 			enemy_Address->info_Address()->bool_V.im_Hit = true;
 
@@ -1079,6 +1158,11 @@ void DataManager::Collision_Skul_Head()
 				_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
 				_skul->set_Info()->bool_V.now_Ani_Change = true;
 
+				// 스킬 리셋 이펙트
+				EFFECTMANAGER->play("throw_Head_Reset_Effct", 
+					180 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+					1840 - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+
 				break;
 			}
 
@@ -1089,6 +1173,109 @@ void DataManager::Collision_Skul_Head()
 
 	}
 
+}
+
+void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
+{
+	// 투사체 벡터 정보를 받아온다.
+	vector<FlyingObjectInfo>* vFObj = _flyObj_Manager->get_vFlyingObj_Address();
+	vector<FlyingObjectInfo>::iterator viFObj, viEnd;
+	RECT tempRC;
+	RECT enemyRC = enemy->info_Address()->pos.hit_Range_Rc;
+
+	viEnd = vFObj->end();
+
+	for (viFObj = vFObj->begin(); viFObj != viEnd;)
+	{
+		// 투사체의 타입이 스컬의 머리라면
+		if ((*viFObj).type == FLYINFOBJECT_TYPE::SKUL_HEAD)
+		{
+			tempRC = (*viFObj).rc;
+			//tempRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			//tempRC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			//tempRC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+			//tempRC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+
+			// 에너미와 충돌 했다면
+			RECT temp;
+			if (IntersectRect(&temp, &tempRC, &enemyRC))
+			{
+				// 투사체 튕기게하기
+				// 추락중이지 않을때
+				if (!(*viFObj).isFalling)
+				{
+
+					// 투사체의 방향에 따라 다른 연산
+					if ((*viFObj).dir == FLYINGOBJECT_DIRECTION::LEFT)
+					{
+						(*viFObj).angle = 0;								// 반대 각도로 바꿔준다.
+						(*viFObj).speed = 5;
+						(*viFObj).isFalling = true;						// 추락중으로 바꿔준다.
+
+						// 투사체와 충돌한 벽에 이펙트를 만든다.
+						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_R_Effect", EffectType::THROW_HEAD, (*viFObj).center.x - 10, (*viFObj).center.y);
+
+					}
+
+
+					else if ((*viFObj).dir == FLYINGOBJECT_DIRECTION::RIGHT)
+					{
+						(*viFObj).angle = 3.14;							// 반대 각도로 바꿔준다.
+						(*viFObj).speed = 5;
+						(*viFObj).isFalling = true;						// 추락중으로 바꿔준다.
+
+						// 투사체와 충돌한 벽에 이펙트를 만든다.
+						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_L_Effect", EffectType::THROW_HEAD, (*viFObj).center.x + 40, (*viFObj).center.y);
+
+					}
+				}
+			
+
+				// 스컬의 쿨타임 초기화, 스컬의 스킬 사용 초기화, 스컬의 상태 이미지 변화
+				_skul->set_Info()->bool_V.useing_Skill_A = false;
+				_skul->set_Info()->skill.skill_A_CoolTime_Cnt = 0;
+
+				_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+				_skul->set_Info()->bool_V.now_Ani_Change = true;
+
+				// 에너미 체력 감소
+				// 출력되는 데미지를 넣어준다.
+				enemy->info_Address()->status.show_Attack = 40;
+
+				// 에너미의 체력이 단다. (스컬의 데미지 만큼)
+				enemy->info_Address()->status.hp -= 40;
+				enemy->info_Address()->hp.curHP = enemy->info_Address()->status.hp;
+
+				// 피격 bool값을 true로 바꿔준다.
+				enemy->info_Address()->bool_V.player_Attack_Hit = true;
+
+				enemy->info_Address()->hp.state = HP_UPDATE_STATE_E::HIT;
+				enemy->info_Address()->bool_V.im_Hit = true;
+
+				// 에너미의 피격 시작 시간을 넣어준다.
+				enemy->info_Address()->pos.lerp_Start = TIMEMANAGER->getWorldTime();
+
+				// 만약 체력이 0 이하라면
+				if (enemy->info_Address()->status.hp <= 0)
+				{
+					// 체력 0으로 보정
+					enemy->info_Address()->status.hp = 0;
+
+					// 에너미 사망 bool값 넣어주기.
+					enemy->info_Address()->bool_V.im_Death = true;
+
+				}
+
+				break;
+			}
+
+			else viFObj++;
+		}
+
+		else viFObj++;
+
+	}
 }
 
 bool DataManager::find_Player(Enemy* enemy_Address)

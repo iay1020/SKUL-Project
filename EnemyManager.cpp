@@ -30,6 +30,9 @@ void EnemyManager::update()
 		// 만약 죽은 에너미는 삭제한다.
 		if ((*_viEnemyList)->info_Address()->bool_V.im_Death)
 		{
+			EFFECTMANAGER->play("enemy_Die_Effect", 
+				(*_viEnemyList)->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x, 
+				(*_viEnemyList)->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 			_viEnemyList = _vEnemyList.erase(_viEnemyList);
 		}
 		else

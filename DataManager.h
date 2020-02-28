@@ -123,6 +123,9 @@ public:
 	// 투사체(스컬 머리)가 스컬과 충돌 했을 경우
 	void Collision_Skul_Head();
 
+	// 투사체(스컬 머리)가 에너미와 충돌 했을 경우
+	void Collision_Skul_Head_Enemy(Enemy* enemy);
+
 	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 이펙트 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
 	// 이펙트 매니저의 주소를 얻는다.
@@ -174,7 +177,7 @@ public:
 	void setting_ui(Player* player_Address) { _ui_Manager->init(player_Address); }
 
 	// ui 출력
-	void show_Ui() { _ui_Manager->render(); }
+	void show_Ui() { _ui_Manager->render(_skul); }
 
 	
 

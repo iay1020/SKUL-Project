@@ -85,6 +85,8 @@ struct tagAddImage
 			IMAGEMANAGER->addFrameImage("backGround_Pallet_0", "./image/mapTool/backGround/backGround_Img_0.bmp", 600, 600, 3, 3, true, RGB(255, 0, 255));
 		}
 
+
+
 		//¡á¡á¡á¡á¡á¡á¡á¡á Ui Image ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 		// status 
 		{
@@ -188,6 +190,17 @@ struct tagAddImage
 			IMAGEMANAGER->addFrameImage("skul_Attack_B", "./image/skul/Attack/skul_Attack_B.bmp", 800, 238, 5, 2, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("skul_Attack_A_NoHead", "./image/skul/Attack/skul_Attack_A_NoHead.bmp", 800, 238, 5, 2, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("skul_Attack_B_NoHead", "./image/skul/Attack/skul_Attack_B_NoHead.bmp", 800, 238, 5, 2, true, RGB(255, 0, 255));
+
+			// < base Attack Effect>
+			IMAGEMANAGER->addFrameImage("skul_Base_Attack_Right", "./image/effect/Skul_Base_Attack_Effect/base_Attack_Right.bmp", 900, 112, 9, 1, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("skul_Base_Attack_Left", "./image/effect/Skul_Base_Attack_Effect/base_Attack_Left.bmp", 900, 112, 9, 1, true, RGB(255, 0, 255));
+			EFFECTMANAGER->addEffect("skul_Base_Attack_Right", "skul_Base_Attack_Right", 900, 112, 100, 112, 1, 1, 1);
+			EFFECTMANAGER->addEffect("skul_Base_Attack_Left", "skul_Base_Attack_Left", 900, 112, 100, 112, 1, 1, 1);
+
+			IMAGEMANAGER->addFrameImage("skul_Base_Attack_Cri_1", "./image/effect/Skul_Base_Attack_Effect/base_Attack_Cri_1.bmp", 1168, 129, 8, 1, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("skul_Base_Attack_Cri_2", "./image/effect/Skul_Base_Attack_Effect/base_Attack_Cri_2.bmp", 1168, 129, 8, 1, true, RGB(255, 0, 255));
+			EFFECTMANAGER->addEffect("skul_Base_Attack_Cri_1", "skul_Base_Attack_Cri_1", 1168, 129, 146, 129, 1, 1, 1);
+			EFFECTMANAGER->addEffect("skul_Base_Attack_Cri_2", "skul_Base_Attack_Cri_2", 1168, 129, 146, 129, 1, 1, 1);
 		}
 
 		// <Skill>
@@ -197,6 +210,10 @@ struct tagAddImage
 
 			// throw Skul Skill
 			IMAGEMANAGER->addFrameImage("throw_Head_Effect", "./image/effect/Hit_Skul/Hit_Skul.bmp", 1000, 224, 10, 2, true, RGB(255, 0, 255));
+
+			// <throw Skul Skill Reset Effect
+			IMAGEMANAGER->addFrameImage("throw_Head_Reset_Effect", "./image/effect/skul_Head_Skill_Reset/skul_Head_Skill_Reset.bmp", 3200, 119, 20, 1, true, RGB(255, 0, 255));
+			EFFECTMANAGER->addEffect("throw_Head_Reset_Effct", "throw_Head_Reset_Effect", 3200, 119, 160, 119, 1, 1, 1);
 
 		}
 
@@ -362,6 +379,8 @@ struct tagAddImage
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_A_Left_N", "skul_Attack_A_NoHead", attack_A_L_N, 5, 10, false);
 			int attack_B_L_N[] = { 5, 6, 7, 8, 9 };
 			KEYANIMANAGER->addArrayFrameAnimation("skul_Attack_B_Left_N", "skul_Attack_B_NoHead", attack_B_L_N, 5, 10, false);
+
+
 		}
 
 
@@ -428,6 +447,10 @@ struct tagAddImage
 
 
 
+
+		// <enemy Die Effect>
+		IMAGEMANAGER->addFrameImage("enemy_Die_Effect", "./image/effect/enemy_Die/enemy_Die.bmp", 600, 103, 6, 1, true, RGB(255, 0, 255));
+		EFFECTMANAGER->addEffect("enemy_Die_Effect", "enemy_Die_Effect", 600, 103, 100, 103, 1, 0.2f, 1);
 
 		
 		//¡á¡á¡á¡á¡á¡á¡á¡á Enemy Ani ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á

@@ -44,9 +44,9 @@ void Ui_Manager::update()
 	}
 }
 
-void Ui_Manager::render()
+void Ui_Manager::render(Player* skul)
 {
-	skul_UI.show_Rect(getMemDC());
+	skul_UI.show_Ui(getMemDC(), skul);
 
 }
 

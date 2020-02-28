@@ -127,7 +127,7 @@ struct CharacterStatusUI
 	}
 
 	// 렉트 출력
-	void show_Rect(HDC getMemDC)
+	void show_Ui(HDC getMemDC, Player* skul)
 	{
 		// hp 출력
 		hp.img_HP_BG->render(getMemDC, hp.rc_HP_BG.left, hp.rc_HP_BG.top);
@@ -137,6 +137,16 @@ struct CharacterStatusUI
 
 		hp.img_HP_Front->render(getMemDC, hp.rc_HP_Front.left, hp.rc_HP_Front.top,
 			0, 0, hp.rc_HP_Front.right - hp.rc_HP_Front.left, hp.img_HP_Front->getHeight());
+
+		char hpNum[50];
+		sprintf_s(hpNum, 50, "%2d / %2d", skul->get_Info().status.HP, hp.maxHP);
+	
+		// 체력 수치 표시
+		SetBkMode(getMemDC, 0);
+		SetTextColor(getMemDC, RGB(255, 255, 255));
+		TextOut(getMemDC, ((hp.rc_HP_BG.left + hp.rc_HP_BG.right) / 2) - 35,
+			(hp.rc_HP_BG.top + hp.rc_HP_BG.bottom) / 2 - 9,
+			hpNum, strlen(hpNum));
 		
 		// ui 출력
 		ui.img->render(getMemDC, ui.rc.left, ui.rc.top);
@@ -147,6 +157,7 @@ struct CharacterStatusUI
 		// 스킬 출력
 		skill.img_A->render(getMemDC, skill.rc_A.left, skill.rc_A.top);
 		skill.img_B->render(getMemDC, skill.rc_B.left, skill.rc_B.top);
+
 
 		
 		// 렉트 출력

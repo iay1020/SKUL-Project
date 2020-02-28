@@ -71,7 +71,7 @@ void test_Room::render()
 		_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
 
 	// 플레이어 공격 렉트 출력
-	//_skul->set_Info()->show_Attack_Rect(getMemDC());
+	_skul->set_Info()->show_Attack_Rect(getMemDC());
 
 	// 투사체 출력
 	DATAMANAGER->show_FlyingObject();
@@ -81,6 +81,8 @@ void test_Room::render()
 
 	// ui 출력
 	DATAMANAGER->show_Ui();
+
+	EFFECTMANAGER->render();
 
 }
 

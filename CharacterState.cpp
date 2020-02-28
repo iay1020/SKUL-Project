@@ -332,9 +332,6 @@ void IdleState::Attack_A(Player * player)
 	player->set_Info()->ani_Changer("Attack_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();
 
-	// 공격 렉트를 만들어준다.
-	player->set_Info()->create_Attack_Rect(player->get_InputKey());
-
 	// 공격 A 상태로 교체해준다.
 	player->set_State(Attack_A_State::getInstance());
 	player->get_State()->update(player);
@@ -769,9 +766,6 @@ void MoveState::Attack_A(Player * player)
 	player->set_Info()->ani_Changer("Attack_A", player->get_InputKey());
 	player->set_Info()->img.ani->start();
 
-	// 공격 렉트를 만들어준다.
-	player->set_Info()->create_Attack_Rect(player->get_InputKey());
-
 	// 공격 A 상태로 바꿔준다.
 	player->set_State(Attack_A_State::getInstance());
 	player->get_State()->update(player);
@@ -1149,9 +1143,6 @@ void JumpState::JumpAttack(Player * player)
 	// 점프어택 애니메이션으로 교체해준다.
 	player->set_Info()->ani_Changer("JumpAttack", player->get_InputKey());
 	player->set_Info()->img.ani->start();
-
-	// 공격 렉트를 만들어준다.
-	player->set_Info()->create_Attack_Rect(player->get_InputKey());
 
 	// 점프어택 상태로 바꿔준다.
 	player->set_State(JumpAttackState::getInstance());
@@ -1666,8 +1657,6 @@ void FallState::JumpAttack(Player * player)
 	player->set_Info()->ani_Changer("JumpAttack", player->get_InputKey());
 	player->set_Info()->img.ani->start();
 
-	// 공격 렉트를 만들어준다.
-	player->set_Info()->create_Attack_Rect(player->get_InputKey());
 
 	// 점프어택 상태로 바꿔준다.
 	player->set_State(JumpAttackState::getInstance());
@@ -2249,6 +2238,15 @@ void Attack_A_State::Attack_A(Player * player)
 		}
 	}
 
+	// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
+	if (player->get_Info().img.ani->getFramePos().x == 2 * 160)
+	{
+		// 공격 렉트를 만들어준다.
+		player->set_Info()->create_Attack_Rect(player->get_InputKey());
+	}
+	else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
+
 	// 공격 애니메이션의 마지막 프레임일때
 	if (player->get_Info().img.ani->getFramePos().x == 640)
 	{
@@ -2268,9 +2266,6 @@ void Attack_A_State::Attack_B(Player * player)
 	// 공격 B 애니메이션으로 교체해준다.
 	player->set_Info()->ani_Changer("Attack_B", player->get_InputKey());
 	player->set_Info()->img.ani->start();
-
-	// 공격 렉트를 만들어준다.
-	player->set_Info()->create_Attack_Rect(player->get_InputKey());
 
 	// 공격 B 상태로 교체해준다.
 	player->set_State(Attack_B_State::getInstance());
@@ -2365,6 +2360,14 @@ void Attack_B_State::Attack_B(Player * player)
 	// 렉트 갱신
 	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
 	player->update_Ani_Rect();
+
+	// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
+	if (player->get_Info().img.ani->getFramePos().x == 2 * 160)
+	{
+		// 공격 렉트를 만들어준다.
+		player->set_Info()->create_Attack_Rect(player->get_InputKey());
+	}
+	else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
 
 	// 공격 애니메이션의 마지막 프레임일때
 	if (player->get_Info().img.ani->getFramePos().x == 640)

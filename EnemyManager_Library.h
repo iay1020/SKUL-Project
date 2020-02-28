@@ -85,6 +85,8 @@ struct EnemyStatus
 	short				speed;			// 에너미의 이동력을 담는다.
 
 	short				gold;			// 에너미가 드랍할 골드량을 담는다.
+
+	short				show_Attack;	// 출력되는 데미지 값
 	
 };
 
@@ -102,6 +104,8 @@ struct EnemyPos
 	float				fall_Power;			// 에너미의 추락 연산 변수
 
 	float				lerp_Start;			// 러프 시작 시간
+
+	POINTFLOAT			damege_Center;		// 데미지 출력 중점
 };
 
 // 에너미의 이미지 구조체
@@ -132,6 +136,7 @@ struct EnemyBoolValue
 	bool				im_Hit;				// 난 맞았다
 	bool				im_Death;			// 난 죽었다.
 
+	bool				Critical_Hit;		// 치명타 공격을 받았는지
 };
 
 // 에너미 쿨타임
@@ -165,6 +170,7 @@ struct EnemyInfo
 		status.def = 0;
 		status.speed = 0;
 		status.gold = 0;
+		status.show_Attack = 0;
 
 		// 이미지 초기화
 		img.ani = new animation;
@@ -181,6 +187,7 @@ struct EnemyInfo
 		pos.Attack_Rc = { 0, 0, 0, 0 };
 		pos.fall_Power = 0;
 		pos.lerp_Start = 0;
+		pos.damege_Center.x = pos.damege_Center.y = 0;
 
 		// bool 초기화
 		bool_V.idleCheck = false;
@@ -196,6 +203,8 @@ struct EnemyInfo
 
 		bool_V.im_Hit = false;
 		bool_V.im_Death = false;
+
+		bool_V.Critical_Hit = false;
 
 		// CoolTime 초기화
 		cool_Time.attack_CoolTime = 0;
@@ -283,7 +292,7 @@ struct EnemyInfo
 		switch (status.type)
 		{
 		case EnemyType::SOLDIER:
-			status.hp = 45;
+			status.hp = 545;
 			status.attack = 15;
 			status.def = 0;
 			status.speed = ENEMYSPEED;
@@ -299,7 +308,7 @@ struct EnemyInfo
 			break;
 
 		case EnemyType::ARCHER:
-			status.hp = 30;
+			status.hp = 300;
 			status.attack = 10;
 			status.def = 0;
 			status.speed = ENEMYSPEED;
@@ -492,7 +501,7 @@ struct EnemyInfo
 					if (StateName == "Idle") set_Ani("archer_Idle", "archer_Idle_Right_Ani");
 					// 이동
 					if (StateName == "Walk") set_Ani("archer_Walk", "archer_Walk_Right_Ani");
-					// 피격
+					// 피격x
 					if (StateName == "Hit") set_Ani("archer_Hit", "archer_Hit_Left_Ani");
 					// 공격
 					if (StateName == "Attack_A") set_Ani("archer_Attack", "archer_Attack_Right_Ani");
@@ -570,13 +579,13 @@ struct EnemyInfo
 					if (num == 0)
 					{
 						img.curX = 0;
-						img.curY = 0;
+						img.curY = 1;
 					}
 
 					if (num == 1)
 					{
 						img.curX = 1;
-						img.curY = 0;
+						img.curY = 1;
 					}
 
 					// 이미지를 넣었다는 체크를 켜준다. (중복 방지)
@@ -590,13 +599,13 @@ struct EnemyInfo
 					if (num == 0)
 					{
 						img.curX = 0;
-						img.curY = 1;
+						img.curY = 0;
 					}
 
 					if (num == 1)
 					{
 						img.curX = 1;
-						img.curY = 1;
+						img.curY = 0;
 					}
 
 					// 이미지를 넣었다는 체크를 켜준다. (중복 방지)

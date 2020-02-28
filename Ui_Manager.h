@@ -16,7 +16,7 @@ public:
 	HRESULT init(Player* player_Address);
 	void release();
 	void update();
-	void render();
+	void render(Player* skul);
 
 	// 스컬 UI 정보 주소
 	CharacterStatusUI*	get_UI_Address() { return &skul_UI; }
