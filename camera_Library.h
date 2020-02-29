@@ -122,7 +122,7 @@ struct tag_Camera_INFO
 	{
 		// 매개변수를 이용하여 카메라 x, y를 구한다.
 		_cameraXY.x = x - (_camera_Size.x / 2);
-		_cameraXY.y = y - (_camera_Size.y / 2);
+		_cameraXY.y = y - (_camera_Size.y / 2) - 200;
 
 		// true를 넣었다면 예외처리
 		if (noCorrection)	camera_Correction();
@@ -148,7 +148,7 @@ struct tag_Camera_INFO
 		if (_cameraXY.x < 0) _cameraXY.x = 0;
 		if (_cameraXY.y < 0) _cameraXY.y = 0;
 		if (_cameraXY.x + _camera_Size.x > _world_Size.x) _cameraXY.x = _world_Size.x - _camera_Size.x;
-		if (_cameraXY.y + _camera_Size.y > _world_Size.y) _cameraXY.y = _world_Size.y - _camera_Size.y;
+		if (_cameraXY.y + _camera_Size.y - 200 > _world_Size.y) _cameraXY.y = _world_Size.y - _camera_Size.y;
 	};
 		
 	// 매개변수로 타일의 사이즈 X, Y를 받아온다.

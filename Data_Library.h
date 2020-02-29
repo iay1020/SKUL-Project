@@ -395,7 +395,7 @@ struct CharacterInfo
 	}
 
 	// 스킬 쿨타임을 돌려준다.
-	void skil_CoolTime()
+	void skil_CoolTime(float x, float y)
 	{
 		// 캐릭터 타입에 따라 쿨타임 넣기
 		setting_CoolTime();
@@ -421,6 +421,9 @@ struct CharacterInfo
 					type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
 
 					bool_V.now_Ani_Change = true;
+
+					// 스킬 리셋 이펙트
+					EFFECTMANAGER->play("throw_Head_Reset_Effct",x, y);
 				}
 
 			}

@@ -53,7 +53,7 @@ void FlyingObject::Move_FlyingObj()
 		if ((*viFlyingObj).type == FLYINFOBJECT_TYPE::SKUL_HEAD)
 		{
 			// 추락중이지 않을때
-			if (!(*viFlyingObj).isFalling)
+			if (!(*viFlyingObj).isFalling && !(*viFlyingObj).isHit)
 			{
 				// 벽을 발견하면 각도를 반대각도로 바꿔주고, 중력을 추가하여 떨어지도록 한다. 또한 추락중으로 바꿔준다.
 				if(DATAMANAGER->Collision_FlyingObject_Wall(&(*viFlyingObj)))
@@ -65,9 +65,12 @@ void FlyingObject::Move_FlyingObj()
 						(*viFlyingObj).speed = 5;
 						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
 
-						// 투사체와 충돌한 벽에 이펙트를 만든다.
-						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_R_Effect", EffectType::THROW_HEAD, (*viFlyingObj).center.x - 10, (*viFlyingObj).center.y);
+						(*viFlyingObj).isHit = true;							// 이 투사체는 충돌이 끝났다.
 
+						// 투사체와 충돌한 벽에 이펙트를 만든다.
+						EFFECTMANAGER->play("throw_Head_Effect_R",
+							(*viFlyingObj).center.x - 10 - CAMERAMANAGER->Use_Func()->get_CameraXY().x, 
+							(*viFlyingObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 					}
 					
 
@@ -77,8 +80,12 @@ void FlyingObject::Move_FlyingObj()
 						(*viFlyingObj).speed = 5;
 						(*viFlyingObj).isFalling = true;						// 추락중으로 바꿔준다.
 
+						(*viFlyingObj).isHit = true;							// 이 투사체는 충돌이 끝났다.
+
 						// 투사체와 충돌한 벽에 이펙트를 만든다.
-						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_L_Effect", EffectType::THROW_HEAD, (*viFlyingObj).center.x + 40, (*viFlyingObj).center.y);
+						EFFECTMANAGER->play("throw_Head_Effect_L", 
+							(*viFlyingObj).center.x + 40 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							(*viFlyingObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 
 					}
 				}

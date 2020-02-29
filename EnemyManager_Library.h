@@ -10,7 +10,7 @@
 #define ENEMYKNOCKBACK_RANGE	1
 
 // 에너미의 피격 시간
-#define ENEMYKNOCKBACK_TIME	50
+#define ENEMYKNOCKBACK_TIME	25
 
 // 에너미가 피격 시 밀려나는 시간
 #define ENEMYKNOCKBACKING_TIME	0.1f
@@ -27,6 +27,9 @@
 // 체력이 올라가는 스피드
 #define HP_PLUS_SPEED_E		2
 
+// 에너미의 공격 후 딜레이
+#define NEXT_ATTACK_DELAY 50
+
 
 // 에너미 타입 enum
 enum class EnemyType
@@ -42,6 +45,20 @@ enum class EnemyDirection
 	NONE,			// NULL
 	LEFT,			// 왼쪽
 	RIGHT			// 오른쪽
+};
+
+// 에너미의 상태 enum
+enum class EnemyStateEnum
+{
+	NONE,
+	IDLE,
+	WALK,
+	FALL,
+	HIT,
+	ATK_A,
+	ATK_B,
+	SKILL_A,
+	SKILL_B
 };
 
 
@@ -87,25 +104,30 @@ struct EnemyStatus
 	short				gold;			// 에너미가 드랍할 골드량을 담는다.
 
 	short				show_Attack;	// 출력되는 데미지 값
+
+	EnemyStateEnum		state;			// 에너미의 상태
 	
 };
 
 // 에너미의 좌표 구조체
 struct EnemyPos
 {
-	POINTFLOAT			center;				// 에너미의 중점을 담는다.
-	RECT				ani_Rc;				// 에너미의 애니메이션 렉트를 담는다.
-	RECT				hit_Range_Rc;		// 에너미의 피격 범위 렉트
-	RECT				find_Range_Rc;		// 에너미 인식 범위
-	RECT				attack_Range_Rc;	// 에너미 공격 범위
+	POINTFLOAT			center;					// 에너미의 중점을 담는다.
+	RECT				ani_Rc;					// 에너미의 애니메이션 렉트를 담는다.
+	RECT				hit_Range_Rc;			// 에너미의 피격 범위 렉트
+	RECT				find_Range_Rc;			// 에너미 인식 범위
+	RECT				attack_Range_Rc;		// 에너미 공격 범위
+	RECT				long_Attack_Ranger_RC;	// 에너미 원거리 공격 범위
 
-	RECT				Attack_Rc;			// 에너미 공격 렉트
+	RECT				Attack_Rc;				// 에너미 공격 렉트
 
-	float				fall_Power;			// 에너미의 추락 연산 변수
+	float				fall_Power;				// 에너미의 추락 연산 변수
 
-	float				lerp_Start;			// 러프 시작 시간
-
-	POINTFLOAT			damege_Center;		// 데미지 출력 중점
+	float				lerp_Start;				// 러프 시작 시간
+	float				lerp_Time;				// 러프 시간
+	float				lerp_Range;				// 러프 거리
+	
+	POINTFLOAT			damege_Center;			// 데미지 출력 중점
 };
 
 // 에너미의 이미지 구조체
@@ -116,6 +138,24 @@ struct EnemyImage
 	animation*			ani;			// 에너미의 애니메이션을 담는다.
 
 	short				curX, curY;		// 에너미의 이미지 x, y를 담는다.
+
+};
+
+// 에너미의 연산 변수 구조체
+struct EnemyOperater
+{
+	int				after_Delay;		// 공격 후 딜레이
+	int				after_Delay_Cnt;	// 공격 후 딜레이 카운트
+
+	short			curX, curY;			// 프레임이미지 연산 변수
+	short			imgFPS;				// 프레임 속도
+	short			buffer;				// 정해진 횟수만큼 재생해야 하는지
+	float			curTime;			// 현재 시간
+
+	bool			loop;				// 한번만 재생해야 하는지 여러분 재생해야 하는지
+	bool			revers;				// 프레임 이미지가 꺼꾸로 재생이 되어야 하는지
+	bool			start;				// 프레임 연산을 시작하는지 여부
+	bool			saveTime;			// 현재 시간을 받았을때
 
 };
 
@@ -132,11 +172,16 @@ struct EnemyBoolValue
 	bool				player_Attack_Hit;	// 플레이어의 공격을 맞았는지
 
 	bool				lerping;			// 러프중인지
+	bool				atk_End;			// 공격 끝
+	bool				next_Atk_Delay;		// 다음 공격 준비중
 
 	bool				im_Hit;				// 난 맞았다
 	bool				im_Death;			// 난 죽었다.
 
 	bool				Critical_Hit;		// 치명타 공격을 받았는지
+
+	bool				find_Player;		// 플레이어를 발견했다.
+
 };
 
 // 에너미 쿨타임
@@ -158,6 +203,7 @@ struct EnemyInfo
 	EnemyBoolValue		bool_V;			// 에너미의 bool 정보
 	EnemyCoolTime		cool_Time;		// 에너미의 쿨타임 정보
 	Enemy_Hp_Img		hp;				// 에너미의 HP 정보
+	EnemyOperater		oper;			// 에너미의 연산 변수 정보
  
 	// 모두 초기화
 	void All_ReSet()
@@ -171,6 +217,7 @@ struct EnemyInfo
 		status.speed = 0;
 		status.gold = 0;
 		status.show_Attack = 0;
+		status.state = EnemyStateEnum::NONE;
 
 		// 이미지 초기화
 		img.ani = new animation;
@@ -185,8 +232,11 @@ struct EnemyInfo
 		pos.find_Range_Rc = { 0, 0, 0, 0 };
 		pos.attack_Range_Rc = { 0, 0, 0, 0 };
 		pos.Attack_Rc = { 0, 0, 0, 0 };
+		pos.long_Attack_Ranger_RC = { 0,0,0,0 };
 		pos.fall_Power = 0;
 		pos.lerp_Start = 0;
+		pos.lerp_Time = 0;
+		pos.lerp_Range = 0;
 		pos.damege_Center.x = pos.damege_Center.y = 0;
 
 		// bool 초기화
@@ -200,11 +250,16 @@ struct EnemyInfo
 		bool_V.player_Attack_Hit = false;
 		
 		bool_V.lerping = false;
+		bool_V.atk_End = false;
+		bool_V.next_Atk_Delay = false;
 
 		bool_V.im_Hit = false;
 		bool_V.im_Death = false;
 
 		bool_V.Critical_Hit = false;
+
+		bool_V.find_Player = false;
+		
 
 		// CoolTime 초기화
 		cool_Time.attack_CoolTime = 0;
@@ -217,6 +272,19 @@ struct EnemyInfo
 		hp.backHP = 0;
 
 		hp.state = HP_UPDATE_STATE_E::EMPTY;
+
+		// 연산 변수 초기화
+		oper.after_Delay = NEXT_ATTACK_DELAY;
+		oper.after_Delay_Cnt = 0;
+
+		oper.curX = oper.curY = 0;
+		oper.imgFPS = oper.buffer = 0;
+		oper.curTime = 0;
+		oper.loop = false;
+		oper.revers = false;
+		oper.start = false;
+		oper.saveTime = false;
+
 	}
 
 	// HP 변수 셋팅
@@ -345,17 +413,19 @@ struct EnemyInfo
 						img_T->getFrameWidth(), img_T->getFrameHeight());
 				}
 
+				pos.lerp_Range = img_T->getFrameWidth();
+
 				break;
 
 			case EnemyType::ARCHER:
 				if (status.dir == EnemyDirection::RIGHT)
 				{
-					pos.attack_Range_Rc = RectMake(pos.center.x, pos.center.y - img_T->getFrameHeight() / 2,
+					pos.long_Attack_Ranger_RC = RectMake(pos.center.x, pos.center.y - img_T->getFrameHeight() / 2,
 						img_T->getFrameWidth() * 4, img_T->getFrameHeight());
 				}
 				if (status.dir == EnemyDirection::LEFT)
 				{
-					pos.attack_Range_Rc = RectMake(pos.center.x - img_T->getFrameWidth() * 4, pos.center.y - img_T->getFrameHeight() / 2,
+					pos.long_Attack_Ranger_RC = RectMake(pos.center.x - img_T->getFrameWidth() * 4, pos.center.y - img_T->getFrameHeight() / 2,
 						img_T->getFrameWidth() * 4, img_T->getFrameHeight());
 				}
 			
@@ -423,8 +493,20 @@ struct EnemyInfo
 		// 에너미의 피격 범위 렉트
 		pos.hit_Range_Rc = RectMakeCenter(pos.center.x, pos.center.y, temp_Img->getFrameWidth() / 2, temp_Img->getFrameHeight() / 2);
 
-		// 에너미 인식 범위 렉트
-		pos.find_Range_Rc = RectMakeCenter(pos.center.x, pos.center.y, temp_Img->getFrameWidth() * 3, temp_Img->getFrameHeight());
+		// 에너미 인식 범위 렉트 (플레이어를 발견하기 전에는 자신이 바라보는 방향밖에 찾지 못한다.
+		if (!bool_V.find_Player)
+		{
+			if (status.dir == EnemyDirection::LEFT)
+				pos.find_Range_Rc = RectMakeCenter(pos.center.x - temp_Img->getFrameWidth(), pos.center.y, temp_Img->getFrameWidth() * 2, temp_Img->getFrameHeight());
+			if (status.dir == EnemyDirection::RIGHT)
+				pos.find_Range_Rc = RectMakeCenter(pos.center.x + temp_Img->getFrameWidth(), pos.center.y, temp_Img->getFrameWidth() * 2, temp_Img->getFrameHeight());
+		}
+
+		// 플레이어를 발견한다면 인식 범위가 늘어난다. ( 양 사이드로)
+		if (bool_V.find_Player)
+		{
+			pos.find_Range_Rc = RectMakeCenter(pos.center.x, pos.center.y, temp_Img->getFrameWidth() * 4, temp_Img->getFrameHeight());
+		}
 	}
 
 	// 에너미의 애니메이션 셋팅 (매개변수 : 이미지 키값, 애니 키값)
@@ -479,6 +561,8 @@ struct EnemyInfo
 
 				}
 
+				// 병사는 공격 준비 후 공격을 시작하기 때문에 애니메이션을 돌리지 않는다.
+
 				break;
 
 			case EnemyType::ARCHER:
@@ -507,6 +591,8 @@ struct EnemyInfo
 					if (StateName == "Attack_A") set_Ani("archer_Attack", "archer_Attack_Right_Ani");
 
 				}
+
+				img.ani->start();
 
 				break;
 		}
@@ -626,14 +712,14 @@ struct EnemyInfo
 		// 방향에 따라 그쪽 방향으로 렉트를 만들어준다.
 		if (status.dir == EnemyDirection::LEFT)
 		{
-			pos.Attack_Rc = RectMake(pos.center.x - tempImg->getFrameWidth() / 2, pos.center.y - tempImg->getFrameHeight() / 2,
-				tempImg->getFrameWidth() / 2, tempImg->getFrameHeight());
+			pos.Attack_Rc = RectMake(pos.center.x - tempImg->getFrameWidth() / 2 - 50 , pos.center.y - tempImg->getFrameHeight() / 2,
+				tempImg->getFrameWidth() / 2 + 50 , tempImg->getFrameHeight());
 		}
 
 		if (status.dir == EnemyDirection::RIGHT)
 		{
 			pos.Attack_Rc = RectMake(pos.center.x, pos.center.y - tempImg->getFrameHeight() / 2,
-				tempImg->getFrameWidth() / 2, tempImg->getFrameHeight());
+				tempImg->getFrameWidth() / 2 + 50, tempImg->getFrameHeight());
 		}
 	}
 
@@ -683,6 +769,180 @@ struct EnemyInfo
 		// HP바 위치갱신
 		update_HP_Pos();
 	}
+
+	// 에너미 공격 패턴
+	void enemy_Attack_Pattern()
+	{
+		switch (status.type)
+		{
+		case EnemyType::SOLDIER:
+			// 쿨타임이 끝난 후 애니메이션 시작 
+			if(!bool_V.attackCheck) cool_Time.attack_CoolTime_Cnt++;
+			
+			if (cool_Time.attack_CoolTime <= cool_Time.attack_CoolTime_Cnt && !bool_V.attackCheck)
+			{
+				// 중복 방지 
+				bool_V.attackCheck = true;
+
+				// 애니 스타트
+				img.ani->start();
+
+				// 선형 스타트
+				bool_V.lerping = true;
+
+				// 시작 시간 저장
+				pos.lerp_Start = TIMEMANAGER->getWorldTime();
+
+				// 선형 시간
+				pos.lerp_Time = 0.5f;
+				
+
+			}		
+
+			// 일정 프레임만 공격렉트 생성
+			if (img.ani->getFramePos().x == 172) make_Attack_Rect();
+			else pos.Attack_Rc = { 0,0,0,0 };
+
+			break;
+
+		case EnemyType::ARCHER:
+			// 애니메이션을 시작을 먼저 받고 들어온다.
+			
+			// 쿨타임이 모두 끝난 후 투사체 발사
+
+			// 투사체가 날아 간 후 일정 시간 뒤에 대기 상태로 변경
+
+			break;
+
+		//case EnemyType::NONE:
+		//	break;
+
+		}
+	}
+
+	// 프레임 연산 변수 초기화
+	void reset_FrameImage_oper()
+	{
+		oper.imgFPS = 0;
+		oper.buffer = 0;
+		oper.loop = false;
+		oper.revers = false;
+		oper.curX = 0;
+		oper.curY = 0;
+	}
+
+
+	// 프레임 연산 셋팅 (매개변수 : 프레임속도, 횟수, 루프, 반전, 프레임y 번호
+	void setting_FrameImage(short fps_, short buff_, bool loop_, bool revers_, short frameY)
+	{
+		oper.imgFPS = fps_;
+		oper.buffer = buff_;
+		oper.loop = loop_;
+		oper.revers = revers_;
+
+		// 뒤에서 재생하는지
+		if (!oper.revers)
+		{
+			oper.curX = -1;
+			oper.curY = frameY;
+		}
+
+		// 앞에서 재생하는지
+		if (oper.revers)
+		{
+			oper.curX = IMAGEMANAGER->findImage(img.imgName)->getMaxFrameX() + 1;
+			oper.curY = frameY;
+		}
+
+	}
+
+	// 프레임 연산 시작
+	void start_Frame()
+	{
+		oper.start = true;
+
+	}
+
+	// 프레임 연산 스탑
+	void stop_Frame()
+	{
+		oper.start = false;
+
+	}
+
+	// 프레임 이미지 연산 함수
+	void play_FrameImage()
+	{
+		if (!oper.saveTime)
+		{
+			oper.curTime = TIMEMANAGER->getWorldTime();
+
+			oper.saveTime = true;
+		}
+
+
+		// 스타트가 켜져있을때
+		if (oper.start)
+		{
+			if (oper.curTime + oper.imgFPS <= TIMEMANAGER->getWorldTime())
+			{
+				oper.saveTime = false;
+
+				// 프레임 루프한다.
+				if (oper.loop)
+				{
+					if (!oper.revers)
+					{
+						oper.curX++;
+
+						if (oper.curX > IMAGEMANAGER->findImage(img.imgName)->getMaxFrameX())
+						{
+							oper.curX = -1;
+						}
+
+					}
+
+					if (oper.revers)
+					{
+						oper.curX--;
+
+						if (oper.curX < 0)
+						{
+							oper.curX = IMAGEMANAGER->findImage(img.imgName)->getFrameWidth();
+						}
+
+					}
+				}
+
+				// 프레임이 루프하지 않는다.
+				if (!oper.loop)
+				{
+					if (!oper.revers)
+					{
+						oper.curX++;
+
+						if (oper.curX > IMAGEMANAGER->findImage(img.imgName)->getMaxFrameX())
+						{
+							oper.start = false;
+						}
+					}
+
+					if (oper.revers)
+					{
+						oper.curX--;
+
+						if (oper.curX < 0)
+						{
+							oper.start = false;
+						}
+					}
+
+				}
+			}
+		}
+
+	}
+	
 };
 
 

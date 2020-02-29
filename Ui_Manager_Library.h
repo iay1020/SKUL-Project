@@ -155,9 +155,10 @@ struct CharacterStatusUI
 		type.img->render(getMemDC, type.rc.left, type.rc.top);
 
 		// 스킬 출력
-		skill.img_A->render(getMemDC, skill.rc_A.left, skill.rc_A.top);
-		skill.img_B->render(getMemDC, skill.rc_B.left, skill.rc_B.top);
-
+		if(!skul->get_Info().bool_V.useing_Skill_A) skill.img_A->render(getMemDC, skill.rc_A.left, skill.rc_A.top);
+		if (skul->get_Info().bool_V.useing_Skill_A) skill.img_A->alphaRender(getMemDC, skill.rc_A.left, skill.rc_A.top, 100);
+		if(!skul->get_Info().bool_V.useing_Skill_B) skill.img_B->render(getMemDC, skill.rc_B.left, skill.rc_B.top);
+		if (skul->get_Info().bool_V.useing_Skill_B) skill.img_B->alphaRender(getMemDC, skill.rc_B.left, skill.rc_B.top, 100);
 
 		
 		// 렉트 출력

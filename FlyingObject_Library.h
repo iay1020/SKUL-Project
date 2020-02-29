@@ -46,6 +46,7 @@ struct FlyingObjectInfo
 	short					Delete_Timer;	// 투사체의 삭제 타이머
 
 	bool					isFalling;		// 투사체가 추락중인지 여부
+	bool					isHit;			// 투사체가 이미 충돌을 끝냈는지
 
 
 	// 변수를 비워주는 함수
@@ -71,7 +72,7 @@ struct FlyingObjectInfo
 		isFrame = false;					// bool 초기화
 
 		isFalling = false;					// bool 초기화
-
+		isHit = false;
 	}
 
 	// 값을 넣어주는 함수 (매개변수 : 이미지 이름, 애니메이션 이름, 중점x, 중점y, 각도, 스피드, 이미지가 프레임인지 아닌지)

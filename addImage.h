@@ -210,10 +210,21 @@ struct tagAddImage
 
 			// throw Skul Skill
 			IMAGEMANAGER->addFrameImage("throw_Head_Effect", "./image/effect/Hit_Skul/Hit_Skul.bmp", 1000, 224, 10, 2, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("throw_Head_Effect_L", "./image/effect/Hit_Skul/hit_Skul_Left.bmp", 900, 112, 9, 1, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("throw_Head_Effect_R", "./image/effect/Hit_Skul/hit_Skul_Right.bmp", 900, 112, 9, 1, true, RGB(255, 0, 255));
+			EFFECTMANAGER->addEffect("throw_Head_Effect_L", "throw_Head_Effect_L", 900, 112, 100, 112, 1, 1, 1);
+			EFFECTMANAGER->addEffect("throw_Head_Effect_R", "throw_Head_Effect_R", 900, 112, 100, 112, 1, 1, 1);
 
 			// <throw Skul Skill Reset Effect
 			IMAGEMANAGER->addFrameImage("throw_Head_Reset_Effect", "./image/effect/skul_Head_Skill_Reset/skul_Head_Skill_Reset.bmp", 3200, 119, 20, 1, true, RGB(255, 0, 255));
 			EFFECTMANAGER->addEffect("throw_Head_Reset_Effct", "throw_Head_Reset_Effect", 3200, 119, 160, 119, 1, 1, 1);
+
+		}
+
+		// <Hit>
+		{
+			IMAGEMANAGER->addFrameImage("skul_Hit_Damage", "./image/effect/skul_Hit_Damage/skul_Hit_Damage.bmp", 1296, 141, 8, 1, true, RGB(255, 0, 255));
+			EFFECTMANAGER->addEffect("skul_Hit_Damage", "skul_Hit_Damage", 1296, 141, 162, 141, 1, 0.2f, 1);
 
 		}
 

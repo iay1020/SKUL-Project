@@ -40,7 +40,8 @@ void Player::update()
 	info.dash_CoolTime();
 
 	// 스컬 스킬 쿨타임 함수
-	info.skil_CoolTime();
+	info.skil_CoolTime((DATAMANAGER->ui_Address()->get_UI_Address()->skill.rc_A.left + DATAMANAGER->ui_Address()->get_UI_Address()->skill.rc_A.right) / 2,
+		(DATAMANAGER->ui_Address()->get_UI_Address()->skill.rc_A.top + DATAMANAGER->ui_Address()->get_UI_Address()->skill.rc_A.bottom) / 2);
 
 	// 상태 업데이트
 	state->update(this);	

@@ -104,7 +104,14 @@ public:
 	void Lerp_Player();
 
 	// 선형보간 함수 (에너미)
-	void Lerp_Enemy(Enemy* enemy);
+	void Lerp_Enemy(Enemy* enemy, float time_, float range_);
+
+	// 렉트에 카메라를 빼준다.
+	RECT minus_CameraPos(RECT rc);
+
+	// 렉트에 카메라를 더해준다.
+	RECT plus_CameraPos(RECT rc);
+
 
 	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 투사체 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
@@ -147,6 +154,9 @@ public:
 	// 에너미 매니저 출력
 	void show_Enemy() { _enemyManager->render(); }
 
+	// 에너미의 범위에 플레이어가 들어왔는지 체크
+	void enemy_Range_Check(Enemy* enemy_);
+
 	// 플레이어가 인식범위에 들어왔는지 체크
 	bool find_Player(Enemy* enemy_Address);
 
@@ -163,7 +173,7 @@ public:
 	void enemy_Attack_Hit(Enemy* enemy_Address);
 
 	// 에너미가 이동하려는 타일이 벽이 아닐 경우
-	bool enemy_Move_Wall(Enemy* enemy_Address, EnemyDirection dir);
+	bool enemy_Move_Wall(Enemy* enemy_Address, EnemyDirection dir, bool isBack = false);
 
 	// 에너미의 아래 타일이 땅이 아닐 경우
 	bool enemy_find_Down_Gorund(Enemy* enemy_Address);

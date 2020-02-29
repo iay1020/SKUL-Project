@@ -25,6 +25,7 @@ public:
 	// 에너미의 상태를 수정한다.
 	void set_State(EnemyState* state);
 		
-
+	// 에너미의 상태 함수를 호출한다.
+	void call_StateFunc(EnemyStateEnum state_, EnemyState* state);
 };
 

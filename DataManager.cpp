@@ -1008,33 +1008,55 @@ void DataManager::Lerp_Player()
 
 }
 
-void DataManager::Lerp_Enemy(Enemy* enemy)
+void DataManager::Lerp_Enemy(Enemy* enemy, float time_, float range_)
 {
 	// 경과시간
 	float elapsedTime = TIMEMANAGER->getElapsedTime();
 
 	// 스피드 구하기
-	float lerp_Speed = (elapsedTime / ENEMYKNOCKBACKING_TIME) * ENEMYKNOCKBACK_RANGE;
+	float lerp_Speed = (elapsedTime / time_) * range_;
 
-	// 이동 (벽이 없을때만 이동 연산을 한다.)
-	if (DATAMANAGER->enemy_Move_Wall(enemy, enemy->info_Address()->status.dir))
+	// 피격 중일때
+	if (enemy->info_Address()->bool_V.player_Attack_Hit)
 	{
-		if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+		// 이동 (벽이 없을때만 이동 연산을 한다.)
+		if (DATAMANAGER->enemy_Move_Wall(enemy, enemy->info_Address()->status.dir, true))
 		{
-			enemy->info_Address()->pos.center.x += cosf(0) * lerp_Speed;
-		}
-		if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
-		{
-			enemy->info_Address()->pos.center.x += cosf(3.14) * lerp_Speed;
-		}
+			if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+			{
+				enemy->info_Address()->pos.center.x += cosf(0) * lerp_Speed;
+			}
+			if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
+			{
+				enemy->info_Address()->pos.center.x += cosf(3.14) * lerp_Speed;
+			}
 
-		// 렉트 갱신
-		enemy->info_Address()->update_Rect();
-		
+			// 렉트 갱신
+			enemy->info_Address()->update_Rect();
+		}
+	}
+
+	if (!enemy->info_Address()->bool_V.player_Attack_Hit)
+	{
+		// 이동 (벽이 없을때만 이동 연산을 한다.)
+		if (DATAMANAGER->enemy_Move_Wall(enemy, enemy->info_Address()->status.dir))
+		{
+			if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+			{
+				enemy->info_Address()->pos.center.x += cosf(3.14) * lerp_Speed;
+			}
+			if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
+			{
+				enemy->info_Address()->pos.center.x += cosf(0) * lerp_Speed;
+			}
+
+			// 렉트 갱신
+			enemy->info_Address()->update_Rect();
+		}
 	}
 
 	// 멈추는 조건
-	if (enemy->info_Address()->pos.lerp_Start + ENEMYKNOCKBACKING_TIME <= TIMEMANAGER->getWorldTime())
+	if (enemy->info_Address()->pos.lerp_Start + time_ <= TIMEMANAGER->getWorldTime())
 	{
 	
 		// 현재 시간으로 초기화
@@ -1044,7 +1066,40 @@ void DataManager::Lerp_Enemy(Enemy* enemy)
 		enemy->info_Address()->bool_V.hitCheck = false;
 		enemy->info_Address()->bool_V.lerping = false;
 
+		enemy->info_Address()->cool_Time.attack_CoolTime_Cnt = 0;
+		enemy->info_Address()->bool_V.attackCheck = false;
+
+		enemy->info_Address()->bool_V.Attack_Hit = false;
+
+		// 공격 끝이라면 
+		enemy->info_Address()->bool_V.atk_End = true;
+
+		// 공격 후딜레이클 켜준다.
+		enemy->info_Address()->bool_V.next_Atk_Delay = true;
+
 	}
+}
+
+RECT DataManager::plus_CameraPos(RECT rc)
+{
+	RECT v_RC = rc;
+	v_RC.left += CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	v_RC.right += CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	v_RC.top += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	v_RC.bottom += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+	return v_RC;
+}
+
+RECT DataManager::minus_CameraPos(RECT rc)
+{
+	RECT v_RC = rc;
+	v_RC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	v_RC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+	v_RC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+	v_RC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+
+	return v_RC;
 }
 
 bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)
@@ -1064,10 +1119,6 @@ bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)
 		{
 			if (_tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right > fObj->rc.left - PLAYER_HEAD_SPEED)
 			{
-				//cout << "t rc : " << _tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right << endl;
-				//cout << "o rc : " << fObj->rc.left << endl;
-				//cout << " == " << endl;
-
 				return true;
 			}
 		
@@ -1082,10 +1133,6 @@ bool DataManager::Collision_FlyingObject_Wall(FlyingObjectInfo* fObj)
 		{
 			if (_tileList[(fObj_TilePos_X + 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.left < fObj->rc.right + PLAYER_HEAD_SPEED)
 			{
-				//cout << "t rc : " << _tileList[(fObj_TilePos_X - 1) + fObj_TilePos_Y * _mapInfo.tile_Count.x].rc.right << endl;
-				//cout << "o rc : " << fObj->rc.left << endl;
-				//cout << " == " << endl;
-
 				return true;
 			}
 			
@@ -1158,10 +1205,13 @@ void DataManager::Collision_Skul_Head()
 				_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
 				_skul->set_Info()->bool_V.now_Ani_Change = true;
 
+				_skul->set_Info()->bool_State_Reset();
+				_skul->set_State(IdleState::getInstance());
+
 				// 스킬 리셋 이펙트
 				EFFECTMANAGER->play("throw_Head_Reset_Effct", 
-					180 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-					1840 - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					(_ui_Manager->get_UI_Address()->skill.rc_A.left + _ui_Manager->get_UI_Address()->skill.rc_A.right) / 2,
+					(_ui_Manager->get_UI_Address()->skill.rc_A.top + _ui_Manager->get_UI_Address()->skill.rc_A.bottom) / 2);
 
 				break;
 			}
@@ -1203,7 +1253,7 @@ void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
 			{
 				// 투사체 튕기게하기
 				// 추락중이지 않을때
-				if (!(*viFObj).isFalling)
+				if (!(*viFObj).isFalling && !(*viFObj).isHit)
 				{
 
 					// 투사체의 방향에 따라 다른 연산
@@ -1212,10 +1262,12 @@ void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
 						(*viFObj).angle = 0;								// 반대 각도로 바꿔준다.
 						(*viFObj).speed = 5;
 						(*viFObj).isFalling = true;						// 추락중으로 바꿔준다.
+						(*viFObj).isHit = true;
 
 						// 투사체와 충돌한 벽에 이펙트를 만든다.
-						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_R_Effect", EffectType::THROW_HEAD, (*viFObj).center.x - 10, (*viFObj).center.y);
-
+						EFFECTMANAGER->play("throw_Head_Effect_R",
+							(*viFObj).center.x - 10 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							(*viFObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 					}
 
 
@@ -1224,20 +1276,22 @@ void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
 						(*viFObj).angle = 3.14;							// 반대 각도로 바꿔준다.
 						(*viFObj).speed = 5;
 						(*viFObj).isFalling = true;						// 추락중으로 바꿔준다.
+						(*viFObj).isHit = true;
 
 						// 투사체와 충돌한 벽에 이펙트를 만든다.
-						DATAMANAGER->effect_Maker_Address()->Create_Effect("throw_Head_Effect", "throw_Head_L_Effect", EffectType::THROW_HEAD, (*viFObj).center.x + 40, (*viFObj).center.y);
-
+						EFFECTMANAGER->play("throw_Head_Effect_R",
+							(*viFObj).center.x - 10 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							(*viFObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 					}
 				}
 			
 
 				// 스컬의 쿨타임 초기화, 스컬의 스킬 사용 초기화, 스컬의 상태 이미지 변화
-				_skul->set_Info()->bool_V.useing_Skill_A = false;
-				_skul->set_Info()->skill.skill_A_CoolTime_Cnt = 0;
-
-				_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
-				_skul->set_Info()->bool_V.now_Ani_Change = true;
+				//_skul->set_Info()->bool_V.useing_Skill_A = false;
+				//_skul->set_Info()->skill.skill_A_CoolTime_Cnt = 0;
+				//
+				//_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+				//_skul->set_Info()->bool_V.now_Ani_Change = true;
 
 				// 에너미 체력 감소
 				// 출력되는 데미지를 넣어준다.
@@ -1276,6 +1330,69 @@ void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
 		else viFObj++;
 
 	}
+}
+
+void DataManager::enemy_Range_Check(Enemy* enemy_)
+{
+	RECT tempRC;
+	RECT skulRC = _skul->get_Info().pos.rc;
+	skulRC = plus_CameraPos(skulRC);
+	RECT enemy_Short_Atk = enemy_->info_Address()->pos.attack_Range_Rc;
+	RECT enemy_Long_Atk = enemy_->info_Address()->pos.long_Attack_Ranger_RC;
+	RECT enemy_find_Range = enemy_->info_Address()->pos.find_Range_Rc;
+	float skul_PosX = _skul->get_Info().pos.center.x;
+
+	enemy_->info_Address()->status.state = EnemyStateEnum::IDLE;
+
+	// 플레이어가 근접 공격 범위에 들어왔을 경우
+	if (IntersectRect(&tempRC, &skulRC, &enemy_Short_Atk))
+	{
+		// 에너미의 방향을 정해준다.
+		// 스컬이 왼쪽에 있을 경우
+		if (skul_PosX < enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::LEFT;
+		// 스컬이 오른쪽에 있을 경우
+		if (skul_PosX > enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::RIGHT;
+
+		// 에너미는 근접 상태로 변경
+		enemy_->info_Address()->status.state = EnemyStateEnum::ATK_A;
+
+		return;
+	}
+
+	// 플레이어가 원거리 공격 범위에 들어왔을 경우
+	if (IntersectRect(&tempRC, &skulRC, &enemy_Long_Atk))
+	{
+		// 에너미의 방향을 정해준다.
+		// 스컬이 왼쪽에 있을 경우
+		if (skul_PosX < enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::LEFT;
+		// 스컬이 오른쪽에 있을 경우
+		if (skul_PosX > enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::RIGHT;
+
+		// 원거리 상태로 변경
+		enemy_->info_Address()->status.state = EnemyStateEnum::ATK_B;
+
+		return;
+	}
+
+	// 플레이어가 인식 범위에 들어왔을 경우
+	if (IntersectRect(&tempRC, &skulRC, &enemy_find_Range))
+	{
+		// 플레이어를 찾았다. 경계상태이기 때문에 인식 범위가 늘어난다.
+		enemy_->info_Address()->bool_V.find_Player = true;
+
+		// 에너미의 방향을 정해준다.
+		// 스컬이 왼쪽에 있을 경우
+		if (skul_PosX < enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::LEFT;
+		// 스컬이 오른쪽에 있을 경우
+		if (skul_PosX > enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::RIGHT;
+
+		//	이동 상태로 변경
+		enemy_->info_Address()->status.state = EnemyStateEnum::WALK;
+
+		return;
+	}
+
+
 }
 
 bool DataManager::find_Player(Enemy* enemy_Address)
@@ -1433,13 +1550,13 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 
 	
 		
-		// 공격 프레임이 모두 끝나면 대기 상태로
-		if (enemy_Address->info_Address()->img.ani->getFramePos().x == 688)
-		{
-			// 에너미 공격 렉트를 그려준다.
-			enemy_Address->info_Address()->make_Attack_Rect();
-
-		}
+		//// 공격 프레임이 모두 끝나면 대기 상태로
+		//if (enemy_Address->info_Address()->img.ani->getFramePos().x == 688)
+		//{
+		//	// 에너미 공격 렉트를 그려준다.
+		//	enemy_Address->info_Address()->make_Attack_Rect();
+		//
+		//}
 
 		
 		// 에너미의 공격 렉트에 플레이어가 있었다면 
@@ -1449,6 +1566,10 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 			_skul->set_Info()->status.HP -= enemy_Address->info_Address()->status.attack;
 			_ui_Manager->get_UI_Address()->hp.curHP = _skul->get_Info().status.HP;
 			_ui_Manager->get_UI_Address()->hp.state = HP_UPDATE_STATE::HIT;
+
+			// 피격 이펙트
+			EFFECTMANAGER->play("skul_Hit_Damage",
+				_skul->get_Info().pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x, _skul->get_Info().pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 
 			// 스컬의 체력이 0 이하로 내려갔다면 0으로 만들어준다.
 			if (_skul->get_Info().status.HP < 0)
@@ -1473,7 +1594,7 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 	
 }
 
-bool DataManager::enemy_Move_Wall(Enemy * enemy_Address, EnemyDirection dir)
+bool DataManager::enemy_Move_Wall(Enemy * enemy_Address, EnemyDirection dir, bool isBack)
 {
 	// 에너미의 타일 인덱스를 저장할 공간
 	int enemy_TilePos_X, enemy_TilePos_Y;
@@ -1482,25 +1603,58 @@ bool DataManager::enemy_Move_Wall(Enemy * enemy_Address, EnemyDirection dir)
 	enemy_TilePos_X = (int)enemy_Address->info_Address()->pos.center.x / TILE_SIZE_X;
 	enemy_TilePos_Y = (int)enemy_Address->info_Address()->pos.center.y / TILE_SIZE_Y;
 
-	// 에너미가 이동 하려는 방향에 타일이 벽이라면 false
-	if (dir == EnemyDirection::LEFT)
+
+	if (isBack)
 	{
-		if (_tileList[(enemy_TilePos_X - 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
+		// 에너미의 등 뒤에 벽이 있는지
+		if (dir == EnemyDirection::LEFT)
 		{
-			if (enemy_Address->info_Address()->pos.center.x - enemy_Address->info_Address()->status.speed <= _tileList[(enemy_TilePos_X - 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].rc.right)
+
+			if (_tileList[(enemy_TilePos_X + 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
 			{
-				return false;
+				if (enemy_Address->info_Address()->pos.hit_Range_Rc.right + enemy_Address->info_Address()->status.speed >= _tileList[(enemy_TilePos_X + 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].rc.left + 30)
+				{
+					return false;
+				}
+			}
+		}
+
+		if (dir == EnemyDirection::RIGHT)
+		{
+			if (_tileList[(enemy_TilePos_X - 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
+			{
+				if (enemy_Address->info_Address()->pos.hit_Range_Rc.left - enemy_Address->info_Address()->status.speed <= _tileList[(enemy_TilePos_X - 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].rc.right - 30)
+				{
+					return false;
+				}
 			}
 		}
 	}
 
-	if (dir == EnemyDirection::RIGHT)
+	if (!isBack)
 	{
-		if (_tileList[(enemy_TilePos_X + 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
+		// 에너미가 이동하려는 곳에 벽이 있는지
+		if (dir == EnemyDirection::LEFT)
 		{
-			if (enemy_Address->info_Address()->pos.center.x + enemy_Address->info_Address()->status.speed >= _tileList[(enemy_TilePos_X + 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].rc.left)
+
+			if (_tileList[(enemy_TilePos_X - 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
 			{
-				return false;
+				if (enemy_Address->info_Address()->pos.hit_Range_Rc.left - enemy_Address->info_Address()->status.speed <= _tileList[(enemy_TilePos_X - 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].rc.right - 30)
+				{
+					return false;
+				}
+				
+			}
+		}
+
+		if (dir == EnemyDirection::RIGHT)
+		{
+			if (_tileList[(enemy_TilePos_X + 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::WALL_TYPE)
+			{
+				if (enemy_Address->info_Address()->pos.hit_Range_Rc.right + enemy_Address->info_Address()->status.speed >= _tileList[(enemy_TilePos_X + 1) + enemy_TilePos_Y * _mapInfo.tile_Count.x].rc.left + 30)
+				{
+					return false;
+				}
 			}
 		}
 	}
@@ -1524,6 +1678,9 @@ bool DataManager::enemy_find_Down_Gorund(Enemy * enemy_Address)
 	if (_tileList[enemy_TilePos_X + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Type == TILE_TYPE::GROUND ||
 		_tileList[enemy_TilePos_X + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
 	{
+		// 바닥이 땅이라면 바닥으로 값을 보정해주어야 한다.
+		enemy_Address->info_Address()->pos.center.y = _tileList[enemy_TilePos_X + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].center.y - 69;
+
 		return true;
 	}
 

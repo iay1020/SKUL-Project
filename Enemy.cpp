@@ -13,6 +13,56 @@ void Enemy::set_State(EnemyState* state)
 	this->state = state;
 }
 
+void Enemy::call_StateFunc(EnemyStateEnum state_, EnemyState * state)
+{
+	
+	switch (state_)
+	{
+	case EnemyStateEnum::IDLE:
+		state->Idle(this);
+
+		break;
+
+	case EnemyStateEnum::WALK:
+		state->Move(this);
+
+		break;
+
+	case EnemyStateEnum::FALL:
+		state->Fall(this);
+
+		break;
+
+	case EnemyStateEnum::HIT:
+		state->Hit(this);
+
+		break;
+
+	case EnemyStateEnum::ATK_A:
+		state->Attack_A(this);
+
+		break;
+
+	case EnemyStateEnum::ATK_B:
+		state->Attack_B(this);
+
+		break;
+
+	case EnemyStateEnum::SKILL_A:
+		state->Skill_A(this);
+
+		break;
+
+	case EnemyStateEnum::SKILL_B:
+		state->Skill_B(this);
+
+		break;
+
+
+	}
+	
+}
+
 void Enemy::init()
 {
 }
@@ -39,6 +89,23 @@ void Enemy::update()
 
 void Enemy::render(HDC getMemDC)
 {
+	RECT temp_AniRC = info.pos.find_Range_Rc;
+	temp_AniRC = DATAMANAGER->minus_CameraPos(temp_AniRC);
+	RECT temp_HitRange_Rc = info.pos.hit_Range_Rc;
+	temp_HitRange_Rc = DATAMANAGER->minus_CameraPos(temp_HitRange_Rc);
+	RECT temp_Attack_Rc = info.pos.Attack_Rc;
+	temp_Attack_Rc = DATAMANAGER->minus_CameraPos(temp_Attack_Rc);
+	RECT attack_Range_T = info.pos.attack_Range_Rc;
+	attack_Range_T = DATAMANAGER->minus_CameraPos(attack_Range_T);
+	RECT long_Attack_Reange_T = info.pos.long_Attack_Ranger_RC;
+	long_Attack_Reange_T = DATAMANAGER->minus_CameraPos(long_Attack_Reange_T);
+
+	if (KEYMANAGER->isToggleKey('0'))	Rectangle(getMemDC, temp_AniRC);
+	if (KEYMANAGER->isToggleKey('6'))	Rectangle(getMemDC, long_Attack_Reange_T);
+	if (KEYMANAGER->isToggleKey('8'))	Rectangle(getMemDC, temp_Attack_Rc);
+	if (KEYMANAGER->isToggleKey('9'))	Rectangle(getMemDC, temp_HitRange_Rc);
+	if (KEYMANAGER->isToggleKey('7'))	Rectangle(getMemDC, attack_Range_T);
+
 	// 피격중이 아닐때
 	if (!info.bool_V.player_Attack_Hit)
 	{
@@ -79,30 +146,4 @@ void Enemy::render(HDC getMemDC)
 			, info.hp.rc_HP_Front.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
 			0, 0, info.hp.rc_HP_Front.right - info.hp.rc_HP_Front.left, info.hp.img_HP_Front->getHeight());
 	}
-
-	RECT temp_AniRC = info.pos.find_Range_Rc;
-	temp_AniRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	temp_AniRC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	temp_AniRC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-	temp_AniRC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-	RECT temp_HitRange_Rc = info.pos.hit_Range_Rc;
-	temp_HitRange_Rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	temp_HitRange_Rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	temp_HitRange_Rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-	temp_HitRange_Rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-	RECT temp_Attack_Rc = info.pos.Attack_Rc;
-	temp_Attack_Rc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	temp_Attack_Rc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	temp_Attack_Rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-	temp_Attack_Rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-	RECT attack_Range_T = info.pos.attack_Range_Rc;
-	attack_Range_T.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	attack_Range_T.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
-	attack_Range_T.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-	attack_Range_T.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-
-	if (KEYMANAGER->isToggleKey('0'))	Rectangle(getMemDC, temp_AniRC);
-	if (KEYMANAGER->isToggleKey('9'))	Rectangle(getMemDC, temp_HitRange_Rc);
-	if (KEYMANAGER->isToggleKey('8'))	Rectangle(getMemDC, temp_Attack_Rc);
-	if (KEYMANAGER->isToggleKey('7'))	Rectangle(getMemDC, attack_Range_T);
 }
