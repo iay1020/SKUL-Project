@@ -34,12 +34,12 @@ void FlyingObject::render()
 }
 
 void FlyingObject::Create_FlyingObj(string imgName, string aniName, FLYINFOBJECT_TYPE type_V, FLYINGOBJECT_DIRECTION dir,
-	float x, float y, float angle_V, float speed_V, bool Frame)
+	float x, float y, float angle_V, float speed_V, int atk_V, bool Frame)
 {
 	// 투사체 오브젝트를 만든다.
 	FlyingObjectInfo new_FlyingObj;
 	new_FlyingObj.reset();
-	new_FlyingObj.setting_Info(imgName, aniName, type_V, dir, x, y, angle_V, speed_V, Frame);
+	new_FlyingObj.setting_Info(imgName, aniName, type_V, dir, x, y, angle_V, speed_V, atk_V ,Frame);
 
 	vFlyingObj.push_back(new_FlyingObj);
 
@@ -107,6 +107,41 @@ void FlyingObject::Move_FlyingObj()
 				}
 			}
 		}
+
+		//// 화살의 경우
+		//if ((*viFlyingObj).type == FLYINFOBJECT_TYPE::ARROW)
+		//{
+		//	// 아직 충돌하지 않은 화살일때
+		//	if (!(*viFlyingObj).isHit)
+		//	{
+		//		// 스컬과 충돌 했을 경우
+		//
+		//		
+		//		// 투사체의 방향에 따라 다른 연산
+		//		if ((*viFlyingObj).dir == FLYINGOBJECT_DIRECTION::LEFT)
+		//		{
+		//			(*viFlyingObj).isHit = true;							// 이 투사체는 충돌이 끝났다.
+		//
+		//			// 화살이 스컬과 충돌하면 이펙트를 만든다.
+		//			EFFECTMANAGER->play("throw_Head_Effect_R",
+		//				(*viFlyingObj).center.x - 10 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+		//				(*viFlyingObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+		//		}
+		//
+		//
+		//		 if ((*viFlyingObj).dir == FLYINGOBJECT_DIRECTION::RIGHT)
+		//		{
+		//			(*viFlyingObj).isHit = true;							// 이 투사체는 충돌이 끝났다.
+		//
+		//			// 화살이 스컬과 충돌하면 이펙트를 만든다.
+		//			EFFECTMANAGER->play("throw_Head_Effect_L",
+		//				(*viFlyingObj).center.x + 40 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+		//				(*viFlyingObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+		//
+		//		}
+		//	}
+		//
+		//}
 
 		// 투사체 이동
 		(*viFlyingObj).center.x += cosf((*viFlyingObj).angle) * (*viFlyingObj).speed;

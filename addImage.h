@@ -456,7 +456,9 @@ struct tagAddImage
 		// <archer Attack>
 		IMAGEMANAGER->addFrameImage("archer_Attack", "./image/enemy/archer/Attack/archer_Attack.bmp", 620, 250, 4, 2, true, RGB(255, 0, 255));
 
-
+		// <archer Arrow>
+		IMAGEMANAGER->addFrameImage("archer_Arrow_Right", "./image/effect/archer_Arrow/enemy_Arrow_Right.bmp", 100, 22, 2, 1, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("archer_Arrow_Left", "./image/effect/archer_Arrow/enemy_Arrow_Left.bmp", 100, 22, 2, 1, true, RGB(255, 0, 255));
 
 
 		// <enemy Die Effect>
@@ -532,5 +534,12 @@ struct tagAddImage
 		KEYANIMANAGER->addArrayFrameAnimation("archer_Attack_Left_Ani", "archer_Attack", archer_Attack_Left, 4, 10, false);
 
 		
+		// <archer Arrow Ani>
+		int archer_Arrow_Right[] = { 0 , 1 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Arrow_Right_Ani", "archer_Arrow_Right", archer_Arrow_Right, 2, 10, true);
+
+		int archer_Arrow_Left[] = { 0 , 1 };
+		KEYANIMANAGER->addArrayFrameAnimation("archer_Arrow_Left_Ani", "archer_Arrow_Left", archer_Arrow_Left, 2, 10, true);
+
 	}
 };

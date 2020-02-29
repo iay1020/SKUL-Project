@@ -6,6 +6,9 @@
 // 파티클이 사라지는 시간
 #define PARTICLE_DELETE_TIME 50
 
+// 화살이 사라지는 시간
+#define ARROW_DELETE_TIME 150
+
 // 투사체의 중력
 #define FLYINGOBJECT_GRAVITY 0.5f
 
@@ -14,7 +17,8 @@ enum class FLYINFOBJECT_TYPE
 {
 	NONE,							// NULL
 	SKUL_HEAD,						// 스컬 머리
-	PARTICLE						// 파티클
+	PARTICLE,						// 파티클
+	ARROW							// 화살
 
 };
 
@@ -40,6 +44,7 @@ struct FlyingObjectInfo
 	FLOAT					speed;			// 투사체의 스피드
 	FLOAT					gravity;		// 투사체의 중력
 	FLYINGOBJECT_DIRECTION	dir;			// 투사체의 방향
+	int						attack;			// 투사체의 공격력
 
 	bool					isFrame;		// 이미지가 프레임인지 아닌지
 
@@ -64,6 +69,7 @@ struct FlyingObjectInfo
 		angle = 0;							// 각도 초기화
 		speed = 0;							// 스피드 초기화
 		gravity = 0;						// 중력 초기화
+		attack = 0;							// 공격력 초기화
 
 		dir = FLYINGOBJECT_DIRECTION::NONE; // 방향 초기화
 
@@ -77,7 +83,7 @@ struct FlyingObjectInfo
 
 	// 값을 넣어주는 함수 (매개변수 : 이미지 이름, 애니메이션 이름, 중점x, 중점y, 각도, 스피드, 이미지가 프레임인지 아닌지)
 	void setting_Info(string imgName, string aniName_V, FLYINFOBJECT_TYPE type_V, FLYINGOBJECT_DIRECTION dir_V,
-		float x, float y, float angle_V, float speed_V, bool Frame = false)
+		float x, float y, float angle_V, float speed_V, int atk_V, bool Frame = false)
 	{
 		// 타입을 저장한다.
 		type = type_V;
@@ -91,6 +97,8 @@ struct FlyingObjectInfo
 
 		// 이미지의 프레임 여부를 저장
 		isFrame = Frame;
+
+		attack = atk_V;
 
 		// 이미지가 프레임이 아니라면
 		if (!isFrame)
@@ -149,6 +157,11 @@ struct FlyingObjectInfo
 
 			case FLYINFOBJECT_TYPE::PARTICLE:
 				return PARTICLE_DELETE_TIME;
+
+				break;
+
+			case FLYINFOBJECT_TYPE::ARROW:
+				return ARROW_DELETE_TIME;
 
 				break;
 		}

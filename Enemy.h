@@ -2,10 +2,12 @@
 
 class EnemyState;
 
+
 class Enemy
 {
-	EnemyState*		state;		// 에너미 상태
-	EnemyInfo		info;		// 에너미 정보
+	EnemyState*					state;					// 에너미 상태
+	EnemyInfo					info;					// 에너미 정보
+
 
 public:
 	Enemy();
@@ -21,11 +23,13 @@ public:
 	// 에너미의 상태를 받아온다.
 	EnemyState* get_State() { return state; }
 
+
 	// 셋터 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 	// 에너미의 상태를 수정한다.
 	void set_State(EnemyState* state);
 		
 	// 에너미의 상태 함수를 호출한다.
 	void call_StateFunc(EnemyStateEnum state_, EnemyState* state);
+
 };
 

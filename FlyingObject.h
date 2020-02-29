@@ -18,7 +18,7 @@ public:
 
 	// 투사체 생성 함수 (매개변수 : 이미지이름, 중점x, 중점y, 각도, 스피드, 이미지가 프레임인지 아닌지)
 	void Create_FlyingObj(string imgName, string aniName, FLYINFOBJECT_TYPE type_V, FLYINGOBJECT_DIRECTION dir,
-		float x, float y, float angle_V, float speed_V, bool Frame = false);
+		float x, float y, float angle_V, float speed_V, int atk_V, bool Frame = false);
 
 	// 투사체 이동 함수
 	void Move_FlyingObj();

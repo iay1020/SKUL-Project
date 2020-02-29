@@ -1022,11 +1022,13 @@ void DataManager::Lerp_Enemy(Enemy* enemy, float time_, float range_)
 		// 이동 (벽이 없을때만 이동 연산을 한다.)
 		if (DATAMANAGER->enemy_Move_Wall(enemy, enemy->info_Address()->status.dir, true))
 		{
-			if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+			//if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
+			if(_skul->get_Info().status.direction == CharacterDirection::DIRECTION_RIGHT)
 			{
 				enemy->info_Address()->pos.center.x += cosf(0) * lerp_Speed;
 			}
-			if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
+			//if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
+			if (_skul->get_Info().status.direction == CharacterDirection::DIRECTION_LEFT)
 			{
 				enemy->info_Address()->pos.center.x += cosf(3.14) * lerp_Speed;
 			}
@@ -1216,11 +1218,53 @@ void DataManager::Collision_Skul_Head()
 				break;
 			}
 
-			else viFObj++;
+			//else viFObj++;
 		}
 
-		else viFObj++;
+		// 투사체의 타입이 화살이라면
+		if ((*viFObj).type == FLYINFOBJECT_TYPE::ARROW)
+		{
+			tempRC = (*viFObj).rc;
+			tempRC.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			tempRC.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x;
+			tempRC.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
+			tempRC.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 
+			// 스컬과 충돌을 했다면
+			RECT temp;
+			if (IntersectRect(&temp, &tempRC, &_skul->set_Info()->pos.rc))
+			{
+				// 화살이 스컬과 충돌하면 이펙트를 만든다.
+				if ((*viFObj).angle == 0)
+				{
+					EFFECTMANAGER->play("throw_Head_Effect_R",
+						(*viFObj).center.x - 10 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						(*viFObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+				}
+				
+				if ((*viFObj).angle == 3.14f)
+				{
+					EFFECTMANAGER->play("throw_Head_Effect_L",
+						(*viFObj).center.x + 40 - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+						(*viFObj).center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+				}
+
+				// 스컬의 체력을 감소
+				// 공격을 실행하고, 공격을 했다는 bool값을 변경해준다.
+				_skul->set_Info()->status.HP -= (*viFObj).attack;
+				_ui_Manager->get_UI_Address()->hp.curHP = _skul->get_Info().status.HP;
+				_ui_Manager->get_UI_Address()->hp.state = HP_UPDATE_STATE::HIT;
+
+				// 투사체 삭제
+				viFObj = vFObj->erase(viFObj);
+
+				break;
+			}
+			//else viFObj++;
+
+		}
+
+		viFObj++;
 	}
 
 }
@@ -1249,7 +1293,7 @@ void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
 
 			// 에너미와 충돌 했다면
 			RECT temp;
-			if (IntersectRect(&temp, &tempRC, &enemyRC))
+			if (IntersectRect(&temp, &tempRC, &enemyRC) && !(*viFObj).isHit)
 			{
 				// 투사체 튕기게하기
 				// 추락중이지 않을때
@@ -1285,13 +1329,6 @@ void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
 					}
 				}
 			
-
-				// 스컬의 쿨타임 초기화, 스컬의 스킬 사용 초기화, 스컬의 상태 이미지 변화
-				//_skul->set_Info()->bool_V.useing_Skill_A = false;
-				//_skul->set_Info()->skill.skill_A_CoolTime_Cnt = 0;
-				//
-				//_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
-				//_skul->set_Info()->bool_V.now_Ani_Change = true;
 
 				// 에너미 체력 감소
 				// 출력되는 데미지를 넣어준다.
@@ -1362,21 +1399,23 @@ void DataManager::enemy_Range_Check(Enemy* enemy_)
 	// 플레이어가 원거리 공격 범위에 들어왔을 경우
 	if (IntersectRect(&tempRC, &skulRC, &enemy_Long_Atk))
 	{
+
 		// 에너미의 방향을 정해준다.
 		// 스컬이 왼쪽에 있을 경우
 		if (skul_PosX < enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::LEFT;
 		// 스컬이 오른쪽에 있을 경우
 		if (skul_PosX > enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::RIGHT;
 
-		// 원거리 상태로 변경
+		// 원거리 상태로 변경c
 		enemy_->info_Address()->status.state = EnemyStateEnum::ATK_B;
-
+	
 		return;
 	}
 
 	// 플레이어가 인식 범위에 들어왔을 경우
 	if (IntersectRect(&tempRC, &skulRC, &enemy_find_Range))
 	{
+
 		// 플레이어를 찾았다. 경계상태이기 때문에 인식 범위가 늘어난다.
 		enemy_->info_Address()->bool_V.find_Player = true;
 
@@ -1547,17 +1586,6 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 		skulRC.right += CAMERAMANAGER->Use_Func()->get_CameraXY().x;
 		skulRC.top += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 		skulRC.bottom += CAMERAMANAGER->Use_Func()->get_CameraXY().y;
-
-	
-		
-		//// 공격 프레임이 모두 끝나면 대기 상태로
-		//if (enemy_Address->info_Address()->img.ani->getFramePos().x == 688)
-		//{
-		//	// 에너미 공격 렉트를 그려준다.
-		//	enemy_Address->info_Address()->make_Attack_Rect();
-		//
-		//}
-
 		
 		// 에너미의 공격 렉트에 플레이어가 있었다면 
 		if (IntersectRect(&temp, &enemy_Address->info_Address()->pos.Attack_Rc, &skulRC))

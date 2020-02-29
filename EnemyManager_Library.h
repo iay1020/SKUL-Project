@@ -1,4 +1,5 @@
 #pragma once
+class FlyingObject;
 
 // 에너미의 기본 이동속도
 #define ENEMYSPEED	3
@@ -28,7 +29,10 @@
 #define HP_PLUS_SPEED_E		2
 
 // 에너미의 공격 후 딜레이
-#define NEXT_ATTACK_DELAY 50
+#define NEXT_ATTACK_DELAY 150
+
+// 에너미 화살 속도
+#define ARROW_SPEED	10.f
 
 
 // 에너미 타입 enum
@@ -147,16 +151,6 @@ struct EnemyOperater
 	int				after_Delay;		// 공격 후 딜레이
 	int				after_Delay_Cnt;	// 공격 후 딜레이 카운트
 
-	short			curX, curY;			// 프레임이미지 연산 변수
-	short			imgFPS;				// 프레임 속도
-	short			buffer;				// 정해진 횟수만큼 재생해야 하는지
-	float			curTime;			// 현재 시간
-
-	bool			loop;				// 한번만 재생해야 하는지 여러분 재생해야 하는지
-	bool			revers;				// 프레임 이미지가 꺼꾸로 재생이 되어야 하는지
-	bool			start;				// 프레임 연산을 시작하는지 여부
-	bool			saveTime;			// 현재 시간을 받았을때
-
 };
 
 // 에너미의 bool 구조체
@@ -181,6 +175,8 @@ struct EnemyBoolValue
 	bool				Critical_Hit;		// 치명타 공격을 받았는지
 
 	bool				find_Player;		// 플레이어를 발견했다.
+
+	bool				make_Arrow;			// 화살을 만드는지
 
 };
 
@@ -260,6 +256,8 @@ struct EnemyInfo
 
 		bool_V.find_Player = false;
 		
+		bool_V.make_Arrow = false;
+		
 
 		// CoolTime 초기화
 		cool_Time.attack_CoolTime = 0;
@@ -276,14 +274,6 @@ struct EnemyInfo
 		// 연산 변수 초기화
 		oper.after_Delay = NEXT_ATTACK_DELAY;
 		oper.after_Delay_Cnt = 0;
-
-		oper.curX = oper.curY = 0;
-		oper.imgFPS = oper.buffer = 0;
-		oper.curTime = 0;
-		oper.loop = false;
-		oper.revers = false;
-		oper.start = false;
-		oper.saveTime = false;
 
 	}
 
@@ -546,6 +536,7 @@ struct EnemyInfo
 					// 공격
 					if (StateName == "Attack_A") set_Ani("soldier_Attack", "soldier_Attack_Left_Ani");
 
+					
 				}
 
 				if (status.dir == EnemyDirection::RIGHT)
@@ -575,8 +566,8 @@ struct EnemyInfo
 					// 피격
 					if (StateName == "Hit") set_Ani("archer_Hit", "archer_Hit_Right_Ani");
 					// 공격
-					if (StateName == "Attack_A") set_Ani("archer_Attack", "archer_Attack_Left_Ani");
-
+					if (StateName == "Attack_B") set_Ani("archer_Attack", "archer_Attack_Left_Ani");
+			
 				}
 
 				if (status.dir == EnemyDirection::RIGHT)
@@ -588,7 +579,7 @@ struct EnemyInfo
 					// 피격x
 					if (StateName == "Hit") set_Ani("archer_Hit", "archer_Hit_Left_Ani");
 					// 공격
-					if (StateName == "Attack_A") set_Ani("archer_Attack", "archer_Attack_Right_Ani");
+					if (StateName == "Attack_B") set_Ani("archer_Attack", "archer_Attack_Right_Ani");
 
 				}
 
@@ -808,9 +799,35 @@ struct EnemyInfo
 		case EnemyType::ARCHER:
 			// 애니메이션을 시작을 먼저 받고 들어온다.
 			
-			// 쿨타임이 모두 끝난 후 투사체 발사
+			// 쿨타임이 모두 끝난 후 투사체 발사 (시전 시간)
+			if (!bool_V.attackCheck) cool_Time.attack_CoolTime_Cnt++;
 
-			// 투사체가 날아 간 후 일정 시간 뒤에 대기 상태로 변경
+			if (cool_Time.attack_CoolTime <= cool_Time.attack_CoolTime_Cnt && !bool_V.attackCheck)
+			{
+				// 바라보는 방향으로 화살 발사를 한다. 
+				bool_V.make_Arrow = true;
+				
+				// 한발만 발사 해야하니까 
+				bool_V.attackCheck = true;
+
+				// 대기 애니메이션으로 교체
+				ani_Changer("Idle");
+				img.ani->start();
+
+			}
+
+			// 투사체가 날아 간 후 일정 시간 뒤에 대기 상태로 변경 (후 딜레이)
+			if (bool_V.attackCheck)
+			{
+				oper.after_Delay_Cnt++;
+			}
+			
+			// 후딜레이가 모두 끝났다면 대기 상태로 돌아간다. 
+			if (oper.after_Delay <= oper.after_Delay_Cnt)
+			{
+				bool_V.atk_End = true;
+				status.state = EnemyStateEnum::IDLE;
+			}
 
 			break;
 
@@ -820,129 +837,15 @@ struct EnemyInfo
 		}
 	}
 
-	// 프레임 연산 변수 초기화
-	void reset_FrameImage_oper()
+	// 공격용 함수 리셋
+	void reset_Attack_Bool()
 	{
-		oper.imgFPS = 0;
-		oper.buffer = 0;
-		oper.loop = false;
-		oper.revers = false;
-		oper.curX = 0;
-		oper.curY = 0;
+		bool_V.atk_End = false;
+		bool_V.attackCheck = false;
+		cool_Time.attack_CoolTime_Cnt = 0;
+		oper.after_Delay_Cnt = 0;
 	}
 
-
-	// 프레임 연산 셋팅 (매개변수 : 프레임속도, 횟수, 루프, 반전, 프레임y 번호
-	void setting_FrameImage(short fps_, short buff_, bool loop_, bool revers_, short frameY)
-	{
-		oper.imgFPS = fps_;
-		oper.buffer = buff_;
-		oper.loop = loop_;
-		oper.revers = revers_;
-
-		// 뒤에서 재생하는지
-		if (!oper.revers)
-		{
-			oper.curX = -1;
-			oper.curY = frameY;
-		}
-
-		// 앞에서 재생하는지
-		if (oper.revers)
-		{
-			oper.curX = IMAGEMANAGER->findImage(img.imgName)->getMaxFrameX() + 1;
-			oper.curY = frameY;
-		}
-
-	}
-
-	// 프레임 연산 시작
-	void start_Frame()
-	{
-		oper.start = true;
-
-	}
-
-	// 프레임 연산 스탑
-	void stop_Frame()
-	{
-		oper.start = false;
-
-	}
-
-	// 프레임 이미지 연산 함수
-	void play_FrameImage()
-	{
-		if (!oper.saveTime)
-		{
-			oper.curTime = TIMEMANAGER->getWorldTime();
-
-			oper.saveTime = true;
-		}
-
-
-		// 스타트가 켜져있을때
-		if (oper.start)
-		{
-			if (oper.curTime + oper.imgFPS <= TIMEMANAGER->getWorldTime())
-			{
-				oper.saveTime = false;
-
-				// 프레임 루프한다.
-				if (oper.loop)
-				{
-					if (!oper.revers)
-					{
-						oper.curX++;
-
-						if (oper.curX > IMAGEMANAGER->findImage(img.imgName)->getMaxFrameX())
-						{
-							oper.curX = -1;
-						}
-
-					}
-
-					if (oper.revers)
-					{
-						oper.curX--;
-
-						if (oper.curX < 0)
-						{
-							oper.curX = IMAGEMANAGER->findImage(img.imgName)->getFrameWidth();
-						}
-
-					}
-				}
-
-				// 프레임이 루프하지 않는다.
-				if (!oper.loop)
-				{
-					if (!oper.revers)
-					{
-						oper.curX++;
-
-						if (oper.curX > IMAGEMANAGER->findImage(img.imgName)->getMaxFrameX())
-						{
-							oper.start = false;
-						}
-					}
-
-					if (oper.revers)
-					{
-						oper.curX--;
-
-						if (oper.curX < 0)
-						{
-							oper.start = false;
-						}
-					}
-
-				}
-			}
-		}
-
-	}
-	
 };
 
 

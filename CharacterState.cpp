@@ -1202,6 +1202,7 @@ FallState * FallState::getInstance()
 
 void FallState::Idle(Player * player)
 {
+
 	// 방향에 따라 다른 대기 애니메이션을 넣어준다.
 	if (player->get_InputKey() == PRESS_LEFT)
 	{
@@ -1314,6 +1315,7 @@ void FallState::Move(Player * player)
 	// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
 	if (KEYMANAGER->isOnceKeyDown('C'))
 	{
+
 		if (player->get_Info().jump.Jump_Count > 0)
 		{
 			// 점프 이펙트를 만들어준다.
@@ -1514,6 +1516,7 @@ void FallState::Fall(Player * player)
 		// 점프키를 다시 눌렀다면 (점프 횟수가 남아있다면)
 		if (KEYMANAGER->isOnceKeyDown('C'))
 		{
+
 			if (player->get_Info().jump.Jump_Count > 0)
 			{
 				// 점프 이펙트를 만들어준다.
@@ -1964,6 +1967,9 @@ JumpAttackState * JumpAttackState::getInstance()
 
 void JumpAttackState::Idle(Player * player)
 {
+	// 공격렉트 초기화
+	player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
 	// 대기 애니메이션으로 교체한다.
 	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
 	player->set_Info()->img.ani->start();
@@ -2109,7 +2115,9 @@ void JumpAttackState::JumpAttack(Player * player)
 	player->set_Info()->jump.jump_Attack_Count++;
 
 	// 공격 렉트를 만들어준다.
-	player->set_Info()->create_Attack_Rect(player->get_InputKey());
+	if (player->get_InputKey() == PRESS_LEFT && player->get_Info().img.ani->getFramePos().x == 320)		player->set_Info()->create_Attack_Rect(player->get_InputKey());
+	else if (player->get_InputKey() == PRESS_RIGHT && player->get_Info().img.ani->getFramePos().x == 160)	player->set_Info()->create_Attack_Rect(player->get_InputKey());
+	else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
 
 	// 점프 공격을 시작하면 일정 시간이 지난 후 추락중 애니메이션으로 바뀐다.
 	if (player->get_Info().jump.jump_Attack_Count >= PLAYER_JUMPATTACK_COOLTIME) Fall(player);
@@ -2542,7 +2550,7 @@ void Skill_A_State::Skill_A(Player * player)
 			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_R", 
 				FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::RIGHT,
 				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
-				0.f, PLAYER_HEAD_SPEED, true);
+				0.f, PLAYER_HEAD_SPEED, 40, true);
 		}
 
 		if (player->get_InputKey() == PRESS_LEFT)
@@ -2550,7 +2558,7 @@ void Skill_A_State::Skill_A(Player * player)
 			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_L", 
 				FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::LEFT,
 				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
-				3.14f, PLAYER_HEAD_SPEED, true);
+				3.14f, PLAYER_HEAD_SPEED, 40, true);
 		}
 
 		// 스킬을 사용했으면 true
