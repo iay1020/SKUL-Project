@@ -18,6 +18,7 @@ void FlyingObject::Release()
 	//	delete vFlyingObj.begin()->ani;
 	//	vFlyingObj.erase(vFlyingObj.begin);
 	//}
+	vFlyingObj.clear();
 }
 
 void FlyingObject::update()

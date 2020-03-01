@@ -20,7 +20,16 @@ HRESULT Stage_1::init()
 	// 이벤트 매니저 생성
 	eventM = new eventManager;
 	//eventM->create_Event(eventType::GIVE_WEAPON_NPC, 28, 19, 4, false, false);
-	//eventM->create_Event(eventType::NEXT_GATE, 36, 25, 1, false, true);
+	eventM->create_Event(eventType::START_GATE, 3, 25, 1, false, true, 0);
+	eventM->create_Event(eventType::NEXT_GATE, 58, 25, 1, false, true, 2);
+
+	// 에너미 생성
+	//DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 27, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 12, 20);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 19, 20);
+	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 26, 20);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 44, 14);
+	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 47, 14);
 
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
 	// 기본 카메라 위치 설정 (플레이어 중점으로)

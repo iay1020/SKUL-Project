@@ -26,8 +26,9 @@ HRESULT Stage_0::init()
 
 	// 이벤트 매니저 생성
 	eventM = new eventManager;
-	eventM->create_Event(eventType::GIVE_WEAPON_NPC, 28, 19, 4, false, false);
-	eventM->create_Event(eventType::NEXT_GATE, 36, 25, 1, false, true);
+	eventM->create_Event(eventType::GIVE_WEAPON_NPC, 28, 19, 4, false, false, 0);
+	eventM->create_Event(eventType::NEXT_GATE, 36, 25, 1, false, true, 1);
+	eventM->create_Event(eventType::DOWN_HELP_NPC, 40, 18, 1, true, false, 0);
 
 	// 테스트 에너미 생성
 	//DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 30, 17);
@@ -53,7 +54,7 @@ void Stage_0::update()
 	eventM->update();
 
 	// 캐릭터 타일 위치
-	cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
+	//cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
 
 
 }

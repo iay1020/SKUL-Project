@@ -18,6 +18,10 @@ HRESULT EnemyManager::init()
 
 void EnemyManager::release()
 {
+	while (_vEnemyList.size() > 0)
+	{
+		_vEnemyList.erase(_vEnemyList.begin());
+	}
 }
 
 void EnemyManager::update()

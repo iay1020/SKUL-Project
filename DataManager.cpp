@@ -98,7 +98,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 
 	// 맵을 저장한다.
-	file = CreateFile("Stage_1.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("Intro.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	WriteFile(file, tile, sizeof(tagTileInfo) * mapInfo->tile_Count.x * mapInfo->tile_Count.y, &write, NULL);
@@ -118,7 +118,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 	
 	// 맵의 정보를 저장한다. (맵에 대한 정보 여러가지 있다. 이후에 여기에 저장 되어 있는 맵 이름을 가지고 만들어야 함)
-	file = CreateFile("Stage_1_Info.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("Intro_Info.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	
 	WriteFile(file, mapInfo, sizeof(tagMapInfo), &write, NULL);
@@ -199,6 +199,108 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 		tileList->push_back(tile[i]);
 	}
 	
+}
+
+void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo * mapInfo, vector<tagSaveBackGround>* vMapInfo, string mapName, string mapInfoName)
+{
+	// string을 char 배열로 옴겨 담았다.
+	char* strMapName;
+	strMapName = new char[mapName.size()];
+
+	for (int i = 0; i <= mapName.size(); ++i)
+	{
+		strMapName[i] = mapName[i];
+
+		if (i == mapName.size())
+		{
+			strMapName[i] = NULL;
+		}
+	}
+
+	char* strMapInfoName;
+	strMapInfoName = new char[mapName.size()];
+
+	for (int i = 0; i <= mapInfoName.size(); ++i)
+	{
+		strMapInfoName[i] = mapInfoName[i];
+
+		if (i == mapName.size())
+		{
+			strMapName[i] = NULL;
+		}
+	}
+
+
+	HANDLE file;
+	DWORD read;
+
+	file = CreateFile(strMapInfoName, GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file, mapInfo, sizeof(tagMapInfo), &read, NULL);						// 맵 정보를 먼저 받아 온 이유는 맵을 받아올때 맵의 크기 정보가 필요하기 때문에
+
+	CloseHandle(file);
+
+	// 새로 맵을 불러오면 타일 갯수, 월드 사이즈를 갱신해준다.
+	CAMERAMANAGER->Use_Func()->set_Tile_CountX(mapInfo->tile_Count.x);														// 가로 사이즈 설정 (맵마다 가로세로가 다르니까)
+	CAMERAMANAGER->Use_Func()->set_Tile_CountY(mapInfo->tile_Count.y);														// 세로 사이즈 설정
+	CAMERAMANAGER->Use_Func()->set_World_Size(mapInfo->tile_Count.x * TILE_SIZE_X, mapInfo->tile_Count.y * TILE_SIZE_Y);	// 가로세로에 맞게 월드 사이즈 설정
+
+
+	// 기존에 있던 벡터는 비워준다. (새로운 정보를 넣기 위해)
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
+	{
+		if (vMapInfo[i].size() > 0)
+		{
+			for (int j = 0; j < vMapInfo[i].size();)
+			{
+				//vMapInfo[i].erase(vMapInfo[i].begin());
+				vMapInfo[i].clear();
+			}
+		}
+	}
+
+
+	// 배열에 있던 정보를 벡터에 옴겨담는다.
+	vector<tagSaveBackGround>	_moveData[BACKGROUND_LAYER_COUNT];
+
+	// 저장되어 있던 사이즈만큼 반복한다.
+	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
+	{
+		for (int j = 0; j < mapInfo->_vSize[i]; ++j)
+		{
+
+			tagSaveBackGround new_Data;
+			new_Data.imageName = mapInfo->_saveVInfo[i][j].imageName;
+			new_Data.rc = mapInfo->_saveVInfo[i][j].rc;
+			vMapInfo[i].push_back(new_Data);
+		}
+	}
+
+	// 맵을 받아 올 변수를 만든다.
+	tagTileInfo* tile;
+	tile = new tagTileInfo[mapInfo->tile_Count.x * mapInfo->tile_Count.y];			//	타일의 크기만큼 할당 받는다.
+
+	file = CreateFile(strMapName, GENERIC_READ, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	ReadFile(file, tile, sizeof(tagTileInfo) * mapInfo->tile_Count.x * mapInfo->tile_Count.y, &read, NULL);
+
+	CloseHandle(file);
+
+	// 타일리스트를 초기화 해준다.
+//while (tileList->size() > 0)
+//{
+//	tileList->erase(tileList->begin());
+//}
+	tileList->clear();
+
+	// 맵이 들어있는 타일을 벡터에 넣어준다.
+	for (int i = 0; i < mapInfo->tile_Count.x * mapInfo->tile_Count.y; ++i)
+	{
+		tileList->push_back(tile[i]);
+	}
+
 }
 
 void DataManager::map_Load_Datamanager(string mapName, string mapInfoName)
@@ -1406,6 +1508,9 @@ void DataManager::enemy_Range_Check(Enemy* enemy_)
 	// 플레이어가 근접 공격 범위에 들어왔을 경우
 	if (IntersectRect(&tempRC, &skulRC, &enemy_Short_Atk))
 	{
+		// 플레이어를 찾았다. 경계상태이기 때문에 인식 범위가 늘어난다.
+		enemy_->info_Address()->bool_V.find_Player = true;
+
 		// 에너미의 방향을 정해준다.
 		// 스컬이 왼쪽에 있을 경우
 		if (skul_PosX < enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::LEFT;
@@ -1421,6 +1526,8 @@ void DataManager::enemy_Range_Check(Enemy* enemy_)
 	// 플레이어가 원거리 공격 범위에 들어왔을 경우
 	if (IntersectRect(&tempRC, &skulRC, &enemy_Long_Atk))
 	{
+		// 플레이어를 찾았다. 경계상태이기 때문에 인식 범위가 늘어난다.
+		enemy_->info_Address()->bool_V.find_Player = true;
 
 		// 에너미의 방향을 정해준다.
 		// 스컬이 왼쪽에 있을 경우
@@ -1437,7 +1544,6 @@ void DataManager::enemy_Range_Check(Enemy* enemy_)
 	// 플레이어가 인식 범위에 들어왔을 경우
 	if (IntersectRect(&tempRC, &skulRC, &enemy_find_Range))
 	{
-
 		// 플레이어를 찾았다. 경계상태이기 때문에 인식 범위가 늘어난다.
 		enemy_->info_Address()->bool_V.find_Player = true;
 
@@ -1628,6 +1734,7 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 				_skul->set_Info()->status.HP = 0;
 
 				// 스컬이 죽었다.
+				SCENEMANAGER->changeScene("GameOver");
 
 			}
 

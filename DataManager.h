@@ -40,6 +40,9 @@ public:
 	// 매개변수에 있는 맵의 정보를 map 파일로 만들거나, map 파일을 매개변수에 넣는다.
 	void map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo);	// 맵을 저장한다. (매개변수 : 타일리스트, 맵 정보)
 	void map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo);	// 맵을 불러온다. (매개변수 : 타일리스트 주소, 맵 정보) (타일리스트의 주소가 필요한 이유는 맵 정보를 새로 넣어줘야 하기 때문에)
+	void map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo,
+		string mapName, string mapInfoName);
+
 
 	// 매개변수에 있는 정보를 그린다.
 	void map_Render(HDC getMemDC, vector<tagTileInfo>* tileList, tagMapInfo mapInfo, vector<tagSaveBackGround>* vMapInfo);	// 맵을 그려준다. (매개변수 : 정보가 들어있는 변수들)
@@ -127,6 +130,9 @@ public:
 	// 투사체 출력
 	void show_FlyingObject() { _flyObj_Manager->Show_FlyingObj(); }
 
+	// 투사체 삭제
+	void Delete__flyObject() {	_flyObj_Manager->Release(); }
+
 	// 투사체가 날아가는 방향에 벽이 있는지 체크 (매개변수 : 투사체 주소)
 	bool Collision_FlyingObject_Wall(FlyingObjectInfo* fObj);
 
@@ -156,6 +162,9 @@ public:
 	// 에너미 생성
 	void Create_Enemy(EnemyType type_V, EnemyDirection dir_V, string imgName, string aniName, float x_V, float y_V) 
 	{ _enemyManager->Create_Enemy(type_V, dir_V, imgName, aniName, x_V, y_V); }
+
+	// 에너미 삭제
+	void Delete_Enemy() { _enemyManager->release(); }
 
 	// 에너미 매니저 출력
 	void show_Enemy() { _enemyManager->render(); }

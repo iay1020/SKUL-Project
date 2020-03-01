@@ -7,7 +7,9 @@ enum class eventType
 	GIVE_WEAPON_NPC,			// 무기 주는 이벤트 
 	DOWN_HELP_NPC,				// 아래 점프를 알려주는 이벤트
 	FIND_WITCH_NPC,				// 마녀 구출 이벤트
-	NEXT_GATE					// 다음 스테이지 문
+	NEXT_GATE,					// 다음 스테이지 문
+	START_GATE					// 시작 입구
+
 };
 
 struct eventInfo
@@ -29,6 +31,8 @@ struct eventInfo
 	bool			scene_1;	// 씬 하나
 	bool			scene_2;	// 씬 둘
 
+	short			stageNumber;	// 스테이지 넘버
+
 	void reset()
 	{
 		type = eventType::EMPTY;
@@ -46,6 +50,8 @@ struct eventInfo
 		eventStart = false;
 		scene_1 = false;
 		scene_2 = false;
+
+		stageNumber = 0;
 
 	}
 
@@ -80,6 +86,32 @@ struct eventInfo
 
 			break;
 
+		case eventType::START_GATE:
+			imgName = "Door_1";
+			img = IMAGEMANAGER->findImage(imgName);
+			aniName = "Door_Fire_1";
+			ani = KEYANIMANAGER->findAnimation(aniName);
+			ani->stop();
+
+			findRC = RectMake(center.x - 37, center.y - 100, 105, 150);
+
+			rc = RectMakeCenter(center.x - 170, center.y - 200,
+				img->getFrameWidth(), img->getFrameHeight());
+
+			break;
+
+		case eventType::DOWN_HELP_NPC:
+			imgName = "down_Jump_NPC";
+			img = IMAGEMANAGER->findImage(imgName);
+			aniName = "down_Jump_NPC_Ani";
+			ani = KEYANIMANAGER->findAnimation(aniName);
+			ani->start();
+
+			rc = RectMakeCenter(center.x + 10 , center.y ,
+				img->getFrameWidth(), img->getFrameHeight());
+
+			break;
+
 		}
 	}
 };
@@ -97,7 +129,7 @@ public:
 	void update();
 	void render();
 
-	void create_Event(eventType eventType_, int idX, int idY, short multiplication, bool Loop, bool doubleImg_);
+	void create_Event(eventType eventType_, int idX, int idY, short multiplication, bool Loop, bool doubleImg_, short stage_Num);
 	void collision_Event(eventInfo* event_);
 
 };

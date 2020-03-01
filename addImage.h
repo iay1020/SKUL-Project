@@ -85,6 +85,19 @@ struct tagAddImage
 			IMAGEMANAGER->addFrameImage("backGround_Pallet_0", "./image/mapTool/backGround/backGround_Img_0.bmp", 600, 600, 3, 3, true, RGB(255, 0, 255));
 		}
 
+		// Intro Image
+		{
+			IMAGEMANAGER->addFrameImage("intro_Skul", "./image/Intro/Intro.bmp", 906, 132, 6, 1, true, RGB(255, 0, 255));
+			KEYANIMANAGER->addCoordinateFrameAnimation("intro_Skul", "intro_Skul", 0, 5, 10, false, true);
+
+			IMAGEMANAGER->addImage("intro_Title", "./image/Intro/intro_Title.bmp", 503, 258, true, RGB(255, 0, 255));
+		}
+
+		// Game Over Image
+		{
+			IMAGEMANAGER->addImage("gameOver", "./image/GameOver/gameOver.bmp", 1600, 960, false, RGB(255, 0, 255));
+		}
+
 
 
 		//■■■■■■■■ Ui Image ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -155,6 +168,11 @@ struct tagAddImage
 			IMAGEMANAGER->addImage("Door_1", "./image/mapTool/door/next_Gate.bmp", 352, 258, true, RGB(255, 0, 255));
 			IMAGEMANAGER->addFrameImage("Door_Fire_1", "./image/mapTool/door/gate_Fire_1.bmp", 1872, 80, 8, 1, true, RGB(255, 0, 255));
 			KEYANIMANAGER->addCoordinateFrameAnimation("Door_Fire_1", "Door_Fire_1", 0, 7, 10, false, true);
+
+			// 아래점프 NPC
+			IMAGEMANAGER->addFrameImage("down_Jump_NPC", "./image/event/down_Jump_NPC.bmp", 328, 84, 4, 1, true, RGB(255, 0, 255));
+			KEYANIMANAGER->addCoordinateFrameAnimation("down_Jump_NPC_Ani", "down_Jump_NPC", 0, 3, 10, false, true);
+
 		}
 
 

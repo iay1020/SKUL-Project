@@ -172,8 +172,10 @@
     <ClInclude Include="FlyingObject.h" />
     <ClInclude Include="FlyingObject_Library.h" />
     <ClInclude Include="gameNode.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
+    <ClInclude Include="Intro_Scene.h" />
     <ClInclude Include="keyAniManager.h" />
     <ClInclude Include="keyManager.h" />
     <ClInclude Include="mapTool.h" />
@@ -190,6 +192,7 @@
     <ClInclude Include="soundManager.h" />
     <ClInclude Include="Stage_0.h" />
     <ClInclude Include="Stage_1.h" />
+    <ClInclude Include="Stage_2.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TILE_INFO.h" />
@@ -220,8 +223,10 @@
     <ClCompile Include="eventManager.cpp" />
     <ClCompile Include="FlyingObject.cpp" />
     <ClCompile Include="gameNode.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
+    <ClCompile Include="Intro_Scene.cpp" />
     <ClCompile Include="keyAniManager.cpp" />
     <ClCompile Include="keyManager.cpp" />
     <ClCompile Include="mapTool.cpp" />
@@ -233,6 +238,7 @@
     <ClCompile Include="soundManager.cpp" />
     <ClCompile Include="Stage_0.cpp" />
     <ClCompile Include="Stage_1.cpp" />
+    <ClCompile Include="Stage_2.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
