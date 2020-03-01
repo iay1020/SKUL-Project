@@ -119,6 +119,17 @@ void Stage_0::testControl()
 			DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::LEFT, "archer_Idle", "archer_Idle_Left_Ani",
 			(_skul->get_Info().pos.center.x / TILE_SIZE_X) - 3, (int)(_skul->get_Info().pos.center.y) / TILE_SIZE_X);
 	}
+
+	if (KEYMANAGER->isOnceKeyDown(VK_F6))
+	{
+		if (_skul->get_InputKey() == PRESS_RIGHT)
+			DATAMANAGER->Create_Enemy(EnemyType::PALADIN, EnemyDirection::LEFT, "paladin_Idle", "paladin_Idle_Left_Ani",
+			(_skul->get_Info().pos.center.x / TILE_SIZE_X) + 3, (int)(_skul->get_Info().pos.center.y) / TILE_SIZE_X);
+
+		if (_skul->get_InputKey() == PRESS_LEFT)
+			DATAMANAGER->Create_Enemy(EnemyType::PALADIN, EnemyDirection::RIGHT, "paladin_Idle", "paladin_Idle_Right_Ani",
+			(_skul->get_Info().pos.center.x / TILE_SIZE_X) - 3, (int)(_skul->get_Info().pos.center.y) / TILE_SIZE_X);
+	}
 }
 
 void Stage_0::showRect(HDC getMemDC)

@@ -20,9 +20,16 @@ HRESULT Stage_2::init()
 	// 이벤트 매니저 생성
 	eventM = new eventManager;
 	//eventM->create_Event(eventType::GIVE_WEAPON_NPC, 28, 19, 4, false, false);
+	eventM->create_Event(eventType::START_GATE, 3, 25, 1, false, true, 0);
+	eventM->create_Event(eventType::NEXT_GATE, 26, 25, 1, false, true, 3);
 
 	// 에너미 생성
-	//DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 27, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::PALADIN, EnemyDirection::RIGHT, "paladin_Idle", "paladin_Idle_Right_Ani", 22, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::PALADIN, EnemyDirection::LEFT, "paladin_Idle", "paladin_Idle_Left_Ani", 30, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::LEFT, "archer_Idle", "archer_Idle_Left_Ani", 32, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::LEFT, "archer_Idle", "archer_Idle_Left_Ani", 34, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::RIGHT, "soldier_Idle", "soldier_Idle_Right_Ani", 19, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::RIGHT, "soldier_Idle", "soldier_Idle_Right_Ani", 17, 25);
 
 	// 맵을 새로 불러오면 카메라 셋팅을 해야한다. (카메라 위치, 타일 갯수, 맵 크기 갱신)
 	// 기본 카메라 위치 설정 (플레이어 중점으로)

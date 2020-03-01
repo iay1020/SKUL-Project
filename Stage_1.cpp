@@ -24,10 +24,11 @@ HRESULT Stage_1::init()
 	eventM->create_Event(eventType::NEXT_GATE, 58, 25, 1, false, true, 2);
 
 	// 에너미 생성
-	//DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 27, 25);
-	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 12, 20);
-	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 19, 20);
-	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 26, 20);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 27, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 29, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 32, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 34, 25);
+	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 32, 19);
 	DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 44, 14);
 	DATAMANAGER->Create_Enemy(EnemyType::ARCHER, EnemyDirection::RIGHT, "archer_Idle", "archer_Idle_Left_Ani", 47, 14);
 

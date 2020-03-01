@@ -40,7 +40,8 @@ enum class EnemyType
 {
 	NONE,			// NULL                                                                            
 	SOLDIER,		// 병사
-	ARCHER			// 궁수
+	ARCHER,			// 궁수
+	PALADIN			// 팔라딘
 };
 
 // 에너미의 방향 enum
@@ -380,7 +381,25 @@ struct EnemyInfo
 			hp.backHP = status.hp;
 
 			break;
+
+		case EnemyType::PALADIN:
+			status.hp = 1000;
+			status.attack = 50;
+			status.def = 0;
+			status.speed = ENEMYSPEED;
+			status.gold = 500;
+
+			cool_Time.attack_CoolTime = ENEMYATTACKCOOLTIME;
+			cool_Time.attack_CoolTime_Cnt = 0;
+
+			hp.maxHP = status.hp;
+			hp.curHP = status.hp;
+			hp.backHP = status.hp;
+
+			break;
 		}
+
+		
 	}
 
 	// 공격 범위를 생성한다.
@@ -419,6 +438,28 @@ struct EnemyInfo
 						img_T->getFrameWidth() * 4, img_T->getFrameHeight());
 				}
 			
+				break;
+
+			case EnemyType::PALADIN:
+				if (status.dir == EnemyDirection::RIGHT)
+				{
+					pos.attack_Range_Rc = RectMake(pos.center.x, pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth() / 2 - 30, img_T->getFrameHeight());
+
+					pos.long_Attack_Ranger_RC = RectMake(pos.center.x, pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth() + 150, img_T->getFrameHeight());
+				}
+				if (status.dir == EnemyDirection::LEFT)
+				{
+					pos.attack_Range_Rc = RectMake(pos.center.x - img_T->getFrameWidth() / 2 - 30, pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth() / 2 - 30 , img_T->getFrameHeight());
+
+					pos.long_Attack_Ranger_RC = RectMake(pos.center.x - img_T->getFrameWidth() , pos.center.y - img_T->getFrameHeight() / 2,
+						img_T->getFrameWidth() + 150  , img_T->getFrameHeight());
+				}
+
+				pos.lerp_Range = img_T->getFrameWidth();
+
 				break;
 		}
 		
@@ -576,7 +617,7 @@ struct EnemyInfo
 					if (StateName == "Idle") set_Ani("archer_Idle", "archer_Idle_Right_Ani");
 					// 이동
 					if (StateName == "Walk") set_Ani("archer_Walk", "archer_Walk_Right_Ani");
-					// 피격x
+					// 피격
 					if (StateName == "Hit") set_Ani("archer_Hit", "archer_Hit_Left_Ani");
 					// 공격
 					if (StateName == "Attack_B") set_Ani("archer_Attack", "archer_Attack_Right_Ani");
@@ -584,6 +625,33 @@ struct EnemyInfo
 				}
 
 				img.ani->start();
+
+				break;
+
+			case EnemyType::PALADIN:
+				if (status.dir == EnemyDirection::LEFT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("paladin_Idle", "paladin_Idle_Left_Ani");
+					// 이동
+					if (StateName == "Walk") set_Ani("paladin_Walk", "paladin_Walk_Left_Ani");
+					// 공격 A
+					if (StateName == "Attack_A") set_Ani("paladin_AttackA", "paladin_AttackA_Left_Ani");
+					// 공격 B
+					if (StateName == "Attack_B") set_Ani("paladin_AttackB", "paladin_AttackB_Left_Ani");
+				}
+
+				if (status.dir == EnemyDirection::RIGHT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("paladin_Idle", "paladin_Idle_Right_Ani");
+					// 이동
+					if (StateName == "Walk") set_Ani("paladin_Walk", "paladin_Walk_Right_Ani");
+					// 공격 A
+					if (StateName == "Attack_A") set_Ani("paladin_AttackA", "paladin_AttackA_Right_Ani");
+					// 공격 B
+					if (StateName == "Attack_B") set_Ani("paladin_AttackB", "paladin_AttackB_Right_Ani");
+				}
 
 				break;
 		}
@@ -834,6 +902,93 @@ struct EnemyInfo
 		//case EnemyType::NONE:
 		//	break;
 
+		case EnemyType::PALADIN:
+
+			if (img.imgName == "paladin_AttackA")
+			{
+
+				// 쿨타임이 모두 끝난 후 투사체 발사 (시전 시간)
+				if (!bool_V.attackCheck) cool_Time.attack_CoolTime_Cnt++;
+
+				if (cool_Time.attack_CoolTime <= cool_Time.attack_CoolTime_Cnt && !bool_V.attackCheck)
+				{
+					// 중복 방지 
+					bool_V.attackCheck = true;
+
+					// 애니 스타트
+					img.ani->start();
+				}
+				// 마지막은 1938   가로 323
+
+				// 일정 프레임만 공격렉트 생성
+				if (img.ani->getFramePos().x == 960 || img.ani->getFramePos().x == 1292) make_Attack_Rect();
+				else pos.Attack_Rc = { 0,0,0,0 };
+
+				// 공격 후 딜레이가 모두 끝난 후에 대기 상태로 바꿔준다.
+				// 투사체가 날아 간 후 일정 시간 뒤에 대기 상태로 변경 (후 딜레이)
+				if (bool_V.attackCheck)
+				{
+					oper.after_Delay_Cnt++;
+				}
+
+				// 후딜레이가 모두 끝났다면 대기 상태로 돌아간다. 
+				if (oper.after_Delay <= oper.after_Delay_Cnt)
+				{
+					bool_V.atk_End = true;
+					status.state = EnemyStateEnum::IDLE;
+				}
+			}
+
+			if (img.imgName == "paladin_AttackB")
+			{
+				// 쿨타임이 모두 끝난 후 투사체 발사 (시전 시간)
+				if (!bool_V.attackCheck) cool_Time.attack_CoolTime_Cnt++;
+
+				if (cool_Time.attack_CoolTime + 50 <= cool_Time.attack_CoolTime_Cnt && !bool_V.attackCheck)
+				{
+					// 중복 방지 
+					bool_V.attackCheck = true;
+
+					// 애니 스타트
+					img.ani->start();
+
+					// 선형 스타트
+					bool_V.lerping = true;
+
+					// 시작 시간 저장
+					pos.lerp_Start = TIMEMANAGER->getWorldTime();
+
+					// 선형 시간
+					pos.lerp_Time = 0.5f;
+
+				}
+
+
+				cout << img.ani->getFramePos().x << endl;
+				// 일정 프레임만 공격렉트 생성
+				if (img.ani->getFramePos().x == 323 || img.ani->getFramePos().x == 646) make_Attack_Rect();
+				else pos.Attack_Rc = { 0,0,0,0 };
+
+				// 공격 후 딜레이가 모두 끝난 후에 대기 상태로 바꿔준다.
+				// 투사체가 날아 간 후 일정 시간 뒤에 대기 상태로 변경 (후 딜레이)
+				if (bool_V.attackCheck)
+				{
+					oper.after_Delay_Cnt++;
+				}
+
+				// 후딜레이가 모두 끝났다면 대기 상태로 돌아간다. 
+				if (oper.after_Delay <= oper.after_Delay_Cnt)
+				{
+					bool_V.atk_End = true;
+					pos.Attack_Rc = { 0,0,0,0 };
+				}
+
+			}
+
+
+				break;
+
+
 		}
 	}
 
@@ -844,6 +999,7 @@ struct EnemyInfo
 		bool_V.attackCheck = false;
 		cool_Time.attack_CoolTime_Cnt = 0;
 		oper.after_Delay_Cnt = 0;
+
 	}
 
 };

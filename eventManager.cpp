@@ -204,6 +204,11 @@ void eventManager::collision_Event(eventInfo* event_)
 						DATAMANAGER->Delete_Enemy();
 						SCENEMANAGER->changeScene("Stage_2");
 					}
+					if (event_->stageNumber == 3)
+					{
+						DATAMANAGER->Delete_Enemy();
+						SCENEMANAGER->changeScene("ClearGame");
+					}
 				}
 			}
 			else event_->showButton = false;

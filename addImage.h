@@ -98,7 +98,10 @@ struct tagAddImage
 			IMAGEMANAGER->addImage("gameOver", "./image/GameOver/gameOver.bmp", 1600, 960, false, RGB(255, 0, 255));
 		}
 
-
+		// Clear Game Image
+		{
+			IMAGEMANAGER->addImage("clearGame", "./image/ClearGame/clearGame.bmp", 1600, 960, false, RGB(255, 0, 255));
+		}
 
 		//¡á¡á¡á¡á¡á¡á¡á¡á Ui Image ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 		// status 
@@ -501,6 +504,23 @@ struct tagAddImage
 		IMAGEMANAGER->addFrameImage("archer_Arrow_Left", "./image/effect/archer_Arrow/enemy_Arrow_Left.bmp", 100, 22, 2, 1, true, RGB(255, 0, 255));
 
 
+
+
+
+		// <paladin Idle>
+		IMAGEMANAGER->addFrameImage("paladin_Idle", "./image/enemy/paladin/Idle/Idle.bmp", 1615, 436, 5, 2, true, RGB(255, 0, 255));
+
+		// <paladin Walk>
+		IMAGEMANAGER->addFrameImage("paladin_Walk", "./image/enemy/paladin/Walk/Walk.bmp", 2584, 436, 8, 2, true, RGB(255, 0, 255));
+
+		// <paladin Attack_A>
+		IMAGEMANAGER->addFrameImage("paladin_AttackA", "./image/enemy/paladin/AttackA/Attack.bmp", 2261, 436, 7, 2, true, RGB(255, 0, 255));
+
+		// <paladin Attack_B>
+		IMAGEMANAGER->addFrameImage("paladin_AttackB", "./image/enemy/paladin/AttackB/DashAttack.bmp", 969, 436, 3, 2, true, RGB(255, 0, 255));
+
+
+
 		// <enemy Die Effect>
 		IMAGEMANAGER->addFrameImage("enemy_Die_Effect", "./image/effect/enemy_Die/enemy_Die.bmp", 600, 103, 6, 1, true, RGB(255, 0, 255));
 		EFFECTMANAGER->addEffect("enemy_Die_Effect", "enemy_Die_Effect", 600, 103, 100, 103, 1, 0.2f, 1);
@@ -580,6 +600,38 @@ struct tagAddImage
 
 		int archer_Arrow_Left[] = { 0 , 1 };
 		KEYANIMANAGER->addArrayFrameAnimation("archer_Arrow_Left_Ani", "archer_Arrow_Left", archer_Arrow_Left, 2, 10, true);
+
+
+
+
+
+		// <paladin Idle Ani>
+		int paladin_Idle_Right[] = { 0, 1, 2, 3, 4 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_Idle_Right_Ani", "paladin_Idle", paladin_Idle_Right, 5, 10, true);
+
+		int paladin_Idle_Left[] = { 9, 8, 7, 6, 5 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_Idle_Left_Ani", "paladin_Idle", paladin_Idle_Left, 5, 10, true);
+
+		// <paladin Walk Ani>
+		int paladin_Walk_Right[] = { 0,1,2,3,4,5,6,7 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_Walk_Right_Ani", "paladin_Walk", paladin_Walk_Right, 8, 10, true);
+
+		int paladin_Walk_Left[] = { 15,14,13,12,11,10,9,8 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_Walk_Left_Ani", "paladin_Walk", paladin_Walk_Left, 8, 10, true);
+
+		// <paladin AttackA Ani>
+		int paladin_AttackA_Right[] = { 0, 1, 2, 3, 4, 5, 6 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_AttackA_Right_Ani", "paladin_AttackA", paladin_AttackA_Right, 7, 10, false);
+
+		int paladin_AttackA_Left[] = { 7,8,9,10,11,12,13 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_AttackA_Left_Ani", "paladin_AttackA", paladin_AttackA_Left, 7, 10, false);
+
+		// <paladin AttackB Ani>
+		int paladin_AttackB_Right[] = { 0, 1, 2 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_AttackB_Right_Ani", "paladin_AttackB", paladin_AttackB_Right, 3, 10, false);
+
+		int paladin_AttackB_Left[] = { 3, 4, 5 };
+		KEYANIMANAGER->addArrayFrameAnimation("paladin_AttackB_Left_Ani", "paladin_AttackB", paladin_AttackB_Left, 3, 10, false);
 
 	}
 };

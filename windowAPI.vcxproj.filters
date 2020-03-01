@@ -109,6 +109,9 @@
     <Filter Include="playGround\Scene\GameOver">
       <UniqueIdentifier>{56dabba3-1034-4953-a8e0-f7b20907a95e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\Scene\GameClear">
+      <UniqueIdentifier>{d11b372c-6b4e-4169-944c-0e6fec24f3c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -282,6 +285,9 @@
     <ClInclude Include="GameOver.h">
       <Filter>playGround\Scene\GameOver</Filter>
     </ClInclude>
+    <ClInclude Include="GameClear.h">
+      <Filter>playGround\Scene\GameClear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -403,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="GameOver.cpp">
       <Filter>playGround\Scene\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClear.cpp">
+      <Filter>playGround\Scene\GameClear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

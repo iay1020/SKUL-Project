@@ -6,6 +6,7 @@
 #include "Stage_2.h"
 #include "Intro_Scene.h"
 #include "GameOver.h"
+#include "GameClear.h"
 
 class tagSceneFunc	// scene 함수를 모아둔 클래스
 {
@@ -19,6 +20,7 @@ public:
 		SCENEMANAGER->addScene("Stage_2", new Stage_2);
 		SCENEMANAGER->addScene("Intro", new Intro_Scene);
 		SCENEMANAGER->addScene("GameOver", new GameOver);
+		SCENEMANAGER->addScene("ClearGame", new GameClear);
 	}
 
 	// 씬 체인지를 해주는 함수

@@ -131,6 +131,10 @@ void IdleState_E::Attack_B(Enemy * enemy)
 	enemy->info_Address()->ani_Changer("Attack_B");
 	enemy->info_Address()->img.ani->start();
 	//enemy->info_Address()->img.ani->stop();
+	if (enemy->info_Address()->status.type == EnemyType::PALADIN)
+	{
+		enemy->info_Address()->img.ani->stop();
+	}
 
 	// 공격B 상태로 교체한다.
 	enemy->set_State(Attack_B_State_E::getInstance());
@@ -258,6 +262,10 @@ void MoveState_E::Attack_B(Enemy * enemy)
 	enemy->info_Address()->ani_Changer("Attack_B");
 	enemy->info_Address()->img.ani->start();
 	//enemy->info_Address()->img.ani->stop();
+	if (enemy->info_Address()->status.type == EnemyType::PALADIN)
+	{
+		enemy->info_Address()->img.ani->stop();
+	}
 
 	// 공격B 상태로 교체한다.
 	enemy->set_State(Attack_B_State_E::getInstance());
@@ -545,6 +553,14 @@ Attack_A_State_E * Attack_A_State_E::getInstance()
 void Attack_A_State_E::Idle(Enemy * enemy)
 {
 	enemy->info_Address()->bool_V.atk_End = false;
+	enemy->info_Address()->bool_V.hitCheck = false;
+	enemy->info_Address()->bool_V.lerping = false;
+
+	enemy->info_Address()->cool_Time.attack_CoolTime_Cnt = 0;
+	enemy->info_Address()->bool_V.attackCheck = false;
+
+	enemy->info_Address()->bool_V.Attack_Hit = false;
+
 	enemy->info_Address()->state_ReSet();
 
 	// 대기 애니메이션으로 교체
@@ -645,6 +661,8 @@ void Attack_B_State_E::Idle(Enemy * enemy)
 {
 	enemy->info_Address()->reset_Attack_Bool();
 	enemy->info_Address()->state_ReSet();
+	enemy->info_Address()->ani_Changer("Idle");
+	enemy->info_Address()->img.ani->start();
 
 	// 대기 상태로 교체
 	enemy->set_State(IdleState_E::getInstance());
@@ -685,18 +703,21 @@ void Attack_B_State_E::Attack_B(Enemy * enemy)
 {
 	// 에너미 공격 패턴
 	enemy->info_Address()->enemy_Attack_Pattern();
-
+	// 에너미의 공격 렉트에 플레이어가 맞았는지 연산
+	DATAMANAGER->enemy_Attack_Hit(enemy);
+	if (enemy->info_Address()->bool_V.lerping) DATAMANAGER->Lerp_Enemy(enemy, enemy->info_Address()->pos.lerp_Time, enemy->info_Address()->pos.lerp_Range);
+	
 	// 화살을 만든다.
 	if (enemy->info_Address()->bool_V.make_Arrow)
 	{
 		if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
 			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("archer_Arrow_Left", "archer_Arrow_Left_Ani",
-				FLYINFOBJECT_TYPE::ARROW, FLYINGOBJECT_DIRECTION::LEFT, enemy->info_Address()->pos.center.x - 45, enemy->info_Address()->pos.center.y - 22, 
+				FLYINFOBJECT_TYPE::ARROW, FLYINGOBJECT_DIRECTION::LEFT, enemy->info_Address()->pos.center.x - 45, enemy->info_Address()->pos.center.y - 22,
 				3.14f, ARROW_SPEED, enemy->info_Address()->status.attack, true);
 
 		if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
 			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("archer_Arrow_Right", "archer_Arrow_Right_Ani",
-				FLYINFOBJECT_TYPE::ARROW, FLYINGOBJECT_DIRECTION::RIGHT, enemy->info_Address()->pos.center.x + 45, enemy->info_Address()->pos.center.y - 22, 
+				FLYINFOBJECT_TYPE::ARROW, FLYINGOBJECT_DIRECTION::RIGHT, enemy->info_Address()->pos.center.x + 45, enemy->info_Address()->pos.center.y - 22,
 				0, ARROW_SPEED, enemy->info_Address()->status.attack, true);
 
 		enemy->info_Address()->bool_V.make_Arrow = false;
@@ -704,6 +725,7 @@ void Attack_B_State_E::Attack_B(Enemy * enemy)
 
 	// 공격이 끝났다면 다시 대기로
 	if (enemy->info_Address()->bool_V.atk_End) Attack_B_State_E::Idle(enemy);
+
 
 	//// 플레이어에게 맞았을 경우
 	if (enemy->info_Address()->bool_V.player_Attack_Hit)

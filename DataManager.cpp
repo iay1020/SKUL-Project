@@ -98,7 +98,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 
 	// 맵을 저장한다.
-	file = CreateFile("Intro.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("Stage_1.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	WriteFile(file, tile, sizeof(tagTileInfo) * mapInfo->tile_Count.x * mapInfo->tile_Count.y, &write, NULL);
@@ -118,7 +118,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 	
 	// 맵의 정보를 저장한다. (맵에 대한 정보 여러가지 있다. 이후에 여기에 저장 되어 있는 맵 이름을 가지고 만들어야 함)
-	file = CreateFile("Intro_Info.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("Stage_1_Info.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	
 	WriteFile(file, mapInfo, sizeof(tagMapInfo), &write, NULL);
@@ -1528,13 +1528,13 @@ void DataManager::enemy_Range_Check(Enemy* enemy_)
 	{
 		// 플레이어를 찾았다. 경계상태이기 때문에 인식 범위가 늘어난다.
 		enemy_->info_Address()->bool_V.find_Player = true;
-
+	
 		// 에너미의 방향을 정해준다.
 		// 스컬이 왼쪽에 있을 경우
 		if (skul_PosX < enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::LEFT;
 		// 스컬이 오른쪽에 있을 경우
 		if (skul_PosX > enemy_->info_Address()->pos.center.x) enemy_->info_Address()->status.dir = EnemyDirection::RIGHT;
-
+	
 		// 원거리 상태로 변경c
 		enemy_->info_Address()->status.state = EnemyStateEnum::ATK_B;
 	
@@ -1728,7 +1728,7 @@ void DataManager::enemy_Attack_Hit(Enemy * enemy_Address)
 				_skul->get_Info().pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x, _skul->get_Info().pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 
 			// 스컬의 체력이 0 이하로 내려갔다면 0으로 만들어준다.
-			if (_skul->get_Info().status.HP < 0)
+			if (_skul->get_Info().status.HP <= 0)
 			{
 				// 체력을 0으로 만들어준다.
 				_skul->set_Info()->status.HP = 0;
@@ -1836,7 +1836,7 @@ bool DataManager::enemy_find_Down_Gorund(Enemy * enemy_Address)
 		_tileList[enemy_TilePos_X + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].tile_Collision_Type == COLLISION_TILE_TYPE::FOOTHOLD_TYPE)
 	{
 		// 바닥이 땅이라면 바닥으로 값을 보정해주어야 한다.
-		enemy_Address->info_Address()->pos.center.y = _tileList[enemy_TilePos_X + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].center.y - 69;
+		enemy_Address->info_Address()->pos.center.y = _tileList[enemy_TilePos_X + (enemy_TilePos_Y + 1) * _mapInfo.tile_Count.x].center.y - 60;
 
 		return true;
 	}

@@ -108,41 +108,93 @@ void Enemy::render(HDC getMemDC)
 	// 피격중이 아닐때
 	if (!info.bool_V.player_Attack_Hit)
 	{
-		IMAGEMANAGER->findImage(info.img.imgName)->aniRender(getMemDC,
-			info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y, info.img.ani);
+	
+		if (info.status.type == EnemyType::PALADIN)
+		{
+			IMAGEMANAGER->findImage(info.img.imgName)->aniRender(getMemDC,
+				info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 50, info.img.ani);
+		}
+		else
+			IMAGEMANAGER->findImage(info.img.imgName)->aniRender(getMemDC,
+				info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y, info.img.ani);
+
 	}
 	// 피격중일때 
 	if (info.bool_V.player_Attack_Hit)
 	{
-		// 밀려나는 에너미의 머리 위로 데미지가 따라올라간다.
-		info.pos.damege_Center.x = info.pos.center.x;
-		info.pos.damege_Center.y -= 1;
+		if (info.status.type == EnemyType::PALADIN)
+		{
 
-		// 데미지 출력
-		char HitDmg[20];
-		sprintf_s(HitDmg, 20, "%d", info.status.show_Attack);
-		if (info.bool_V.Critical_Hit) SetTextColor(getMemDC, RGB(255, 0, 0));
-		TextOut(getMemDC, info.pos.damege_Center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-			info.pos.damege_Center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
-			HitDmg, strlen(HitDmg));
+			// 밀려나는 에너미의 머리 위로 데미지가 따라올라간다.
+			info.pos.damege_Center.x = info.pos.center.x;
+			info.pos.damege_Center.y -= 1;
 
-		IMAGEMANAGER->findImage(info.img.imgName)->frameRender(getMemDC,
-			info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
-			info.img.curX, info.img.curY);
+			// 데미지 출력
+			char HitDmg[20];
+			sprintf_s(HitDmg, 20, "%d", info.status.show_Attack);
+			if (info.bool_V.Critical_Hit) SetTextColor(getMemDC, RGB(255, 0, 0));
+			TextOut(getMemDC, info.pos.damege_Center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+				info.pos.damege_Center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 50,
+				HitDmg, strlen(HitDmg));
+
+			IMAGEMANAGER->findImage(info.img.imgName)->frameRender(getMemDC,
+				info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 50,
+				info.img.curX, info.img.curY);
+		}
+
+		else
+		{
+			// 밀려나는 에너미의 머리 위로 데미지가 따라올라간다.
+			info.pos.damege_Center.x = info.pos.center.x;
+			info.pos.damege_Center.y -= 1;
+
+			// 데미지 출력
+			char HitDmg[20];
+			sprintf_s(HitDmg, 20, "%d", info.status.show_Attack);
+			if (info.bool_V.Critical_Hit) SetTextColor(getMemDC, RGB(255, 0, 0));
+			TextOut(getMemDC, info.pos.damege_Center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+				info.pos.damege_Center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y ,
+				HitDmg, strlen(HitDmg));
+
+			IMAGEMANAGER->findImage(info.img.imgName)->frameRender(getMemDC,
+				info.pos.ani_Rc.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x, info.pos.ani_Rc.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y ,
+				info.img.curX, info.img.curY);
+		}
 	}
 
 	// hp 출력
-	if (info.bool_V.im_Hit)
+	if (info.status.type == EnemyType::PALADIN)
 	{
-		info.hp.img_HP_BG->render(getMemDC, info.hp.rc_HP_BG.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-			info.hp.rc_HP_BG.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
 
-		info.hp.img_HP_Back->render(getMemDC, info.hp.rc_HP_Back.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-			info.hp.rc_HP_Back.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
-			0, 0, info.hp.rc_HP_Back.right - info.hp.rc_HP_Back.left, info.hp.img_HP_Back->getHeight());
+		if (info.bool_V.im_Hit)
+		{
+			info.hp.img_HP_BG->render(getMemDC, info.hp.rc_HP_BG.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+				info.hp.rc_HP_BG.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 50);
 
-		info.hp.img_HP_Front->render(getMemDC, info.hp.rc_HP_Front.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x
-			, info.hp.rc_HP_Front.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
-			0, 0, info.hp.rc_HP_Front.right - info.hp.rc_HP_Front.left, info.hp.img_HP_Front->getHeight());
+			info.hp.img_HP_Back->render(getMemDC, info.hp.rc_HP_Back.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+				info.hp.rc_HP_Back.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 50,
+				0, 0, info.hp.rc_HP_Back.right - info.hp.rc_HP_Back.left, info.hp.img_HP_Back->getHeight());
+
+			info.hp.img_HP_Front->render(getMemDC, info.hp.rc_HP_Front.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x
+				, info.hp.rc_HP_Front.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 50,
+				0, 0, info.hp.rc_HP_Front.right - info.hp.rc_HP_Front.left, info.hp.img_HP_Front->getHeight());
+		}
+	}
+
+	else
+	{
+		if (info.bool_V.im_Hit)
+		{
+			info.hp.img_HP_BG->render(getMemDC, info.hp.rc_HP_BG.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+				info.hp.rc_HP_BG.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+
+			info.hp.img_HP_Back->render(getMemDC, info.hp.rc_HP_Back.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+				info.hp.rc_HP_Back.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
+				0, 0, info.hp.rc_HP_Back.right - info.hp.rc_HP_Back.left, info.hp.img_HP_Back->getHeight());
+
+			info.hp.img_HP_Front->render(getMemDC, info.hp.rc_HP_Front.left - CAMERAMANAGER->Use_Func()->get_CameraXY().x
+				, info.hp.rc_HP_Front.top - CAMERAMANAGER->Use_Func()->get_CameraXY().y,
+				0, 0, info.hp.rc_HP_Front.right - info.hp.rc_HP_Front.left, info.hp.img_HP_Front->getHeight());
+		}
 	}
 }

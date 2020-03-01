@@ -171,6 +171,7 @@
     <ClInclude Include="eventManager.h" />
     <ClInclude Include="FlyingObject.h" />
     <ClInclude Include="FlyingObject_Library.h" />
+    <ClInclude Include="GameClear.h" />
     <ClInclude Include="gameNode.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="image.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="eventManager.cpp" />
     <ClCompile Include="FlyingObject.cpp" />
+    <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="gameNode.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="image.cpp" />
