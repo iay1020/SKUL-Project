@@ -168,6 +168,7 @@
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="EnemyManager_Library.h" />
     <ClInclude Include="EnemyState.h" />
+    <ClInclude Include="eventManager.h" />
     <ClInclude Include="FlyingObject.h" />
     <ClInclude Include="FlyingObject_Library.h" />
     <ClInclude Include="gameNode.h" />
@@ -187,9 +188,10 @@
     <ClInclude Include="scene_Library.h" />
     <ClInclude Include="singletonBase.h" />
     <ClInclude Include="soundManager.h" />
+    <ClInclude Include="Stage_0.h" />
+    <ClInclude Include="Stage_1.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="test_Room.h" />
     <ClInclude Include="TILE_INFO.h" />
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
@@ -215,6 +217,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="EnemyState.cpp" />
+    <ClCompile Include="eventManager.cpp" />
     <ClCompile Include="FlyingObject.cpp" />
     <ClCompile Include="gameNode.cpp" />
     <ClCompile Include="image.cpp" />
@@ -228,13 +231,14 @@
     <ClCompile Include="sceneChanger.cpp" />
     <ClCompile Include="sceneManager.cpp" />
     <ClCompile Include="soundManager.cpp" />
+    <ClCompile Include="Stage_0.cpp" />
+    <ClCompile Include="Stage_1.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="test_Room.cpp" />
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="txtData.cpp" />

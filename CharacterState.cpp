@@ -13,6 +13,7 @@ Attack_B_State* Attack_B_State::instance;
 Attack_C_State* Attack_C_State::instance;
 Skill_A_State* Skill_A_State::instance;
 Skill_B_State* Skill_B_State::instance;
+Event_State* Event_State::instance;
 
 
 // ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 대기 상태! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
@@ -122,20 +123,20 @@ void IdleState::Idle(Player * player)
 
 
 	// 멈춰있는 상태에서 스킬을 눌렀다면 스킬 상태로 바꿔준다.
-	if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
+	if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 	{
 		// 스킬 A의 애니메이션으로 교체 해준다.
 		IdleState::Skill_A(player);
 	}
 
-	if (KEYMANAGER->isOnceKeyDown('S'))
+	if (KEYMANAGER->isOnceKeyDown('S') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 	{
 
 	}
 
 
 	// 멈춰있는 상태에서 공격키를 누른다면 공격 상태로 바꿔준다.
-	if (KEYMANAGER->isOnceKeyDown('X'))
+	if (KEYMANAGER->isOnceKeyDown('X') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 	{
 		// 공격 A의 애니메이션으로 교체 해준다.
 		IdleState::Attack_A(player);
@@ -362,6 +363,18 @@ void IdleState::Skill_B(Player * player)
 {
 }
 
+void IdleState::Event(Player * player)
+{
+	// 이벤트 애니메이션으로 교체 하지만 시작은 하지않는다.
+	player->set_Info()->set_Ani("get_Weapon_Skul", "get_Weapon_Skul_Ani");
+	player->set_Info()->img.ani->start();
+
+	// 이벤트 상태로 교체
+	player->set_State(Event_State::getInstance());
+	player->get_State()->update(player);
+	
+}
+
 void IdleState::update(Player * player)
 {
 	IdleState::Idle(player);
@@ -507,13 +520,13 @@ void MoveState::Move(Player * player)
 		}
 
 		// 이동 상태에서 공격을 눌렀다면 공격 상태로 바꿔준다.
-		if (KEYMANAGER->isOnceKeyDown('X'))
+		if (KEYMANAGER->isOnceKeyDown('X') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			MoveState::Attack_A(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			MoveState::Skill_A(player);
 		}
@@ -589,13 +602,13 @@ void MoveState::Move(Player * player)
 		}
 
 		// 이동 상태에서 공격을 눌렀다면 공격 상태로 바꿔준다.
-		if (KEYMANAGER->isOnceKeyDown('X'))
+		if (KEYMANAGER->isOnceKeyDown('X') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			MoveState::Attack_A(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			MoveState::Skill_A(player);
 		}
@@ -796,6 +809,17 @@ void MoveState::Skill_B(Player * player)
 {
 }
 
+void MoveState::Event(Player * player)
+{
+	// 이벤트 애니메이션으로 교체 하지만 시작은 하지않는다.
+	player->set_Info()->set_Ani("get_Weapon_Skul", "get_Weapon_Skul_Ani");
+	player->set_Info()->img.ani->start();
+
+	// 이벤트 상태로 교체
+	player->set_State(Event_State::getInstance());
+	player->get_State()->update(player);
+}
+
 void MoveState::update(Player * player)
 {	
 	MoveState::Move(player);
@@ -925,14 +949,14 @@ void JumpState::Move(Player * player)
 		}
 
 		// 점프 상태에서 공격을 눌렀다면 점프 공격 상태로 바꿔준다.
-		if (KEYMANAGER->isOnceKeyDown('X'))
+		if (KEYMANAGER->isOnceKeyDown('X') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			// 애니메이션 교체를 위해 JumpAttack 함수 호출
 			JumpState::JumpAttack(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			JumpState::Skill_A(player);
 		}
@@ -1032,14 +1056,14 @@ void JumpState::Jump(Player * player)
 		}
 
 		// 점프 상태에서 공격을 눌렀다면 점프 공격 상태로 바꿔준다.
-		if (KEYMANAGER->isOnceKeyDown('X'))
+		if (KEYMANAGER->isOnceKeyDown('X') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			// 애니메이션 교체를 위해 JumpAttack 함수 호출
 			JumpState::JumpAttack(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			JumpState::Skill_A(player);
 		}
@@ -1175,6 +1199,10 @@ void JumpState::Skill_A(Player * player)
 }
 
 void JumpState::Skill_B(Player * player)
+{
+}
+
+void JumpState::Event(Player * player)
 {
 }
 
@@ -1362,14 +1390,14 @@ void FallState::Move(Player * player)
 	}
 
 	// 추락 상태에서 공격키를 누르면 점프 공격 상태로 바꿔준다.
-	if (KEYMANAGER->isOnceKeyDown('X'))
+	if (KEYMANAGER->isOnceKeyDown('X') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 	{
 		// 점프 공격 애니메이션으로 바꾸기 위해 함수 호출
 		FallState::JumpAttack(player);
 	}
 
 	// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-	if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
+	if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 	{
 		FallState::Skill_A(player);
 	}
@@ -1563,14 +1591,14 @@ void FallState::Fall(Player * player)
 		}
 
 		// 추락 상태에서 공격키를 누르면 점프 공격 상태로 바꿔준다.
-		if (KEYMANAGER->isOnceKeyDown('X'))
+		if (KEYMANAGER->isOnceKeyDown('X') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			// 점프 공격 애니메이션으로 바꾸기 위해 함수 호출
 			FallState::JumpAttack(player);
 		}
 
 		// 이동 상태에서 스킬 A키를 눌렀다면, 스킬 애니메이션으로 교체한다.
-		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A)
+		if (KEYMANAGER->isOnceKeyDown('A') && !player->get_Info().bool_V.useing_Skill_A && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 		{
 			FallState::Skill_A(player);
 		}
@@ -1695,6 +1723,10 @@ void FallState::Skill_B(Player * player)
 {
 }
 
+void FallState::Event(Player * player)
+{
+}
+
 void FallState::update(Player * player)
 {
 	FallState::Fall(player);
@@ -1811,6 +1843,10 @@ void DownJumpState::Skill_A(Player * player)
 }
 
 void DownJumpState::Skill_B(Player * player)
+{
+}
+
+void DownJumpState::Event(Player * player)
 {
 }
 
@@ -1942,6 +1978,10 @@ void DashState::Skill_A(Player * player)
 }
 
 void DashState::Skill_B(Player * player)
+{
+}
+
+void DashState::Event(Player * player)
 {
 }
 
@@ -2143,6 +2183,10 @@ void JumpAttackState::Skill_B(Player * player)
 {
 }
 
+void JumpAttackState::Event(Player * player)
+{
+}
+
 void JumpAttackState::update(Player * player)
 {
 	JumpAttackState::JumpAttack(player);
@@ -2292,6 +2336,10 @@ void Attack_A_State::Skill_B(Player * player)
 {
 }
 
+void Attack_A_State::Event(Player * player)
+{
+}
+
 void Attack_A_State::update(Player * player)
 {
 	Attack_A_State::Attack_A(player);
@@ -2397,6 +2445,10 @@ void Attack_B_State::Skill_B(Player * player)
 {
 }
 
+void Attack_B_State::Event(Player * player)
+{
+}
+
 void Attack_B_State::update(Player * player)
 {
 	Attack_B_State::Attack_B(player);
@@ -2464,6 +2516,10 @@ void Attack_C_State::Skill_A(Player * player)
 }
 
 void Attack_C_State::Skill_B(Player * player)
+{
+}
+
+void Attack_C_State::Event(Player * player)
 {
 }
 
@@ -2581,6 +2637,10 @@ void Skill_A_State::Skill_B(Player * player)
 {
 }
 
+void Skill_A_State::Event(Player * player)
+{
+}
+
 void Skill_A_State::update(Player * player)
 {
 	Skill_A_State::Skill_A(player);
@@ -2652,8 +2712,117 @@ void Skill_B_State::Skill_B(Player * player)
 {
 }
 
+void Skill_B_State::Event(Player * player)
+{
+}
+
 void Skill_B_State::update(Player * player)
 {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 이벤트! ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+Event_State * Event_State::getInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new Event_State();
+	}
+
+	return instance;
+}
+
+void Event_State::Idle(Player * player)
+{
+	// 사용했던 변수 초기화
+	player->set_Info()->bool_State_Reset();
+
+	// 대기 애니메이션을 넣어준다.
+	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
+	player->get_Info().img.ani->start();
+
+	// 대기 상태로 바꿔준다.
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
+
+}
+
+void Event_State::Move(Player * player)
+{
+}
+
+void Event_State::Jump(Player * player)
+{
+}
+
+void Event_State::Fall(Player * player)
+{
+}
+
+void Event_State::DownJump(Player * player)
+{
+}
+
+void Event_State::Dash(Player * player)
+{
+}
+
+void Event_State::JumpAttack(Player * player)
+{
+}
+
+void Event_State::Attack_A(Player * player)
+{
+}
+
+void Event_State::Attack_B(Player * player)
+{
+}
+
+void Event_State::Attack_C(Player * player)
+{
+}
+
+void Event_State::Skill_A(Player * player)
+{
+}
+
+void Event_State::Skill_B(Player * player)
+{
+}
+
+void Event_State::Event(Player * player)
+{
+
+	if (player->get_Info().img.ani->getFramePos().x == 1280)
+	{
+		// 타입 교체
+		player->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+
+		// 대기상태로
+		Idle(player);
+	}
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
+}
+
+void Event_State::update(Player * player)
+{
+	Event(player);
+
+}

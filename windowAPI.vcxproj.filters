@@ -64,9 +64,6 @@
     <Filter Include="playGround\DataManager">
       <UniqueIdentifier>{b2c3a4f1-7afb-4244-a874-e7446b1637d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="playGround\_Test_Room">
-      <UniqueIdentifier>{2dc9b92d-d6e7-445d-8111-a460f047650d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="playGround\CharacterState">
       <UniqueIdentifier>{956b9a0d-1ac7-447b-b06c-a37a1f2130bc}</UniqueIdentifier>
     </Filter>
@@ -90,6 +87,18 @@
     </Filter>
     <Filter Include="playGround\Ui_Manager">
       <UniqueIdentifier>{2b23bffe-0b2e-4c08-a6fa-bfd3d2672701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\Stage">
+      <UniqueIdentifier>{68bd155c-424b-4748-9017-f9dbf6689424}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\Stage\Stage_0">
+      <UniqueIdentifier>{d7b05acc-8141-48c5-ba27-e6dd74dabc9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\EnevtManager">
+      <UniqueIdentifier>{e9e45605-9257-43f3-a7a1-91a8140fd779}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="playGround\Stage\Stage_1">
+      <UniqueIdentifier>{a2e87c75-6e9a-46f4-bccf-1b452489a0b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -210,9 +219,6 @@
     <ClInclude Include="CharacterState_Library.h">
       <Filter>playGround\CharacterState</Filter>
     </ClInclude>
-    <ClInclude Include="test_Room.h">
-      <Filter>playGround\_Test_Room</Filter>
-    </ClInclude>
     <ClInclude Include="collisionUtil.h">
       <Filter>2DGameFramework\Util</Filter>
     </ClInclude>
@@ -248,6 +254,15 @@
     </ClInclude>
     <ClInclude Include="Ui_Manager_Library.h">
       <Filter>playGround\Ui_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage_0.h">
+      <Filter>playGround\Stage\Stage_0</Filter>
+    </ClInclude>
+    <ClInclude Include="eventManager.h">
+      <Filter>playGround\EnevtManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage_1.h">
+      <Filter>playGround\Stage\Stage_1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -323,9 +338,6 @@
     <ClCompile Include="DataManager.cpp">
       <Filter>playGround\DataManager</Filter>
     </ClCompile>
-    <ClCompile Include="test_Room.cpp">
-      <Filter>playGround\_Test_Room</Filter>
-    </ClCompile>
     <ClCompile Include="CharacterState.cpp">
       <Filter>playGround\CharacterState</Filter>
     </ClCompile>
@@ -355,6 +367,15 @@
     </ClCompile>
     <ClCompile Include="Ui_Manager.cpp">
       <Filter>playGround\Ui_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage_0.cpp">
+      <Filter>playGround\Stage\Stage_0</Filter>
+    </ClCompile>
+    <ClCompile Include="eventManager.cpp">
+      <Filter>playGround\EnevtManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage_1.cpp">
+      <Filter>playGround\Stage\Stage_1</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

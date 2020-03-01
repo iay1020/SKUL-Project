@@ -93,7 +93,8 @@ struct CharacterStatusUI
 		type.rc = RectMake(ui.rc.left + 4, ui.rc.top + 7, type.img->getWidth(), type.img->getHeight());
 
 		// 스킬 셋팅
-		skill.img_A_Name = "skul_ThrowHead_Skill";
+		//skill.img_A_Name = "skul_ThrowHead_Skill";
+		skill.img_A_Name = "skill_Null";
 		skill.img_A = new image;
 		skill.img_A = IMAGEMANAGER->findImage(skill.img_A_Name);
 		skill.rc_A = RectMake(ui.rc.left + 114, ui.rc.top + 18, skill.img_A->getWidth(), skill.img_A->getHeight());
@@ -180,26 +181,38 @@ struct CharacterStatusUI
 	}
 
 	// 스컬의 타입에 따라 이미지 업데이트
-	void update_Img()
+	void update_Img(Player* skul)
 	{
 		//// 스컬의 타입에 따라 이미지를 교체해준다.
-		//switch (DATAMANAGER->skul_Address()->get_Info().type.skul_Type)
-		//{
-		//	// 기본스컬, 무기스컬, 머리없는스컬 일때
-		//	case SKUL_TYPE::SKUL_NOWEAPON: case SKUL_TYPE::SKUL_WEAPON: case SKUL_TYPE::SKUL_WEAPON_NOHEAD:
-		//		type.img = IMAGEMANAGER->findImage("skul_Icon");
-		//
-		//		skill.img_A_Name = "skul_ThrowHead_Skill";
-		//		skill.img_A = IMAGEMANAGER->findImage(skill.img_A_Name);
-		//
-		//		skill.img_B_Name = "skill_Null";
-		//		skill.img_B = IMAGEMANAGER->findImage(skill.img_B_Name);
-		//
-		//		break;
-		//
-		//	//
-		//		
-		//}
+		switch (skul->get_Info().type.skul_Type)
+		{
+			// 기본스컬, 무기스컬, 머리없는스컬 일때
+			case SKUL_TYPE::SKUL_NOWEAPON: 
+				type.img = IMAGEMANAGER->findImage("skul_Icon");
+
+				skill.img_A_Name = "skill_Null";
+				skill.img_A = IMAGEMANAGER->findImage(skill.img_A_Name);
+
+				skill.img_B_Name = "skill_Null";
+				skill.img_B = IMAGEMANAGER->findImage(skill.img_B_Name);
+
+				break;
+			
+			
+			case SKUL_TYPE::SKUL_WEAPON: case SKUL_TYPE::SKUL_WEAPON_NOHEAD:
+				type.img = IMAGEMANAGER->findImage("skul_Icon");
+		
+				skill.img_A_Name = "skul_ThrowHead_Skill";
+				skill.img_A = IMAGEMANAGER->findImage(skill.img_A_Name);
+		
+				skill.img_B_Name = "skill_Null";
+				skill.img_B = IMAGEMANAGER->findImage(skill.img_B_Name);
+		
+				break;
+		
+			//
+				
+		}
 	}
 
 

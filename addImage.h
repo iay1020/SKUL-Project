@@ -136,6 +136,28 @@ struct tagAddImage
 		}
 
 
+
+		//■■■■■■■■ Event Image ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+		{
+			// 무기를 주는 이벤트 해골
+			IMAGEMANAGER->addFrameImage("give_Weapon_NPC", "./image/event/give_Weapon_NPC.bmp", 2124, 54, 18, 1, true, RGB(255, 0, 255));
+			KEYANIMANAGER->addCoordinateFrameAnimation("give_Weapon_Start", "give_Weapon_NPC", 0, 6, 3, false, false);
+			KEYANIMANAGER->addCoordinateFrameAnimation("give_Weapon_End", "give_Weapon_NPC", 7, 17, 3, false, false);
+
+			// 무기를 받는 이벤트 스컬
+			IMAGEMANAGER->addFrameImage("get_Weapon_Skul", "./image/event/skul_Get_Weapon_Event.bmp", 1600, 119, 10, 1, true, RGB(255, 0, 255));
+			KEYANIMANAGER->addCoordinateFrameAnimation("get_Weapon_Skul_Ani", "get_Weapon_Skul", 0, 9, 10, false, false);
+
+			// 이벤트 키 출력
+			IMAGEMANAGER->addImage("F_Key", "./image/event/F_Key.bmp", 26, 24, true, RGB(255, 0, 255));
+
+			// 도어
+			IMAGEMANAGER->addImage("Door_1", "./image/mapTool/door/next_Gate.bmp", 352, 258, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addFrameImage("Door_Fire_1", "./image/mapTool/door/gate_Fire_1.bmp", 1872, 80, 8, 1, true, RGB(255, 0, 255));
+			KEYANIMANAGER->addCoordinateFrameAnimation("Door_Fire_1", "Door_Fire_1", 0, 7, 10, false, true);
+		}
+
+
 		//■■■■■■■■ Skul Image ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 		// <Idle>
 		{

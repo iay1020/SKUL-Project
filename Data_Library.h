@@ -522,6 +522,9 @@ struct CharacterInfo
 					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Left");
+					// 이벤트
+					if (StateName == "Event") set_Ani("get_Weapon_Skul", "get_Weapon_Skul_Ani");
+				
 
 				}
 				if (Key == PRESS_RIGHT)
@@ -540,6 +543,8 @@ struct CharacterInfo
 					if (StateName == "Falling") set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
 					// 대쉬
 					if (StateName == "Dash") set_Ani("skul_Dash", "skul_Dash_Right");
+					// 이벤트
+					if (StateName == "Event") set_Ani("get_Weapon_Skul", "get_Weapon_Skul_Ani");
 
 				}
 				break;

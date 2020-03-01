@@ -1,33 +1,33 @@
 #include "stdafx.h"
-#include "test_Room.h"
+#include "Stage_0.h"
 
-test_Room::test_Room()
+Stage_0::Stage_0()
 {
 }
 
-test_Room::~test_Room()
+Stage_0::~Stage_0()
 {
 }
 
-HRESULT test_Room::init()
+HRESULT Stage_0::init()
 {
 	// 맵을 불러와 데이터매니저에 있는 변수에 저장한다.
-	DATAMANAGER->map_Load_Datamanager("tutorial.map", "tutorial_Info.map");
-
-	for (int i = 0; i < 5; ++i)	// 루프랜더용 변수
-	{
-		loopSpeed[i] = 0;
-	}
+	DATAMANAGER->map_Load_Datamanager("Stage_0.map", "Stage_0_Info.map");
 
 	DATAMANAGER->create_Skul();				// 스컬 생성
 	_skul = DATAMANAGER->skul_Address();	// 스컬 데이터 연결
-	_skul->update_Pos(4, 26);
+	_skul->update_Pos(4, 25);
 
 	// ui 셋팅
 	DATAMANAGER->setting_ui(_skul);
 	// 미니맵 정보 셋팅
 	DATAMANAGER->ui_Address()->setting_MiniMap();
 	DATAMANAGER->setting_MiniMap();
+
+	// 이벤트 매니저 생성
+	eventM = new eventManager;
+	eventM->create_Event(eventType::GIVE_WEAPON_NPC, 28, 19, 4, false, false);
+	eventM->create_Event(eventType::NEXT_GATE, 36, 25, 1, false, true);
 
 	// 테스트 에너미 생성
 	//DATAMANAGER->Create_Enemy(EnemyType::SOLDIER, EnemyDirection::LEFT, "soldier_Idle", "soldier_Idle_Left_Ani", 30, 17);
@@ -39,39 +39,47 @@ HRESULT test_Room::init()
 	return S_OK;
 }
 
-void test_Room::release()
+void Stage_0::release()
 {
 }
 
-void test_Room::update()
+void Stage_0::update()
 {
 	testControl(); // 테스트용 이동키
 
 	// 플레이어 연산
 	DATAMANAGER->update();
-	
+
+	eventM->update();
+
 	// 캐릭터 타일 위치
-	//cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
+	cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
+
+
 }
 
-void test_Room::render()
+void Stage_0::render()
 {
 	PatBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, WHITENESS);
 
 	// 맵 출력
-	DATAMANAGER->map_Render_Datamanager(getMemDC(), loopSpeed);
+	DATAMANAGER->map_Render_Datamanager_Loop(getMemDC());
 
 	showRect(getMemDC());	// 테스트용 렉트
 
+	eventM->render();
+
 	// 에너미 출력
 	DATAMANAGER->show_Enemy();
+
 
 	// 플레이어 출력
 	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
 		_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
 
+
 	// 플레이어 공격 렉트 출력
-	_skul->set_Info()->show_Attack_Rect(getMemDC());
+	//_skul->set_Info()->show_Attack_Rect(getMemDC());
 
 	// 투사체 출력
 	DATAMANAGER->show_FlyingObject();
@@ -86,23 +94,8 @@ void test_Room::render()
 
 }
 
-void test_Room::testControl()
+void Stage_0::testControl()
 {
-	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
-	{
-		for (int i = 0; i < 5; ++i)
-		{
-			loopSpeed[i] -= 6 - i * 2;		// 0번째 레이어는 6의 값이 빼지고, 다음으로 넘어갈수록 -2씩 감소
-		}
-	}
-
-	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
-	{
-		for (int i = 0; i < 5; ++i)
-		{
-			loopSpeed[i] += 6 - i * 2;		// 0번째 레이어는 6의 값이 빼지고, 다음으로 넘어갈수록 +2씩 감소
-		}
-	}
 
 	if (KEYMANAGER->isOnceKeyDown(VK_F8))
 	{
@@ -127,7 +120,7 @@ void test_Room::testControl()
 	}
 }
 
-void test_Room::showRect(HDC getMemDC)
+void Stage_0::showRect(HDC getMemDC)
 {
 	if (KEYMANAGER->isToggleKey(VK_NUMPAD9))
 	{

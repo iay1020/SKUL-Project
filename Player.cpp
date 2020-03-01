@@ -12,7 +12,7 @@ Player::Player()
 	//info.set_Ani("skul_Idle_NoWeapon", "skul_Idle_Right_NoWeapon");
 	inputKey = PRESS_RIGHT;				// 오른쪽 애니메이션을 쓰고 있으니까
 	//info.type.skul_Type = SKUL_TYPE::SKUL_NOWEAPON;
-	info.type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
+	info.type.skul_Type = SKUL_TYPE::SKUL_NOWEAPON;
 	//info.type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
 	info.ani_Changer("Idle", inputKey);
 	info.img.ani->start();

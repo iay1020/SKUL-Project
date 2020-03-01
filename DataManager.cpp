@@ -98,7 +98,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 
 	// 맵을 저장한다.
-	file = CreateFile("tutorial.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("Stage_1.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	WriteFile(file, tile, sizeof(tagTileInfo) * mapInfo->tile_Count.x * mapInfo->tile_Count.y, &write, NULL);
@@ -118,7 +118,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 	
 	// 맵의 정보를 저장한다. (맵에 대한 정보 여러가지 있다. 이후에 여기에 저장 되어 있는 맵 이름을 가지고 만들어야 함)
-	file = CreateFile("tutorial_Info.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("Stage_1_Info.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	
 	WriteFile(file, mapInfo, sizeof(tagMapInfo), &write, NULL);
@@ -132,7 +132,7 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 	HANDLE file;
 	DWORD read;
 
-	file = CreateFile("tutorial_Info.map", GENERIC_READ, 0, NULL,
+	file = CreateFile("Stage_1_Info.map", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	
 	ReadFile(file, mapInfo, sizeof(tagMapInfo), &read, NULL);						// 맵 정보를 먼저 받아 온 이유는 맵을 받아올때 맵의 크기 정보가 필요하기 때문에
@@ -179,7 +179,7 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 	tagTileInfo* tile;
 	tile = new tagTileInfo[mapInfo->tile_Count.x * mapInfo->tile_Count.y];			//	타일의 크기만큼 할당 받는다.
 
-	file = CreateFile("tutorial.map", GENERIC_READ, 0, NULL,
+	file = CreateFile("Stage_1.map", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	ReadFile(file, tile, sizeof(tagTileInfo) * mapInfo->tile_Count.x * mapInfo->tile_Count.y, &read, NULL);
@@ -278,7 +278,7 @@ void DataManager::map_Load_Datamanager(string mapName, string mapInfoName)
 	tagTileInfo* tile;
 	tile = new tagTileInfo[_mapInfo.tile_Count.x * _mapInfo.tile_Count.y];			//	타일의 크기만큼 할당 받는다.
 	
-	file = CreateFile("tutorial.map", GENERIC_READ, 0, NULL,
+	file = CreateFile(strMapName, GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	
 	ReadFile(file, tile, sizeof(tagTileInfo) * _mapInfo.tile_Count.x * _mapInfo.tile_Count.y, &read, NULL);
@@ -518,17 +518,9 @@ void DataManager::map_Render_Datamanager(HDC getMemDC)
 	}
 }
 
-void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
+void DataManager::map_Render_Datamanager_Loop(HDC getMemDC)
 {
 	CAMERAMANAGER->Use_Func()->find_Tile(CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_X, CAMERAMANAGER->Use_Func()->get_Camera_Operation()._TILE_COUNT_Y);	// 카메라 안에 들어온 타일을 찾아서 저장한다.
-	
-	short loopSpeed[5];
-
-	for (int i = 0; i < 5; ++i)
-	{
-		loopSpeed[i] = loopSpd[i];
-	}
-
 
 	// 백그라운드를 그려준다.
 	for (int i = 0; i < BACKGROUND_LAYER_COUNT; ++i)
@@ -544,7 +536,7 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 				rc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 				rc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y;
 
-				IMAGEMANAGER->findImage((_vMapInfo[i])[j].imageName)->loopRender(getMemDC, &rc, loopSpeed[i], 0);
+				IMAGEMANAGER->findImage((_vMapInfo[i])[j].imageName)->loopRender(getMemDC, &rc, CAMERAMANAGER->Use_Func()->get_CameraXY().x * i * 0.1f, 0);
 			}
 		}
 	}
@@ -555,7 +547,7 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
 		{
 			RECT rc = _tileList[y * _mapInfo.tile_Count.x + x].rc;
-			RECT mRc = minimap[y * _mapInfo.tile_Count.x + x].rc;
+			//RECT mRc = minimap[y * _mapInfo.tile_Count.x + x].rc;
 			POINTFLOAT camera = CAMERAMANAGER->Use_Func()->get_CameraXY();
 
 			rc.left -= camera.x;
@@ -620,48 +612,48 @@ void DataManager::map_Render_Datamanager(HDC getMemDC, short loopSpd[])
 	}
 
 
-	for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
-	{
-		for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
-		{
-			RECT mRc = minimap[y * _mapInfo.tile_Count.x + x].rc;
-			//mRc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x / 4.f;
-			//mRc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x / 4.f;
-			//mRc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y / 4.f - 250;
-			//mRc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y / 4.f - 250;
-
-			// 미니맵 출력 출력
-			// 안 쓰는 타입은 제외한다.
-			if (minimap[y * _mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
-			{
-
-				// 지형을 그려준다.
-				if (minimap[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
-				{
-					if (minimap[y * _mapInfo.tile_Count.x + x].useTile)
-					{
-					
-						IMAGEMANAGER->findImage(minimap[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, mRc.left , mRc.top ,
-							minimap[y * _mapInfo.tile_Count.x + x].frame.ground.x, minimap[y * _mapInfo.tile_Count.x + x].frame.ground.y);
-
-						//Rectangle(getMemDC, mRc.left, mRc.top, mRc.right, mRc.bottom);
-					}
-				}
-
-
-			}
-		}
-	}
+	//for (int y = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().y; y <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().y; y++)
+	//{
+	//	for (int x = CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_Start_Index().x; x <= CAMERAMANAGER->Use_Func()->get_Find_Tile()->get_End_Index().x; x++)
+	//	{
+	//		RECT mRc = minimap[y * _mapInfo.tile_Count.x + x].rc;
+	//		//mRc.left -= CAMERAMANAGER->Use_Func()->get_CameraXY().x / 4.f;
+	//		//mRc.right -= CAMERAMANAGER->Use_Func()->get_CameraXY().x / 4.f;
+	//		//mRc.top -= CAMERAMANAGER->Use_Func()->get_CameraXY().y / 4.f - 250;
+	//		//mRc.bottom -= CAMERAMANAGER->Use_Func()->get_CameraXY().y / 4.f - 250;
+	//
+	//		// 미니맵 출력 출력
+	//		// 안 쓰는 타입은 제외한다.
+	//		if (minimap[y * _mapInfo.tile_Count.x + x].tile_Type != TILE_TYPE::EMPTY)
+	//		{
+	//
+	//			// 지형을 그려준다.
+	//			if (minimap[y * _mapInfo.tile_Count.x + x].tile_Type == TILE_TYPE::GROUND)
+	//			{
+	//				if (minimap[y * _mapInfo.tile_Count.x + x].useTile)
+	//				{
+	//				
+	//					IMAGEMANAGER->findImage(minimap[y * _mapInfo.tile_Count.x + x].tileName.groundName)->frameRender(getMemDC, mRc.left , mRc.top ,
+	//						minimap[y * _mapInfo.tile_Count.x + x].frame.ground.x, minimap[y * _mapInfo.tile_Count.x + x].frame.ground.y);
+	//
+	//					//Rectangle(getMemDC, mRc.left, mRc.top, mRc.right, mRc.bottom);
+	//				}
+	//			}
+	//
+	//
+	//		}
+	//	}
+	//}
 
 	// 플레이어 렉트
-	int index = (int)((_skul->get_Info().pos.center.x / TILE_SIZE_X)) +
-		((int)(_skul->get_Info().pos.center.y) / TILE_SIZE_Y * _mapInfo.tile_Count.x);
-
-	IMAGEMANAGER->findImage("miniMap_Player")->render(getMemDC, minimap[index].rc.left , minimap[index].rc.top - 8);
-	//Rectangle(getMemDC, minimap[index].rc.left + 1280, minimap[index].rc.top - 8 + 680, minimap[index].rc.right + 1280, minimap[index].rc.bottom + 680);
-
-	// 미니맵 프레임
-	IMAGEMANAGER->findImage("miniMap_Frame")->render(getMemDC, 1175, 700);
+	//int index = (int)((_skul->get_Info().pos.center.x / TILE_SIZE_X)) +
+	//	((int)(_skul->get_Info().pos.center.y) / TILE_SIZE_Y * _mapInfo.tile_Count.x);
+	//
+	//IMAGEMANAGER->findImage("miniMap_Player")->render(getMemDC, minimap[index].rc.left , minimap[index].rc.top - 8);
+	////Rectangle(getMemDC, minimap[index].rc.left + 1280, minimap[index].rc.top - 8 + 680, minimap[index].rc.right + 1280, minimap[index].rc.bottom + 680);
+	//
+	//// 미니맵 프레임
+	//IMAGEMANAGER->findImage("miniMap_Frame")->render(getMemDC, 1175, 700);
 }
 
 void DataManager::Rect_Render_Datamanager(HDC getMemDC)
@@ -682,6 +674,27 @@ void DataManager::Rect_Render_Datamanager(HDC getMemDC)
 
 			IMAGEMANAGER->findImage("tile_Rect")->render(getMemDC, testRc.left, testRc.top);
 		}
+	}
+}
+
+void DataManager::scene_Changer()
+{
+	if (KEYMANAGER->isOnceKeyDown(VK_F1))
+	{
+		// 맵툴 씬으로 이동한다.
+		SCENEMANAGER->changeScene("mapTool");
+	}
+
+	if (KEYMANAGER->isOnceKeyDown(VK_F2))
+	{
+		// 맵툴 씬으로 이동한다.
+		SCENEMANAGER->changeScene("Stage_0");
+	}
+
+	if (KEYMANAGER->isOnceKeyDown(VK_F3))
+	{
+		// 맵툴 씬으로 이동한다.
+		SCENEMANAGER->changeScene("Stage_1");
 	}
 }
 
@@ -809,6 +822,15 @@ void DataManager::skul_Attack_Range_Enemy(Enemy* enemy_Address)
 		}
 
 	}
+
+}
+
+void DataManager::skul_Collision_Event(RECT eventRC)
+{
+	// 스컬이 이벤트지역에 들어갔다면
+
+	// 해당 이벤트 위치로 순간이동한다.
+
 
 }
 

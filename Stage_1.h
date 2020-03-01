@@ -1,19 +1,17 @@
 #pragma once
 #include "gameNode.h"
 #include "DataManager.h"
-//#include "CharacterState.h"
-//#include "Player.h"
+#include "eventManager.h"
 
-class test_Room : public gameNode
+class Stage_1 : public gameNode
 {
 private:
-	short				loopSpeed[5];
-
 	Player*				_skul;
+	eventManager*		eventM;
 
 public:
-	test_Room();
-	~test_Room();
+	Stage_1();
+	~Stage_1();
 
 	HRESULT init();
 	void release();
@@ -25,4 +23,3 @@ public:
 	void showRect(HDC getMemDC);
 
 };
-

@@ -29,6 +29,7 @@ void mapTool::release()
 
 void mapTool::update()
 {
+
 	testMove();																																// 테스트용 카메라 이동 함수
 
 	_button.click_Button(&_mapInfo, _mapTool_Func.get_VBackGround_Info_Address(), &_vTileList);																										// 클릭 했다면 클릭 한 버튼으로 속성을 바꿔주는 함수

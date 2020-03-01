@@ -22,6 +22,7 @@ public:
 	virtual void Attack_C(Player* player)	= 0;
 	virtual void Skill_A(Player* player)	= 0;
 	virtual void Skill_B(Player* player)	= 0;
+	virtual void Event(Player* player)		= 0;
 	virtual void update(Player* player)		= 0;
 
 protected:
@@ -56,6 +57,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 	
 };
@@ -84,6 +86,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -112,6 +115,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -140,6 +144,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -168,6 +173,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 
 };
@@ -195,6 +201,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 };
 
@@ -223,6 +230,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 };
 
@@ -249,6 +257,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 };
 
@@ -276,6 +285,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 };
 
@@ -303,6 +313,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 };
 
@@ -330,6 +341,7 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 };
 
@@ -357,5 +369,37 @@ public:
 	virtual void Attack_C(Player* player);
 	virtual void Skill_A(Player* player);
 	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
+	virtual void update(Player* player);
+};
+
+
+
+
+
+
+
+
+// ¿Ã∫•∆Æ °·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·°·
+class Event_State : public CharacterState
+{
+	static Event_State* instance;
+
+public:
+	static Event_State* getInstance();
+
+	virtual void Idle(Player* player);
+	virtual void Move(Player* player);
+	virtual void Jump(Player* player);
+	virtual void Fall(Player* player);
+	virtual void DownJump(Player* player);
+	virtual void Dash(Player* player);
+	virtual void JumpAttack(Player* player);
+	virtual void Attack_A(Player* player);
+	virtual void Attack_B(Player* player);
+	virtual void Attack_C(Player* player);
+	virtual void Skill_A(Player* player);
+	virtual void Skill_B(Player* player);
+	virtual void Event(Player* player);
 	virtual void update(Player* player);
 };

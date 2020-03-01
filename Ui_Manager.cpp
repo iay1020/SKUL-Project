@@ -29,6 +29,8 @@ void Ui_Manager::update()
 {
 	skul_UI.update_HP();
 
+	skul_UI.update_Img(skul_Address);
+
 	// 테스트용 치트키
 	if (KEYMANAGER->isOnceKeyDown(VK_F9))
 	{
