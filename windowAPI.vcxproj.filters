@@ -112,6 +112,9 @@
     <Filter Include="playGround\Scene\GameClear">
       <UniqueIdentifier>{d11b372c-6b4e-4169-944c-0e6fec24f3c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playGround\ImageMake">
+      <UniqueIdentifier>{bb4a8d65-3856-4b67-b342-8c3cbd949a3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -288,6 +291,9 @@
     <ClInclude Include="GameClear.h">
       <Filter>playGround\Scene\GameClear</Filter>
     </ClInclude>
+    <ClInclude Include="ImageMake.h">
+      <Filter>playGround\ImageMake</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -412,6 +418,9 @@
     </ClCompile>
     <ClCompile Include="GameClear.cpp">
       <Filter>playGround\Scene\GameClear</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageMake.cpp">
+      <Filter>playGround\ImageMake</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

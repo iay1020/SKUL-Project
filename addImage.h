@@ -468,6 +468,93 @@ struct tagAddImage
 		//¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 
 
+
+
+
+
+		//¡á¡á¡á¡á¡á¡á¡á¡á Guard_Captain ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
+		// <GC Idle>
+		IMAGEMANAGER->addFrameImage("GC_Idle", "./image/Guard_Captain/Idle/GuardCaptain_Idle.bmp", 1860, 442, 6, 2, true, RGB(255, 0, 255));
+
+		// <GC Walk>
+		IMAGEMANAGER->addFrameImage("GC_Walk", "./image/Guard_Captain/Move/GuardCaptain_Move.bmp", 1860, 442, 6, 2, true, RGB(255, 0, 255));
+
+		// <GC JUmp, Jump Attack>
+		IMAGEMANAGER->addFrameImage("GC_Jump", "./image/Guard_Captain/Jump/GuardCaptain_Jump.bmp", 620, 442, 2, 1, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Jump_Attack", "./image/Guard_Captain/Jump/GuardCaptain_Jump_Attack.bmp", 1550, 442, 5, 2, true, RGB(255, 0, 255));
+
+		// <GC Fall>
+		IMAGEMANAGER->addFrameImage("GC_Fall", "./image/Guard_Captain/Fall/GuardCaptain_Fall.bmp", 620, 442, 2, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Falling", "./image/Guard_Captain/Fall/GuardCaptain_Falling.bmp", 930, 442, 3, 2, true, RGB(255, 0, 255));
+
+		// <GC Dash>
+		IMAGEMANAGER->addFrameImage("GC_Dash", "./image/Guard_Captain/Dash/GuardCaptain_Dash.bmp", 1550, 442, 5, 2, true, RGB(255, 0, 255));
+
+		// <GC Attack A, B, C>
+		IMAGEMANAGER->addFrameImage("GC_Attack_A", "./image/Guard_Captain/Attack_A/GuardCaptain_Attack_A.bmp", 1550, 442, 5, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Attack_B", "./image/Guard_Captain/Attack_B/GuardCaptain_Attack_B.bmp", 1550, 442, 5, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Attack_C", "./image/Guard_Captain/Attack_C/GuardCaptain_Attack_C.bmp", 1860, 442, 6, 2, true, RGB(255, 0, 255));
+
+		// <GC Skill A, B>
+		IMAGEMANAGER->addFrameImage("GC_Skill_A", "./image/Guard_Captain/Skill/GuardCaptain_Skill_A.bmp", 6820, 442, 22, 2, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Skill_B", "./image/Guard_Captain/Skill/GuardCaptain_Skill_B.bmp", 2480, 442, 8, 2, true, RGB(255, 0, 255));
+
+
+
+
+		//¡á¡á¡á¡á¡á¡á¡á¡á Guard_Captain Ani ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
+		// < GC Idle Ani>
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Idle_Right", "GC_Idle", 0, 5, 10, false, true);
+		int GC_Idle_Left_Ani[] = { 11, 10, 9, 8, 7, 6 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Idle_Left", "GC_Idle", GC_Idle_Left_Ani, 6, 10, true);
+
+		// < GC Walk Ani>
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Walk_Right", "GC_Walk", 0, 5, 10, false, true);
+		int GC_Walk_Left_Ani[] = { 11, 10, 9, 8, 7, 6 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Walk_Left", "GC_Walk", GC_Walk_Left_Ani, 6, 10, true);
+
+		// < GC Jump Ani>
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Jump_Right", "GC_Jump", 0, 1, 10, false, false);	
+		int GC_Jump_Left_Ani[] = { 2, 3 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Jump_Left", "GC_Jump", GC_Jump_Left_Ani, 2, 10, false);
+		
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_JumpAttack_Right", "GC_Jump_Attack", 0, 4, 10, false, false);
+		int GC_JumpAttack_Left_Ani[] = { 5,6,7,8,9 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_JumpAttack_Left", "GC_Jump_Attack", GC_JumpAttack_Left_Ani, 5, 10, false);
+
+		// < GC Fall Ani>
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Fall_Right", "GC_Fall", 0, 1, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Falling_Right", "GC_Falling", 0, 2, 10, false, true);
+
+		int GC_Fall_Left_Ani[] = { 3, 2 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Fall_Left", "GC_Fall", GC_Fall_Left_Ani, 2, 10, false);
+		int GC_Falling_Left_Ani[] = { 5, 4, 3 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Falling_Left", "GC_Falling", GC_Falling_Left_Ani, 3, 10, false);
+
+		// < GC Dash Ani>
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Dash_Right", "GC_Dash", 0, 4, 10, false, false);
+		int GC_Dash_Left_Ani[] = { 9,8,7,6,5 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Dash_Left", "GC_Dash", GC_Dash_Left_Ani, 5, 10, false);
+
+		// < GC Attack Ani>
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_A_Right", "GC_Attack_A", 0, 4, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_B_Right", "GC_Attack_B", 0, 4, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_C_Right", "GC_Attack_C", 0, 5, 10, false, false);
+
+		int GC_Attack_A_Left_Ani[] = { 9, 8, 7, 6, 5 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Attack_A_Left", "GC_Attack_A", GC_Attack_A_Left_Ani, 5, 10, false);
+		int GC_Attack_B_Left_Ani[] = { 9, 8, 7, 6, 5 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Attack_B_Left", "GC_Attack_B", GC_Attack_B_Left_Ani, 5, 10, false);
+		int GC_Attack_C_Left_Ani[] = { 11, 10, 9, 8, 7, 6 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Attack_C_Left", "GC_Attack_C", GC_Attack_C_Left_Ani, 6, 10, false);
+
+		// < GC Skill Ani>
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Skill_A_Right", "GC_Skill_A", 0, 21, 10, false, false);
+		int GC_Skill_A_Left_Ani[] = { 43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22 };
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Skill_A_Left", "GC_Skill_A", GC_Skill_A_Left_Ani, 22, 10, false);
+
+
+
 		// ¸Þ·Õ
 
 		
@@ -484,7 +571,9 @@ struct tagAddImage
 		// <soldier Attack>
 		IMAGEMANAGER->addFrameImage("soldier_Attack", "./image/enemy/soldier/Attack/soldier_Attack.bmp", 860, 240, 5, 2, true, RGB(255, 0, 255));
 		
-
+		// <soldier Die>
+		IMAGEMANAGER->addImage("soldier_Die_Right", "./image/enemy/soldier/Die/Die_Right.bmp", 144, 34, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("soldier_Die_Left", "./image/enemy/soldier/Die/Die_Left.bmp", 144, 34, true, RGB(255, 0, 255));
 
 
 		// <archer Idle>
@@ -503,7 +592,9 @@ struct tagAddImage
 		IMAGEMANAGER->addFrameImage("archer_Arrow_Right", "./image/effect/archer_Arrow/enemy_Arrow_Right.bmp", 100, 22, 2, 1, true, RGB(255, 0, 255));
 		IMAGEMANAGER->addFrameImage("archer_Arrow_Left", "./image/effect/archer_Arrow/enemy_Arrow_Left.bmp", 100, 22, 2, 1, true, RGB(255, 0, 255));
 
-
+		// <archer Die>
+		IMAGEMANAGER->addImage("archer_Die_Right", "./image/enemy/archer/Die/Die_Right.bmp", 144, 36, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("archer_Die_Left", "./image/enemy/archer/Die/Die_Left.bmp", 144, 36, true, RGB(255, 0, 255));
 
 
 
@@ -518,6 +609,10 @@ struct tagAddImage
 
 		// <paladin Attack_B>
 		IMAGEMANAGER->addFrameImage("paladin_AttackB", "./image/enemy/paladin/AttackB/DashAttack.bmp", 969, 436, 3, 2, true, RGB(255, 0, 255));
+
+		// <paladin Die>
+		IMAGEMANAGER->addImage("paladin_Die_Right", "./image/enemy/paladin/Die/Die_Right.bmp", 268, 70, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addImage("paladin_Die_Left", "./image/enemy/paladin/Die/Die_Left.bmp", 268, 70, true, RGB(255, 0, 255));
 
 
 

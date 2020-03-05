@@ -34,10 +34,15 @@ void EnemyManager::update()
 		// 만약 죽은 에너미는 삭제한다.
 		if ((*_viEnemyList)->info_Address()->bool_V.im_Death)
 		{
+			// 죽을때 이펙트 생성
 			EFFECTMANAGER->play("enemy_Die_Effect", 
 				(*_viEnemyList)->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x, 
 				(*_viEnemyList)->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+
+			// 에너미 삭제
 			_viEnemyList = _vEnemyList.erase(_viEnemyList);
+
+
 		}
 		else
 			++_viEnemyList;
@@ -70,3 +75,5 @@ void EnemyManager::Create_Enemy(EnemyType type_V, EnemyDirection dir_V, string i
 	_vEnemyList.push_back(new_Enemy);
 
 }
+
+

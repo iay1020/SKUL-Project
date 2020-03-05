@@ -617,12 +617,12 @@ struct tagButton_Info
 		BT_Load = RectMake(start_Pos * 2 + button_Size * 1, 10, 52, 52);
 		BT_Eraser = RectMake(start_Pos * 3 + button_Size * 2, 10, 52, 52);
 		BT_Ground = RectMake(start_Pos * 4 + button_Size * 3, 10, 52, 52);
-		BT_Decoration = RectMake(start_Pos * 5 + button_Size * 4, 10, 52, 52);
-		BT_Door = RectMake(start_Pos * 6 + button_Size * 5, 10, 52, 52);
-		BT_Character = RectMake(start_Pos * 7 + button_Size * 6, 10, 52, 52);
-		BT_BackGround = RectMake(start_Pos * 8 + button_Size * 7, 10, 52, 52);
-		BT_RectPlus = RectMake(start_Pos * 9 + button_Size * 8, 10, 52, 52);
-		BT_FootHold_Check = RectMake(start_Pos * 10 + button_Size * 11, 10, 32, 30);
+		//BT_Decoration = RectMake(start_Pos * 5 + button_Size * 4, 10, 52, 52);
+		//BT_Door = RectMake(start_Pos * 6 + button_Size * 5, 10, 52, 52);
+		//BT_Character = RectMake(start_Pos * 7 + button_Size * 6, 10, 52, 52);
+		BT_BackGround = RectMake(start_Pos * 5 + button_Size * 4, 10, 52, 52);
+		BT_RectPlus = RectMake(start_Pos * 6 + button_Size * 5, 10, 52, 52);
+		BT_FootHold_Check = RectMake(start_Pos * 7 + button_Size * 6, 10, 32, 30);
 		BT_Wall_Check = RectMake(BT_FootHold_Check.right, 10, 32, 30);
 		BT_Trap_Check = RectMake(BT_Wall_Check.right, 10, 32, 30);
 
@@ -713,9 +713,9 @@ struct tagButton_Info
 		if (!BT_Click_Eraser)
 		{
 			IMAGEMANAGER->findImage("ground_Icon")->render(getDC, BT_Ground.left, BT_Ground.top);
-			IMAGEMANAGER->findImage("decoration_Icon")->render(getDC, BT_Decoration.left, BT_Decoration.top);
-			IMAGEMANAGER->findImage("door_Icon")->render(getDC, BT_Door.left, BT_Door.top);
-			IMAGEMANAGER->findImage("character_Icon")->render(getDC, BT_Character.left, BT_Character.top);
+			//IMAGEMANAGER->findImage("decoration_Icon")->render(getDC, BT_Decoration.left, BT_Decoration.top);
+			//IMAGEMANAGER->findImage("door_Icon")->render(getDC, BT_Door.left, BT_Door.top);
+			//IMAGEMANAGER->findImage("character_Icon")->render(getDC, BT_Character.left, BT_Character.top);
 			IMAGEMANAGER->findImage("back_Ground_Icon")->render(getDC, BT_BackGround.left, BT_BackGround.top);
 		}
 
@@ -762,8 +762,8 @@ struct tagButton_Info
 			if (PtInRect(&BT_Save, _ptMouse)) { BT_Type = BUTTON_TYPE::SAVE; BT_FindNoTile = true; }
 			if (PtInRect(&BT_Load, _ptMouse)) { BT_Type = BUTTON_TYPE::LOAD; BT_FindNoTile = true; }
 			if (PtInRect(&BT_Eraser, _ptMouse) && !next_Prev_Push_Okay)
-			{ BT_Type = BUTTON_TYPE::ERASER; BT_Click_Eraser = !BT_Click_Eraser; BT_FindNoTile = true; next_Prev_Push_Okay = true; }					// 지우개를 눌렀다면 Bool값도 같이 변한다.
-
+			{ BT_Type = BUTTON_TYPE::ERASER; BT_FindNoTile = true; next_Prev_Push_Okay = true; }					// 지우개를 눌렀다면 Bool값도 같이 변한다.
+			//{ BT_Type = BUTTON_TYPE::ERASER; BT_Click_Eraser = !BT_Click_Eraser; BT_FindNoTile = true; next_Prev_Push_Okay = true; }
 
 
 

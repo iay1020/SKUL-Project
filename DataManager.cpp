@@ -17,6 +17,7 @@ HRESULT DataManager::init()
 	_effect_Maker = new EffectMaker;
 	_enemyManager = new EnemyManager;
 	_ui_Manager = new Ui_Manager;
+	_ImageMake = new ImageMake;
 
 
 	return S_OK;
@@ -39,6 +40,7 @@ void DataManager::update()
 
 	// 투사체 매니저 업데이트
 	_flyObj_Manager->update();
+
 
 	// 투사체 충돌 함수
 	Collision_Skul_Head();
@@ -98,7 +100,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 
 	// 맵을 저장한다.
-	file = CreateFile("Stage_1.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("test.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	WriteFile(file, tile, sizeof(tagTileInfo) * mapInfo->tile_Count.x * mapInfo->tile_Count.y, &write, NULL);
@@ -118,7 +120,7 @@ void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, ve
 	}
 	
 	// 맵의 정보를 저장한다. (맵에 대한 정보 여러가지 있다. 이후에 여기에 저장 되어 있는 맵 이름을 가지고 만들어야 함)
-	file = CreateFile("Stage_1_Info.map", GENERIC_WRITE, 0, NULL,
+	file = CreateFile("test_Info.map", GENERIC_WRITE, 0, NULL,
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	
 	WriteFile(file, mapInfo, sizeof(tagMapInfo), &write, NULL);
@@ -132,7 +134,7 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 	HANDLE file;
 	DWORD read;
 
-	file = CreateFile("Stage_1_Info.map", GENERIC_READ, 0, NULL,
+	file = CreateFile("test_Info.map", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	
 	ReadFile(file, mapInfo, sizeof(tagMapInfo), &read, NULL);						// 맵 정보를 먼저 받아 온 이유는 맵을 받아올때 맵의 크기 정보가 필요하기 때문에
@@ -179,7 +181,7 @@ void DataManager::map_Load(vector<tagTileInfo>* tileList, tagMapInfo* mapInfo, v
 	tagTileInfo* tile;
 	tile = new tagTileInfo[mapInfo->tile_Count.x * mapInfo->tile_Count.y];			//	타일의 크기만큼 할당 받는다.
 
-	file = CreateFile("Stage_1.map", GENERIC_READ, 0, NULL,
+	file = CreateFile("test.map", GENERIC_READ, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 	ReadFile(file, tile, sizeof(tagTileInfo) * mapInfo->tile_Count.x * mapInfo->tile_Count.y, &read, NULL);
@@ -920,6 +922,20 @@ void DataManager::skul_Attack_Range_Enemy(Enemy* enemy_Address)
 				// 에너미 사망 bool값 넣어주기.
 				enemy_Address->info_Address()->bool_V.im_Death = true;
 
+				// 죽은 위치에 시체 이미지 생성
+				if (_skul->get_Info().status.direction == CharacterDirection::DIRECTION_RIGHT)
+				{
+					Create_ImageMaker(enemy_Address->info_Address()->pos.center.x,
+						enemy_Address->info_Address()->pos.center.y,
+						Sum_String_ImageMaker(enemy_Address->info_Address()->status.name, "Right"));
+				}
+				if (_skul->get_Info().status.direction == CharacterDirection::DIRECTION_LEFT)
+				{
+					Create_ImageMaker(enemy_Address->info_Address()->pos.center.x - 100,
+						enemy_Address->info_Address()->pos.center.y,
+						Sum_String_ImageMaker(enemy_Address->info_Address()->status.name, "Left"));
+				}
+
 			}
 		}
 
@@ -1217,6 +1233,15 @@ RECT DataManager::plus_CameraPos(RECT rc)
 	return v_RC;
 }
 
+string DataManager::Sum_String_ImageMaker(string enemyName, string dir)
+{
+	string imgName;
+	imgName = enemyName + "_Die_" + dir;
+	cout << imgName << endl;
+
+	return imgName;
+}
+
 RECT DataManager::minus_CameraPos(RECT rc)
 {
 	RECT v_RC = rc;
@@ -1479,6 +1504,20 @@ void DataManager::Collision_Skul_Head_Enemy(Enemy * enemy)
 
 					// 에너미 사망 bool값 넣어주기.
 					enemy->info_Address()->bool_V.im_Death = true;
+
+					// 죽은 위치에 시체 이미지 생성
+					if (_skul->get_Info().status.direction == CharacterDirection::DIRECTION_RIGHT)
+					{
+						Create_ImageMaker(enemy->info_Address()->pos.center.x,
+							enemy->info_Address()->pos.center.y,
+							Sum_String_ImageMaker(enemy->info_Address()->status.name, "Right"));
+					}
+					if (_skul->get_Info().status.direction == CharacterDirection::DIRECTION_LEFT)
+					{
+						Create_ImageMaker(enemy->info_Address()->pos.center.x - 100,
+							enemy->info_Address()->pos.center.y,
+							Sum_String_ImageMaker(enemy->info_Address()->status.name, "Left"));
+					}
 
 				}
 

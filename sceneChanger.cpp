@@ -12,10 +12,10 @@ sceneChanger::~sceneChanger()
 HRESULT sceneChanger::init()
 {
 	_sceneFunc.addScene();	// 씬을 추가 한다.
-	_sceneFunc.changeScene("mapTool");	// 처음 시작할 씬을 골라준다.
+	//_sceneFunc.changeScene("mapTool");	// 처음 시작할 씬을 골라준다.
 	//_sceneFunc.changeScene("Stage_0");	
 	//_sceneFunc.changeScene("Stage_1");
-	//_sceneFunc.changeScene("Intro");
+	_sceneFunc.changeScene("Intro");
 	//_sceneFunc.changeScene("GameOver");
 
 	return S_OK;

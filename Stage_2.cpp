@@ -68,6 +68,9 @@ void Stage_2::render()
 	// 에너미 출력
 	DATAMANAGER->show_Enemy();
 
+	// 이미지 출력
+	DATAMANAGER->Render_ImageMaker();
+
 
 	// 플레이어 출력
 	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),

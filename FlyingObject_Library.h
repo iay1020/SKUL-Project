@@ -60,7 +60,7 @@ struct FlyingObjectInfo
 		type = FLYINFOBJECT_TYPE::NONE;		// 타입 초기화
 	
 		img = new image;					// 이미지 할당
-		ani = new animation;				// 애니 할당
+		//ani = new animation;				// 애니 할당
 		aniName = "";						// 애니 키값 초기화
 
 		center.x = center.y = 0;			// 중점 초기화
@@ -115,6 +115,7 @@ struct FlyingObjectInfo
 		if (isFrame);
 		{
 			// 키값을 이용하여 애니메이션을 저장한다.
+			ani = new animation;
 			ani = KEYANIMANAGER->findAnimation(aniName_V);
 
 			// 애니메이션 스타트

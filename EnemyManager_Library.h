@@ -99,6 +99,7 @@ struct Enemy_Hp_Img
 struct EnemyStatus
 {
 	EnemyType			type;			// 에너미의 타입을 담는다.
+	string				name;			// 에너미의 이름을 담는다.
 	EnemyDirection		dir;			// 에너미의 방향을 담는다.
 
 	short				hp;				// 에너미의 체력을 담는다.
@@ -207,6 +208,7 @@ struct EnemyInfo
 	{
 		// 스테이터스 초기화
 		status.type = EnemyType::NONE;
+		status.name = "";
 		status.dir = EnemyDirection::NONE;
 		status.hp = 0;
 		status.attack = 0;
@@ -217,7 +219,7 @@ struct EnemyInfo
 		status.state = EnemyStateEnum::NONE;
 
 		// 이미지 초기화
-		img.ani = new animation;
+		//img.ani = new animation;
 		img.imgName = "";
 		img.aniName = "";
 		img.curX = img.curY = 0;
@@ -351,7 +353,8 @@ struct EnemyInfo
 		switch (status.type)
 		{
 		case EnemyType::SOLDIER:
-			status.hp = 545;
+			status.name = "soldier";
+			status.hp = 45;
 			status.attack = 15;
 			status.def = 0;
 			status.speed = ENEMYSPEED;
@@ -367,7 +370,8 @@ struct EnemyInfo
 			break;
 
 		case EnemyType::ARCHER:
-			status.hp = 300;
+			status.name = "archer";
+			status.hp = 30;
 			status.attack = 10;
 			status.def = 0;
 			status.speed = ENEMYSPEED;
@@ -383,7 +387,8 @@ struct EnemyInfo
 			break;
 
 		case EnemyType::PALADIN:
-			status.hp = 1000;
+			status.name = "paladin";
+			status.hp = 300;
 			status.attack = 50;
 			status.def = 0;
 			status.speed = ENEMYSPEED;
@@ -479,6 +484,7 @@ struct EnemyInfo
 		// 이미지 생성
 		img.imgName = imgName;
 		img.aniName = aniName;
+		img.ani = new animation;
 		img.ani = KEYANIMANAGER->findAnimation(aniName);
 		img.ani->start();
 

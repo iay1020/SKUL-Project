@@ -9,6 +9,7 @@
 #include "EffectMaker.h"
 #include "EnemyManager.h"
 #include "Ui_Manager.h"
+#include "ImageMake.h"
 
 class DataManager : public singletonBase<DataManager>
 {
@@ -26,6 +27,8 @@ private:
 
 	Ui_Manager*					_ui_Manager;							// ui 매니저
 	vector<tagTileInfo>			minimap;								// 미니맵
+
+	ImageMake*					_ImageMake;								// 이미지 메이커
 
 public:
 	DataManager();		// 생성자
@@ -121,6 +124,14 @@ public:
 	// 렉트에 카메라를 더해준다.
 	RECT plus_CameraPos(RECT rc);
 
+	// 이미지를 만들어 준다. (고정 이미지)
+	void Create_ImageMaker(float posX, float posY, string ImgName) { return _ImageMake->Create_Img(posX, posY, ImgName); }
+
+	// 이미지 출력
+	void Render_ImageMaker() { return _ImageMake->Show_Img(); }
+
+	// 이미지 메이커 문자열 합치기
+	string Sum_String_ImageMaker(string enemyName, string dir);
 
 	// ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■ 투사체 ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 
