@@ -210,6 +210,17 @@ struct CharacterStatusUI
 		
 				break;
 		
+
+			case SKUL_TYPE::SKUL_NIGHT:
+				type.img = IMAGEMANAGER->findImage("GC_Icon");
+
+				skill.img_A_Name = "GC_TripleSpainSlash";
+				skill.img_A = IMAGEMANAGER->findImage(skill.img_A_Name);
+
+				skill.img_B_Name = "skill_Null";
+				skill.img_B = IMAGEMANAGER->findImage(skill.img_B_Name);
+
+				break;
 			//
 				
 		}

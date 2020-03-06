@@ -112,12 +112,15 @@ struct tagAddImage
 		// character 
 		{
 			IMAGEMANAGER->addImage("skul_Icon", "./image/UI/Character_Icon/skul_Icon.bmp", 90, 90, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("GC_Icon", "./image/UI/Character_Icon/GC_Icon.bmp", 90, 90, true, RGB(255, 0, 255));
 		}
 
 		// skill 
 		{
 			IMAGEMANAGER->addImage("skill_Null", "./image/UI/Skill_Img/skill_Null.bmp", 48, 48, false, RGB(255, 0, 255));
 			IMAGEMANAGER->addImage("skul_ThrowHead_Skill", "./image/UI/Skill_Img/skul_ThrowHead_Skill_Img.bmp", 48, 48, true, RGB(255, 0, 255));
+			IMAGEMANAGER->addImage("GC_TripleSpainSlash", "./image/UI/Skill_Img/GC_TripleSpinSlash.bmp", 48, 48, true, RGB(255, 0, 255));
+
 		}
 
 		// hp 
@@ -175,6 +178,15 @@ struct tagAddImage
 			// ¾Æ·¡Á¡ÇÁ NPC
 			IMAGEMANAGER->addFrameImage("down_Jump_NPC", "./image/event/down_Jump_NPC.bmp", 328, 84, 4, 1, true, RGB(255, 0, 255));
 			KEYANIMANAGER->addCoordinateFrameAnimation("down_Jump_NPC_Ani", "down_Jump_NPC", 0, 3, 10, false, true);
+
+
+			// °¡µåÄ¸Æ¾ ½ÃÃ¼ 
+			IMAGEMANAGER->addFrameImage("GC_Deadbody", "./image/event/GC_Deadbody.bmp", 220, 44, 2, 1, true, RGB(255, 0, 255));
+			KEYANIMANAGER->addCoordinateFrameAnimation("GC_Deadbody", "GC_Deadbody", 0, 2, 10, false, false);
+
+			// °¡µåÄ¸Æ¾ Å¸ÀÔÀ» È¹µæ
+			IMAGEMANAGER->addFrameImage("GC_Get_Type", "./image/event/GC_Get_Type.bmp", 4224, 74, 33, 1, true, RGB(255, 0, 255));
+			KEYANIMANAGER->addCoordinateFrameAnimation("GC_Get_Type", "GC_Get_Type", 0, 33, 10, false, false);
 
 		}
 
@@ -480,7 +492,7 @@ struct tagAddImage
 		IMAGEMANAGER->addFrameImage("GC_Walk", "./image/Guard_Captain/Move/GuardCaptain_Move.bmp", 1860, 442, 6, 2, true, RGB(255, 0, 255));
 
 		// <GC JUmp, Jump Attack>
-		IMAGEMANAGER->addFrameImage("GC_Jump", "./image/Guard_Captain/Jump/GuardCaptain_Jump.bmp", 620, 442, 2, 1, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Jump", "./image/Guard_Captain/Jump/GuardCaptain_Jump.bmp", 620, 442, 2, 2, true, RGB(255, 0, 255));
 		IMAGEMANAGER->addFrameImage("GC_Jump_Attack", "./image/Guard_Captain/Jump/GuardCaptain_Jump_Attack.bmp", 1550, 442, 5, 2, true, RGB(255, 0, 255));
 
 		// <GC Fall>
@@ -499,47 +511,53 @@ struct tagAddImage
 		IMAGEMANAGER->addFrameImage("GC_Skill_A", "./image/Guard_Captain/Skill/GuardCaptain_Skill_A.bmp", 6820, 442, 22, 2, true, RGB(255, 0, 255));
 		IMAGEMANAGER->addFrameImage("GC_Skill_B", "./image/Guard_Captain/Skill/GuardCaptain_Skill_B.bmp", 2480, 442, 8, 2, true, RGB(255, 0, 255));
 
+		// <GC Skill A Effect>
+		IMAGEMANAGER->addFrameImage("GC_Skill_A_Effect", "./image/effect/Guard_Captain_Effect/Skill_A_Effect.bmp", 560, 120, 5, 1, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Skill_A_Final_Right", "./image/effect/Guard_Captain_Effect/Skill_A_Final_Effect_Right.bmp", 4976, 66, 8, 1, true, RGB(255, 0, 255));
+		IMAGEMANAGER->addFrameImage("GC_Skill_A_Final_Left", "./image/effect/Guard_Captain_Effect/Skill_A_Final_Effect_Left.bmp", 4976, 66, 8, 1, true, RGB(255, 0, 255));
 
-
+		EFFECTMANAGER->addEffect("GC_Skill_A_Effect", "GC_Skill_A_Effect", 560, 120, 112, 120, 1, 0.2f, 1);
+		EFFECTMANAGER->addEffect("GC_Skill_A_Final_Right", "GC_Skill_A_Final_Right", 4976, 66, 622, 66, 1, 0.2f, 1);
+		EFFECTMANAGER->addEffect("GC_Skill_A_Final_Left", "GC_Skill_A_Final_Left", 4976, 66, 622, 66, 1, 0.2f, 1);
 
 		//¡á¡á¡á¡á¡á¡á¡á¡á Guard_Captain Ani ¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á
 		// < GC Idle Ani>
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Idle_Right", "GC_Idle", 0, 5, 10, false, true);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Idle_Right", "GC_Idle", 0, 6, 10, false, true);
 		int GC_Idle_Left_Ani[] = { 11, 10, 9, 8, 7, 6 };
 		KEYANIMANAGER->addArrayFrameAnimation("GC_Idle_Left", "GC_Idle", GC_Idle_Left_Ani, 6, 10, true);
 
 		// < GC Walk Ani>
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Walk_Right", "GC_Walk", 0, 5, 10, false, true);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Walk_Right", "GC_Walk", 0, 6, 10, false, true);
 		int GC_Walk_Left_Ani[] = { 11, 10, 9, 8, 7, 6 };
 		KEYANIMANAGER->addArrayFrameAnimation("GC_Walk_Left", "GC_Walk", GC_Walk_Left_Ani, 6, 10, true);
 
 		// < GC Jump Ani>
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Jump_Right", "GC_Jump", 0, 1, 10, false, false);	
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Jump_Right", "GC_Jump", 0, 2, 10, false, false);	
 		int GC_Jump_Left_Ani[] = { 2, 3 };
 		KEYANIMANAGER->addArrayFrameAnimation("GC_Jump_Left", "GC_Jump", GC_Jump_Left_Ani, 2, 10, false);
 		
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_JumpAttack_Right", "GC_Jump_Attack", 0, 4, 10, false, false);
-		int GC_JumpAttack_Left_Ani[] = { 5,6,7,8,9 };
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_JumpAttack_Right", "GC_Jump_Attack", 0, 5, 10, false, false);
+		int GC_JumpAttack_Left_Ani[] = { 9, 8, 7, 6, 5 };
 		KEYANIMANAGER->addArrayFrameAnimation("GC_JumpAttack_Left", "GC_Jump_Attack", GC_JumpAttack_Left_Ani, 5, 10, false);
 
 		// < GC Fall Ani>
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Fall_Right", "GC_Fall", 0, 1, 10, false, false);
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Falling_Right", "GC_Falling", 0, 2, 10, false, true);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Fall_Right", "GC_Fall", 0, 2, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Falling_Right", "GC_Falling", 0, 3, 10, false, true);
 
 		int GC_Fall_Left_Ani[] = { 3, 2 };
 		KEYANIMANAGER->addArrayFrameAnimation("GC_Fall_Left", "GC_Fall", GC_Fall_Left_Ani, 2, 10, false);
 		int GC_Falling_Left_Ani[] = { 5, 4, 3 };
-		KEYANIMANAGER->addArrayFrameAnimation("GC_Falling_Left", "GC_Falling", GC_Falling_Left_Ani, 3, 10, false);
+		KEYANIMANAGER->addArrayFrameAnimation("GC_Falling_Left", "GC_Falling", GC_Falling_Left_Ani, 3, 10, true);
 
 		// < GC Dash Ani>
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Dash_Right", "GC_Dash", 0, 4, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Dash_Right", "GC_Dash", 0, 5, 10, false, false);
 		int GC_Dash_Left_Ani[] = { 9,8,7,6,5 };
 		KEYANIMANAGER->addArrayFrameAnimation("GC_Dash_Left", "GC_Dash", GC_Dash_Left_Ani, 5, 10, false);
 
 		// < GC Attack Ani>
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_A_Right", "GC_Attack_A", 0, 4, 10, false, false);
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_B_Right", "GC_Attack_B", 0, 4, 10, false, false);
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_C_Right", "GC_Attack_C", 0, 5, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_A_Right", "GC_Attack_A", 0, 5, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_B_Right", "GC_Attack_B", 0, 5, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Attack_C_Right", "GC_Attack_C", 0, 6, 10, false, false);
 
 		int GC_Attack_A_Left_Ani[] = { 9, 8, 7, 6, 5 };
 		KEYANIMANAGER->addArrayFrameAnimation("GC_Attack_A_Left", "GC_Attack_A", GC_Attack_A_Left_Ani, 5, 10, false);
@@ -549,9 +567,10 @@ struct tagAddImage
 		KEYANIMANAGER->addArrayFrameAnimation("GC_Attack_C_Left", "GC_Attack_C", GC_Attack_C_Left_Ani, 6, 10, false);
 
 		// < GC Skill Ani>
-		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Skill_A_Right", "GC_Skill_A", 0, 21, 10, false, false);
-		int GC_Skill_A_Left_Ani[] = { 43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22 };
-		KEYANIMANAGER->addArrayFrameAnimation("GC_Skill_A_Left", "GC_Skill_A", GC_Skill_A_Left_Ani, 22, 10, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Skill_A_Right", "GC_Skill_A", 0, 22, 10, false, false);
+		KEYANIMANAGER->addCoordinateFrameAnimation("GC_Skill_A_Left", "GC_Skill_A", 22, 44, 10, false, false);
+		
+		
 
 
 

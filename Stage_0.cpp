@@ -77,6 +77,12 @@ void Stage_0::render()
 	DATAMANAGER->Render_ImageMaker();
 
 	// 플레이어 출력
+	if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+	{
+		IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
+			_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top - 8, _skul->get_Info().img.ani);
+	}
+	else
 	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
 		_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
 

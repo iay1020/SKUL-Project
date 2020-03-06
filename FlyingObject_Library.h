@@ -3,6 +3,9 @@
 // 스컬의 머리가 사라지는 시간
 #define SKUL_HEAD_DELETE_TIME 300
 
+// 이벤트 스컬의 머리가 사라지는 시간
+#define EVENT_SKUL_HEAD_DELETE_TIME 30
+
 // 파티클이 사라지는 시간
 #define PARTICLE_DELETE_TIME 50
 
@@ -17,6 +20,7 @@ enum class FLYINFOBJECT_TYPE
 {
 	NONE,							// NULL
 	SKUL_HEAD,						// 스컬 머리
+	EVENT_SKUL_HEAD,				// 이벤트 스컬 머리
 	PARTICLE,						// 파티클
 	ARROW							// 화살
 
@@ -163,6 +167,9 @@ struct FlyingObjectInfo
 
 			case FLYINFOBJECT_TYPE::ARROW:
 				return ARROW_DELETE_TIME;
+
+			case FLYINFOBJECT_TYPE::EVENT_SKUL_HEAD:
+				return EVENT_SKUL_HEAD_DELETE_TIME;
 
 				break;
 		}

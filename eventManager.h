@@ -6,6 +6,7 @@ enum class eventType
 	EMPTY,						// 빈 공간
 	GIVE_WEAPON_NPC,			// 무기 주는 이벤트 
 	DOWN_HELP_NPC,				// 아래 점프를 알려주는 이벤트
+	GET_GC_TYPE,				// 기사 단장 타입을 얻는 이벤트
 	FIND_WITCH_NPC,				// 마녀 구출 이벤트
 	NEXT_GATE,					// 다음 스테이지 문
 	START_GATE					// 시작 입구
@@ -66,6 +67,19 @@ struct eventInfo
 			ani = KEYANIMANAGER->findAnimation(aniName);
 
 			findRC = RectMake(center.x - 105, center.y , 55, 40);
+
+			rc = RectMakeCenter(center.x, center.y + 20,
+				img->getFrameWidth(), img->getFrameHeight());
+
+			break;
+
+		case eventType::GET_GC_TYPE:
+			imgName = "GC_Deadbody";
+			img = IMAGEMANAGER->findImage(imgName);
+			aniName = "GC_Deadbody";
+			ani = KEYANIMANAGER->findAnimation(aniName);
+
+			findRC = RectMake(center.x - 105, center.y - 40, 50, 90);
 
 			rc = RectMakeCenter(center.x, center.y + 20,
 				img->getFrameWidth(), img->getFrameHeight());

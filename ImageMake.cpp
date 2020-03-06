@@ -9,6 +9,7 @@ HRESULT ImageMake::init()
 
 void ImageMake::release()
 {
+	vImgInfo.clear();
 }
 
 void ImageMake::update()

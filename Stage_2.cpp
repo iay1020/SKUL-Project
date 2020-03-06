@@ -50,7 +50,7 @@ void Stage_2::update()
 	eventM->update();
 
 	// 캐릭터 타일 위치
-	cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
+	//cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
 
 }
 
@@ -73,8 +73,14 @@ void Stage_2::render()
 
 
 	// 플레이어 출력
-	IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
-		_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
+	if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+	{
+		IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
+			_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top - 8, _skul->get_Info().img.ani);
+	}
+	else
+		IMAGEMANAGER->findImage(_skul->get_Info().img.imgName)->aniRender(getMemDC(),
+			_skul->get_Info().img.img_Rc.left, _skul->get_Info().img.img_Rc.top, _skul->get_Info().img.ani);
 
 
 	// 플레이어 공격 렉트 출력

@@ -131,7 +131,7 @@ void IdleState::Idle(Player * player)
 
 	if (KEYMANAGER->isOnceKeyDown('S') && player->get_Info().type.skul_Type != SKUL_TYPE::SKUL_NOWEAPON)
 	{
-
+		
 	}
 
 
@@ -366,8 +366,31 @@ void IdleState::Skill_B(Player * player)
 void IdleState::Event(Player * player)
 {
 	// 이벤트 애니메이션으로 교체 하지만 시작은 하지않는다.
-	player->set_Info()->set_Ani("get_Weapon_Skul", "get_Weapon_Skul_Ani");
-	player->set_Info()->img.ani->start();
+	if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
+	{
+		player->set_Info()->set_Ani("get_Weapon_Skul", "get_Weapon_Skul_Ani");
+		player->set_Info()->img.ani->start();
+	}
+	if (player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON ||
+		player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+	{
+		player->set_Info()->pos.center.x += 40;
+		player->set_Info()->set_Ani("GC_Get_Type", "GC_Get_Type");
+		player->set_Info()->img.ani->start();
+	}
+
+	// 타입에 따른 스텟 변경
+	player->set_Info()->setting_Type_Status();
+	if (DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP < player->get_Info().status.HP)
+	{
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP = player->get_Info().status.HP;
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.state = HP_UPDATE_STATE::HEAL;
+	}
+	if (DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP > player->get_Info().status.HP)
+	{
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP = player->get_Info().status.HP;
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.state = HP_UPDATE_STATE::HIT;
+	}
 
 	// 이벤트 상태로 교체
 	player->set_State(Event_State::getInstance());
@@ -1469,11 +1492,30 @@ void FallState::Fall(Player * player)
 
 	// 추락 루프 애니메이션으로 교체하는 시점 (스컬 추락 애니메이션 중에만)
 	if (player->get_Info().img.imgName == "skul_Fall" ||
-		player->get_Info().img.imgName == "skul_Fall_NoHead")
+		player->get_Info().img.imgName == "skul_Fall_NoHead" ||
+		player->get_Info().img.imgName == "GC_Fall")
 	{
-
 		// 프레임이 2로 변하는 시점 (프레임가로의 크기가 160이므로, 0 = 0, 160 = 1, 320 = 2로 프레임 위치를 가리킨다.)
 		if (player->get_Info().img.ani->getFramePos().x >= 320)
+		{
+			// 망토가 계속 펄럭거려야 하기 때문에 루프 애니메이션으로 교체한다.
+			if (player->get_InputKey() == PRESS_LEFT)
+			{
+				//player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Left_NoWeapon");
+				player->set_Info()->ani_Changer("Falling", player->get_InputKey());
+				player->set_Info()->img.ani->start();
+			}
+
+			if (player->get_InputKey() == PRESS_RIGHT)
+			{
+				//player->set_Info()->set_Ani("skul_Falling", "skul_Falling_Right_NoWeapon");
+				player->set_Info()->ani_Changer("Falling", player->get_InputKey());
+				player->set_Info()->img.ani->start();
+			}
+		}
+
+	
+		if (player->get_Info().img.ani->getFramePos().x >= 0 && player->get_Info().img.imgName == "GC_Fall")
 		{
 			// 망토가 계속 펄럭거려야 하기 때문에 루프 애니메이션으로 교체한다.
 			if (player->get_InputKey() == PRESS_LEFT)
@@ -2155,9 +2197,17 @@ void JumpAttackState::JumpAttack(Player * player)
 	player->set_Info()->jump.jump_Attack_Count++;
 
 	// 공격 렉트를 만들어준다.
-	if (player->get_InputKey() == PRESS_LEFT && player->get_Info().img.ani->getFramePos().x == 320)		player->set_Info()->create_Attack_Rect(player->get_InputKey());
-	else if (player->get_InputKey() == PRESS_RIGHT && player->get_Info().img.ani->getFramePos().x == 160)	player->set_Info()->create_Attack_Rect(player->get_InputKey());
-	else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+	if (player->get_Info().img.imgName == "skul_Jump_Attack")
+	{
+		if (player->get_InputKey() == PRESS_LEFT && player->get_Info().img.ani->getFramePos().x == 320)		player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		else if (player->get_InputKey() == PRESS_RIGHT && player->get_Info().img.ani->getFramePos().x == 160)	player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+	}
+	if (player->get_Info().img.imgName == "GC_Jump_Attack")
+	{
+		if (player->get_Info().img.ani->getFramePos().x == 620)		player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+	}
 
 	// 점프 공격을 시작하면 일정 시간이 지난 후 추락중 애니메이션으로 바뀐다.
 	if (player->get_Info().jump.jump_Attack_Count >= PLAYER_JUMPATTACK_COOLTIME) Fall(player);
@@ -2261,53 +2311,110 @@ void Attack_A_State::Attack_A(Player * player)
 		if (player->get_InputKey() == PRESS_LEFT)
 		{
 			player->set_Info()->pos.center.x -= PLAYER_SPEED * 3;
-
+	
 			// 한번만 움직여야하기 때문에 false로 바꿔준다.
 			player->set_Info()->bool_V.walking_Cheack = false;
 		}
-
+	
 		if (player->get_InputKey() == PRESS_RIGHT)
 		{
 			player->set_Info()->pos.center.x += PLAYER_SPEED * 3;
-
+	
 			// 한번만 움직여야하기 때문에 false로 바꿔준다.
 			player->set_Info()->bool_V.walking_Cheack = false;
 		}
-
+	
 		// 카메라 위치 갱신
 		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
-
+	
 		// 렉트 갱신
 		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
 		player->update_Ani_Rect();
 	}
+
 
 	// 만약 공격 A를 실행시키고 있는 도중에 X키를 눌렀다면 (+ 아직 Attack_B의 bool값이 true가 안됐을때)
 	{
 		if (KEYMANAGER->isOnceKeyDown('X') && !player->get_Info().bool_V.next_Attack_B)
 		{
 			player->set_Info()->bool_V.next_Attack_B = true;
+
 		}
 	}
 
-	// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
-	if (player->get_Info().img.ani->getFramePos().x == 2 * 160)
+	if (player->get_Info().img.imgName == "skul_Attack_A")
 	{
-		// 공격 렉트를 만들어준다.
-		player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
+		if (player->get_Info().img.ani->getFramePos().x == 2 * 160)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
+
+		// 공격 애니메이션의 마지막 프레임일때
+		if (player->get_Info().img.ani->getFramePos().x == 640)
+		{
+			// 방향키를 계쏙 누르고 있다면 
+			if (KEYMANAGER->isStayKeyDown(VK_RIGHT) || KEYMANAGER->isStayKeyDown(VK_LEFT))
+			{
+				player->set_Info()->bool_V.walking_Cheack = true;
+			}
+
+			// 만약 공격 B의 bool값이 켜져 있다면 공격 B 애니메이션으로 교체 하러 간다.
+			if (player->get_Info().bool_V.next_Attack_B) Attack_B(player);
+
+			// 아니라면 대기 애니메이션을 넣어준다.
+			else Idle(player);
+		}
 	}
-	else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
 
-
-	// 공격 애니메이션의 마지막 프레임일때
-	if (player->get_Info().img.ani->getFramePos().x == 640)
+	if (player->get_Info().img.imgName == "GC_Attack_A")
 	{
-		// 만약 공격 B의 bool값이 켜져 있다면 공격 B 애니메이션으로 교체 하러 간다.
-		if(player->get_Info().bool_V.next_Attack_B) Attack_B(player);
 	
-		// 아니라면 대기 애니메이션을 넣어준다.
-		else Idle(player);
+		// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
+		if (player->get_Info().img.ani->getFramePos().x == 2 * 310)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+		
+		
+		// 공격 애니메이션의 마지막 프레임일때
+		if (player->get_Info().img.ani->getFramePos().x == 4 * 310 && player->get_InputKey() == PRESS_RIGHT)
+		{
+			// 방향키를 계쏙 누르고 있다면 
+			if (KEYMANAGER->isStayKeyDown(VK_RIGHT) || KEYMANAGER->isStayKeyDown(VK_LEFT))
+			{
+				player->set_Info()->bool_V.walking_Cheack = true;
+			}
+
+			// 만약 공격 B의 bool값이 켜져 있다면 공격 B 애니메이션으로 교체 하러 간다.
+			if (player->get_Info().bool_V.next_Attack_B) Attack_B(player);
+		
+			// 아니라면 대기 애니메이션을 넣어준다.
+			else Idle(player);
+		}
+
+		if (player->get_Info().img.ani->getFramePos().x == 0 && player->get_InputKey() == PRESS_LEFT)
+		{
+			// 방향키를 계쏙 누르고 있다면 
+			if (KEYMANAGER->isStayKeyDown(VK_RIGHT) || KEYMANAGER->isStayKeyDown(VK_LEFT))
+			{
+				player->set_Info()->bool_V.walking_Cheack = true;
+			}
+
+			// 만약 공격 B의 bool값이 켜져 있다면 공격 B 애니메이션으로 교체 하러 간다.
+			if (player->get_Info().bool_V.next_Attack_B) Attack_B(player);
+
+			// 아니라면 대기 애니메이션을 넣어준다.
+			else Idle(player);
+		}
+		
 	}
+
 }
 
 void Attack_A_State::Attack_B(Player * player)
@@ -2410,31 +2517,126 @@ void Attack_B_State::Attack_A(Player * player)
 
 void Attack_B_State::Attack_B(Player * player)
 {
+	// 만약 이동중인 bool 값이 켜져있다면 조금 움직인다.
+	if (player->get_Info().bool_V.walking_Cheack)
+	{
+		if (player->get_InputKey() == PRESS_LEFT)
+		{
+			player->set_Info()->pos.center.x -= PLAYER_SPEED * 3;
+
+			// 한번만 움직여야하기 때문에 false로 바꿔준다.
+			player->set_Info()->bool_V.walking_Cheack = false;
+		}
+
+		if (player->get_InputKey() == PRESS_RIGHT)
+		{
+			player->set_Info()->pos.center.x += PLAYER_SPEED * 3;
+
+			// 한번만 움직여야하기 때문에 false로 바꿔준다.
+			player->set_Info()->bool_V.walking_Cheack = false;
+		}
+
+		// 카메라 위치 갱신
+		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+		// 렉트 갱신
+		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+		player->update_Ani_Rect();
+	}
+
+
+	// 만약 공격 A를 실행시키고 있는 도중에 X키를 눌렀다면 (+ 아직 Attack_B의 bool값이 true가 안됐을때)
+	{
+		if (KEYMANAGER->isOnceKeyDown('X') && !player->get_Info().bool_V.next_Attack_C)
+		{
+			player->set_Info()->bool_V.next_Attack_C = true;
+
+		}
+	}
+
+	if (player->get_Info().img.imgName == "skul_Attack_B")
+	{
+		// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
+		if (player->get_Info().img.ani->getFramePos().x == 2 * 160)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
+		// 공격 애니메이션의 마지막 프레임일때
+		if (player->get_Info().img.ani->getFramePos().x == 640)
+		{
+			// 대기 상태로 돌아간다.
+			Attack_B_State::Idle(player);
+		}
+	}
+
+	if (player->get_Info().img.imgName == "GC_Attack_B")
+	{
+		// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
+		if (player->get_Info().img.ani->getFramePos().x == 2 * 310)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
+
+		// 공격 애니메이션의 마지막 프레임일때
+		if (player->get_Info().img.ani->getFramePos().x == 4 * 310 && player->get_InputKey() == PRESS_RIGHT)
+		{
+			// 방향키를 계쏙 누르고 있다면 
+			if (KEYMANAGER->isStayKeyDown(VK_RIGHT) || KEYMANAGER->isStayKeyDown(VK_LEFT))
+			{
+				player->set_Info()->bool_V.walking_Cheack = true;
+			}
+
+			// 만약 공격 B의 bool값이 켜져 있다면 공격 B 애니메이션으로 교체 하러 간다.
+			if (player->get_Info().bool_V.next_Attack_C) Attack_C(player);
+
+			// 아니라면 대기 애니메이션을 넣어준다.
+			else Idle(player);
+		}
+
+		if (player->get_Info().img.ani->getFramePos().x == 0 && player->get_InputKey() == PRESS_LEFT)
+		{
+			// 방향키를 계쏙 누르고 있다면 
+			if (KEYMANAGER->isStayKeyDown(VK_RIGHT) || KEYMANAGER->isStayKeyDown(VK_LEFT))
+			{
+				player->set_Info()->bool_V.walking_Cheack = true;
+			}
+
+			// 만약 공격 B의 bool값이 켜져 있다면 공격 B 애니메이션으로 교체 하러 간다.
+			if (player->get_Info().bool_V.next_Attack_C) Attack_C(player);
+
+			// 아니라면 대기 애니메이션을 넣어준다.
+			else Idle(player);
+		}
+	}
+
+
 	// 카메라 위치 갱신
 	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
 
 	// 렉트 갱신
 	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
 	player->update_Ani_Rect();
-
-	// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
-	if (player->get_Info().img.ani->getFramePos().x == 2 * 160)
-	{
-		// 공격 렉트를 만들어준다.
-		player->set_Info()->create_Attack_Rect(player->get_InputKey());
-	}
-	else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
-
-	// 공격 애니메이션의 마지막 프레임일때
-	if (player->get_Info().img.ani->getFramePos().x == 640)
-	{
-		// 대기 상태로 돌아간다.
-		Attack_B_State::Idle(player);
-	}
 }
 
 void Attack_B_State::Attack_C(Player * player)
 {
+	// 다음 공격이 가능하게 bool값 초기화
+	player->set_Info()->bool_V.Attack_Success = false;
+	player->set_Info()->bool_V.next_Attack_B = false;
+
+	// 공격 B 애니메이션으로 교체해준다.
+	player->set_Info()->ani_Changer("Attack_C", player->get_InputKey());
+	player->set_Info()->img.ani->start();
+
+	// 공격 B 상태로 교체해준다.
+	player->set_State(Attack_C_State::getInstance());
+	player->get_State()->update(player);
 }
 
 void Attack_B_State::Skill_A(Player * player)
@@ -2473,6 +2675,21 @@ Attack_C_State * Attack_C_State::getInstance()
 
 void Attack_C_State::Idle(Player * player)
 {
+	// 공격 렉트 초기화
+	player->set_Info()->pos.Attack_RC = { 0, 0, 0, 0 };
+
+	// 사용한 변수 초기화
+	player->set_Info()->bool_State_Reset();
+
+	player->set_Info()->bool_V.next_Attack_B = false;
+
+	// 대기 애니메이션으로 교체 해준다.
+	player->set_Info()->ani_Changer("Idle", player->get_InputKey());
+
+	// 대기 상태로 바꿔준다.
+	player->set_State(IdleState::getInstance());
+	player->get_State()->update(player);
+
 }
 
 void Attack_C_State::Move(Player * player)
@@ -2509,6 +2726,76 @@ void Attack_C_State::Attack_B(Player * player)
 
 void Attack_C_State::Attack_C(Player * player)
 {
+	// 만약 이동중인 bool 값이 켜져있다면 조금 움직인다.
+	if (player->get_Info().bool_V.walking_Cheack)
+	{
+		if (player->get_InputKey() == PRESS_LEFT)
+		{
+			player->set_Info()->pos.center.x -= PLAYER_SPEED * 3;
+
+			// 한번만 움직여야하기 때문에 false로 바꿔준다.
+			player->set_Info()->bool_V.walking_Cheack = false;
+		}
+
+		if (player->get_InputKey() == PRESS_RIGHT)
+		{
+			player->set_Info()->pos.center.x += PLAYER_SPEED * 3;
+
+			// 한번만 움직여야하기 때문에 false로 바꿔준다.
+			player->set_Info()->bool_V.walking_Cheack = false;
+		}
+
+		// 카메라 위치 갱신
+		CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+		// 렉트 갱신
+		player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+		player->update_Ani_Rect();
+	}
+
+
+	if (player->get_Info().img.imgName == "GC_Attack_C")
+	{
+		// 일정 공격 프레임일때 렉트 생성 그 외 프레임일땐 삭제
+		if (player->get_Info().img.ani->getFramePos().x == 3 * 310 && player->get_InputKey() == PRESS_RIGHT)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+
+		else if (player->get_Info().img.ani->getFramePos().x == 2 * 310 && player->get_InputKey() == PRESS_LEFT)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
+
+
+
+
+		// 공격 애니메이션의 마지막 프레임일때
+		if (player->get_Info().img.ani->getFramePos().x == 5 * 310 && player->get_InputKey() == PRESS_RIGHT)
+		{
+			// 아니라면 대기 애니메이션을 넣어준다.
+			Idle(player);
+
+		}
+
+		if (player->get_Info().img.ani->getFramePos().x == 0 && player->get_InputKey() == PRESS_LEFT)
+		{	
+			// 아니라면 대기 애니메이션을 넣어준다.
+			Idle(player);
+
+		}
+	}
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
 }
 
 void Attack_C_State::Skill_A(Player * player)
@@ -2525,6 +2812,8 @@ void Attack_C_State::Event(Player * player)
 
 void Attack_C_State::update(Player * player)
 {
+	Attack_C(player);
+
 }
 
 
@@ -2545,6 +2834,9 @@ Skill_A_State * Skill_A_State::getInstance()
 
 void Skill_A_State::Idle(Player * player)
 {
+	// 공격 좌표 초기화
+	player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
 	// 불값 초기화
 	player->set_Info()->bool_State_Reset();
 
@@ -2595,42 +2887,137 @@ void Skill_A_State::Attack_C(Player * player)
 
 void Skill_A_State::Skill_A(Player * player)
 {
-	// 스컬의 머리 위치에서 렉트를 생성하여 바라보는 방향으로 날려준다. (머리통 렉트 생성 함수 호출)
-	// 스컬의 머리는 한번만 날아가야 한다. 한개를 생성과 동시에 bool값을 바꿔준다.
-	// 스컬이 머리를 다시 줍거나, 일정 시간이 자나면 bool값이 false로 바뀐다.
-	if (!player->get_Info().bool_V.useing_Skill_A)
+	// 공격하면서 서서히 앞으로 나간다.
+	if (player->get_InputKey() == PRESS_RIGHT)
 	{
-		// 스컬의 머리를 생성해준다. (방향에 따라 다른 이미지, 다른 각도)
-		if (player->get_InputKey() == PRESS_RIGHT)
-		{
-			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_R", 
-				FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::RIGHT,
-				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
-				0.f, PLAYER_HEAD_SPEED, 40, true);
-		}
-
-		if (player->get_InputKey() == PRESS_LEFT)
-		{
-			DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_L", 
-				FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::LEFT,
-				player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
-				3.14f, PLAYER_HEAD_SPEED, 40, true);
-		}
-
-		// 스킬을 사용했으면 true
-		player->set_Info()->bool_V.useing_Skill_A = true;
+		player->set_Info()->pos.center.x += 0.5;
 	}
 
-	// 스컬이 머리를 날리는 애니메이션이 끝나면 스컬 머리가 없는 애니메이션 타입으로 교체 후 대기 상태로
-	if (player->get_Info().img.ani->getFramePos().x == 480)
+	if (player->get_InputKey() == PRESS_LEFT)
 	{
-		// 점프 초기화 (스킬이 끝난 후 대기 -> 추락으로 넘어갈 경우)
-		player->set_Info()->jump.jump_Value = 0;
-
-		player->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
-		Skill_A_State::Idle(player);
+		player->set_Info()->pos.center.x -= 0.5;
 	}
 
+
+	if (player->get_Info().img.imgName == "skul_Skill")
+	{
+		// 스컬의 머리 위치에서 렉트를 생성하여 바라보는 방향으로 날려준다. (머리통 렉트 생성 함수 호출)
+		// 스컬의 머리는 한번만 날아가야 한다. 한개를 생성과 동시에 bool값을 바꿔준다.
+		// 스컬이 머리를 다시 줍거나, 일정 시간이 자나면 bool값이 false로 바뀐다.
+		if (!player->get_Info().bool_V.useing_Skill_A)
+		{
+			// 스컬의 머리를 생성해준다. (방향에 따라 다른 이미지, 다른 각도)
+			if (player->get_InputKey() == PRESS_RIGHT)
+			{
+				DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_R",
+					FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::RIGHT,
+					player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
+					0.f, PLAYER_HEAD_SPEED, 40, true);
+			}
+
+			if (player->get_InputKey() == PRESS_LEFT)
+			{
+				DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_L",
+					FLYINFOBJECT_TYPE::SKUL_HEAD, FLYINGOBJECT_DIRECTION::LEFT,
+					player->get_Info().pos.center.x, player->get_Info().pos.center.y - 20,
+					3.14f, PLAYER_HEAD_SPEED, 40, true);
+			}
+
+			// 스킬을 사용했으면 true
+			player->set_Info()->bool_V.useing_Skill_A = true;
+		}
+
+		// 스컬이 머리를 날리는 애니메이션이 끝나면 스컬 머리가 없는 애니메이션 타입으로 교체 후 대기 상태로
+		if (player->get_Info().img.ani->getFramePos().x == 480)
+		{
+			// 점프 초기화 (스킬이 끝난 후 대기 -> 추락으로 넘어갈 경우)
+			player->set_Info()->jump.jump_Value = 0;
+
+			player->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON_NOHEAD;
+			Skill_A_State::Idle(player);
+		}
+	}
+
+
+	if (player->get_Info().img.imgName == "GC_Skill_A")
+	{
+		// 공격 렉트 생성
+		if (player->get_Info().img.ani->getFramePos().x == 310 * 1 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 3 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 5 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 7 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 9 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 11 || 
+			player->get_Info().img.ani->getFramePos().x == 310 * 13 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 15 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 17)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+
+		else if (player->get_Info().img.ani->getFramePos().x == 310 * 19 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 20 ||
+			player->get_Info().img.ani->getFramePos().x == 310 * 21)
+		{
+			// 공격 렉트를 만들어준다.
+			player->set_Info()->create_Attack_Rect(player->get_InputKey());
+		}
+
+		else player->set_Info()->pos.Attack_RC = { 0,0,0,0 };
+
+		// 특정 프레임이고, 아직 스킬 사용 체크를 하기 전
+		if (player->get_Info().img.ani->getFramePos().x == 310 * 19 && !player->get_Info().bool_V.useing_Skill_A)
+		{
+			// 선형보간으로 앞으로 긁으면서 이동한다.
+			// 대쉬 시작 시간 저장
+			player->set_Info()->dash.Dash_StartTime = TIMEMANAGER->getWorldTime();
+
+			// 대쉬중이라면 true로 바꾼다.
+			player->set_Info()->bool_V.dashing_Cheack = true;
+
+			// 스킬 사용 체크
+			player->set_Info()->bool_V.useing_Skill_A = true;
+
+			// 긁는 이펙트 생성
+			if (player->get_InputKey() == PRESS_RIGHT)
+			{
+				EFFECTMANAGER->play("GC_Skill_A_Final_Right",
+					player->get_Info().pos.center.x  - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+					player->get_Info().pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+			
+			}
+
+			if (player->get_InputKey() == PRESS_LEFT)
+			{
+				EFFECTMANAGER->play("GC_Skill_A_Final_Left",
+					player->get_Info().pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+					player->get_Info().pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+				
+			}
+
+		}
+
+		// 대쉬중일때만 실행
+		if (player->get_Info().bool_V.dashing_Cheack) DATAMANAGER->Lerp_Player();
+
+		// 마지막 프레임이고, 대쉬중이 아닐때
+		if (player->get_Info().img.ani->getFramePos().x == 310 * 21 && !player->get_Info().bool_V.dashing_Cheack)
+		{
+			//대기 상태로 돌아간다.
+			Idle(player);
+
+		}
+
+	}
+
+
+	// 카메라 위치 갱신
+	CAMERAMANAGER->Use_Func()->set_CameraXY(player->get_Info().pos.center.x, player->get_Info().pos.center.y, true);
+
+	// 렉트 갱신
+	player->update_Rect(PLAYER_RECT_SIZE_X, PLAYER_RECT_SIZE_Y);
+	player->update_Ani_Rect();
 }
 
 void Skill_A_State::Skill_B(Player * player)
@@ -2744,6 +3131,9 @@ Event_State * Event_State::getInstance()
 
 void Event_State::Idle(Player * player)
 {
+	if(player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+		player->set_Info()->pos.center.x -= 20;
+
 	// 사용했던 변수 초기화
 	player->set_Info()->bool_State_Reset();
 
@@ -2804,13 +3194,26 @@ void Event_State::Skill_B(Player * player)
 void Event_State::Event(Player * player)
 {
 
-	if (player->get_Info().img.ani->getFramePos().x == 1280)
+	if (player->get_Info().img.ani->getFramePos().x == 1280 && 
+		player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NOWEAPON)
 	{
 		// 타입 교체
 		player->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_WEAPON;
 
 		// 대기상태로
 		Idle(player);
+
+	}
+
+	if (player->get_Info().img.ani->getFramePos().x == 32 * 128 &&
+		player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON || player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+	{
+		// 타입 교체
+		player->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_NIGHT;
+
+		// 대기상태로
+		Idle(player);
+
 	}
 
 	// 카메라 위치 갱신

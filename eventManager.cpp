@@ -35,6 +35,9 @@ void eventManager::render()
 	{
 		RECT tempRC = vEvent[i].rc;
 		tempRC = DATAMANAGER->minus_CameraPos(tempRC);
+		RECT tempFindRC = vEvent[i].findRC;
+		tempFindRC = DATAMANAGER->minus_CameraPos(tempFindRC);
+
 		if (!vEvent[i].doubleImg)
 		{
 			vEvent[i].img->aniRender(getMemDC(), tempRC.left, tempRC.top, vEvent[i].ani);
@@ -70,6 +73,23 @@ void eventManager::render()
 				IMAGEMANAGER->findImage("F_Key")->render(getMemDC(),
 					vEvent[i].center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x + 5,
 					vEvent[i].center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 60);
+			}
+
+			if (vEvent[i].type == eventType::GET_GC_TYPE)
+			{
+				IMAGEMANAGER->findImage("F_Key")->render(getMemDC(),
+					vEvent[i].center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x - 15,
+					vEvent[i].center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y - 30);
+
+				char text_99[50];
+				sprintf_s(text_99, 50, "어째서 기사단장의 시체가?");
+
+				SetBkMode(getMemDC(), 0);
+				SetTextColor(getMemDC(), RGB(255, 255, 255));
+				TextOut(getMemDC(), tempRC.left - 120,
+					tempRC.top - 60,
+					text_99, strlen(text_99));
+
 			}
 		}
 
@@ -182,6 +202,61 @@ void eventManager::collision_Event(eventInfo* event_)
 
 			break;
 
+		case eventType::GET_GC_TYPE:
+			// 스컬이 이벤트존에 들어와서 F를 눌렀다면
+			// 스컬의 x축을 보정해주고 애니메이션을 재생한다.
+			// 스컬이 자신의 머리를 위로 던지는 프레임일때
+			// 스컬의 머리가 위쪽으로 날아가며 사라지는것 추가
+			// 마지막 스컬의 프레임일때 이벤트 호출
+			if (skulRC.left > event_->findRC.left &&
+				skulRC.right < event_->findRC.right &&
+				skulRC.bottom < event_->findRC.bottom &&
+				skulRC.top > event_->findRC.top &&
+				!event_->eventStart)
+			{
+				event_->showButton = true;
+
+				if (KEYMANAGER->isOnceKeyDown('F'))
+				{
+					event_->eventStart = true;
+					event_->showButton = false;
+
+					event_->ani->start();
+
+					DATAMANAGER->skul_Address()->set_InputKey(PRESS_RIGHT);
+					DATAMANAGER->skul_Address()->set_Info()->ani_Changer("Idle", PRESS_RIGHT);
+					DATAMANAGER->skul_Address()->get_Info().img.ani->start();
+
+				}
+			}
+			else event_->showButton = false;
+
+			// 이벤트가 시작 했다면
+			if (event_->eventStart)
+			{
+				// 스컬 애니메이션 시작
+				if (event_->ani->getFramePos().x == 110 && !event_->scene_1)
+				{
+					event_->scene_1 = true;
+
+					DATAMANAGER->skul_Address()->get_State()->Event(DATAMANAGER->skul_Address());
+				}
+
+				// 스컬이 머리를 던지는 모션에서 스컬 머리 투사체를 생성 후 날려준다.
+				if (DATAMANAGER->skul_Address()->get_Info().img.ani->getFramePos().x == 10 * 128 && !event_->scene_2)
+				{
+					event_->scene_2 = true;
+
+					DATAMANAGER->flyObj_Manager_Address()->Create_FlyingObj("skul_Skill_Head", "skill_Head_L", FLYINFOBJECT_TYPE::EVENT_SKUL_HEAD,
+						FLYINGOBJECT_DIRECTION::LEFT, DATAMANAGER->skul_Address()->get_Info().pos.center.x - 20, DATAMANAGER->skul_Address()->get_Info().pos.center.y - 5,
+						(3.14 / 180.f) * 120, 5, 0, true);
+				}
+			}
+
+
+
+			break;
+
 		case eventType::NEXT_GATE:
 		{
 			if (skulRC.left > event_->findRC.left && skulRC.right < event_->findRC.right &&
@@ -197,16 +272,19 @@ void eventManager::collision_Event(eventInfo* event_)
 					if (event_->stageNumber == 1)
 					{
 						DATAMANAGER->Delete_Enemy();
+						DATAMANAGER->Delete_ImageMaker();
 						SCENEMANAGER->changeScene("Stage_1");
 					}
 					if (event_->stageNumber == 2)
 					{
 						DATAMANAGER->Delete_Enemy();
+						DATAMANAGER->Delete_ImageMaker();
 						SCENEMANAGER->changeScene("Stage_2");
 					}
 					if (event_->stageNumber == 3)
 					{
 						DATAMANAGER->Delete_Enemy();
+						DATAMANAGER->Delete_ImageMaker();
 						SCENEMANAGER->changeScene("ClearGame");
 					}
 				}

@@ -248,6 +248,34 @@ struct CharacterInfo
 
 	}
 
+	// 캐릭터 타입에 맞는 스탯을 넣어준다.
+	void setting_Type_Status()
+	{
+		switch (type.skul_Type)
+		{
+		case SKUL_TYPE::SKUL_NOWEAPON:
+			status.HP = 100;
+			status.Atk = 15;
+			status.Def = 0;
+
+			break;
+
+		case SKUL_TYPE::SKUL_WEAPON: case SKUL_TYPE::SKUL_WEAPON_NOHEAD:
+			status.HP = 100;
+			status.Atk = 15;
+			status.Def = 0;
+
+			break;
+
+		case SKUL_TYPE::SKUL_NIGHT:
+			status.HP = 200;
+			status.Atk = 30;
+			status.Def = 0;
+
+			break;
+		}
+	}
+
 	// 캐릭터 bool 초기화
 	void bool_Value_Reset()
 	{
@@ -659,62 +687,62 @@ struct CharacterInfo
 				}
 				break;
 
-			//case SKUL_TYPE::SKUL_NIGHT:
-			//	if (Key == PRESS_LEFT)
-			//	{
-			//		// 대기
-			//		if (StateName == "Idle");
-			//		// 이동
-			//		if (StateName == "Move");
-			//		// 점프
-			//		if (StateName == "Jump");
-			//		// 점프 공격
-			//		if (StateName == "JumpAttack");
-			//		// 추락
-			//		if (StateName == "Fall");
-			//		// 추락중
-			//		if (StateName == "Falling");
-			//		// 대쉬
-			//		if (StateName == "Dash");
-			//		// 공격 A
-			//		if (StateName == "AttackA");
-			//		// 공격 B
-			//		if (StateName == "AttackB");
-			//		// 공격 C
-			//		if (StateName == "AttackC");
-			//		// 스킬 A
-			//		if (StateName == "SkillA");
-			//		// 스킬 B
-			//		if (StateName == "SkillB");
-			//	}
-			//	if (Key == PRESS_RIGHT)
-			//	{
-			//		// 대기
-			//		if (StateName == "Idle");
-			//		// 이동
-			//		if (StateName == "Move");
-			//		// 점프
-			//		if (StateName == "Jump");
-			//		// 점프 공격
-			//		if (StateName == "JumpAttack");
-			//		// 추락
-			//		if (StateName == "Fall");
-			//		// 추락중
-			//		if (StateName == "Falling");
-			//		// 대쉬
-			//		if (StateName == "Dash");
-			//		// 공격 A
-			//		if (StateName == "AttackA");
-			//		// 공격 B
-			//		if (StateName == "AttackB");
-			//		// 공격 C
-			//		if (StateName == "AttackC");
-			//		// 스킬 A
-			//		if (StateName == "SkillA");
-			//		// 스킬 B
-			//		if (StateName == "SkillB");
-			//	}
-			//	break;
+			case SKUL_TYPE::SKUL_NIGHT:
+				if (Key == PRESS_LEFT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("GC_Idle", "GC_Idle_Left");
+					// 이동
+					if (StateName == "Move") set_Ani("GC_Walk", "GC_Walk_Left");
+					// 점프
+					if (StateName == "Jump") set_Ani("GC_Jump", "GC_Jump_Left");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("GC_Jump_Attack", "GC_JumpAttack_Left");
+					// 추락
+					if (StateName == "Fall") set_Ani("GC_Fall", "GC_Fall_Left");
+					// 추락중
+					if (StateName == "Falling") set_Ani("GC_Falling", "GC_Falling_Left");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("GC_Dash", "GC_Dash_Left");
+					// 공격 A
+					if (StateName == "Attack_A") set_Ani("GC_Attack_A", "GC_Attack_A_Left");
+					// 공격 B
+					if (StateName == "Attack_B") set_Ani("GC_Attack_B", "GC_Attack_B_Left");
+					// 공격 C
+					if (StateName == "Attack_C") set_Ani("GC_Attack_C", "GC_Attack_C_Left");
+					// 스킬 A
+					if (StateName == "Skill_A") set_Ani("GC_Skill_A", "GC_Skill_A_Left");
+					// 스킬 B
+					//if (StateName == "SkillB") set_Ani("GC_Skill_B", "");
+				}
+				if (Key == PRESS_RIGHT)
+				{
+					// 대기
+					if (StateName == "Idle") set_Ani("GC_Idle", "GC_Idle_Right");
+					// 이동
+					if (StateName == "Move") set_Ani("GC_Walk", "GC_Walk_Right");
+					// 점프
+					if (StateName == "Jump") set_Ani("GC_Jump", "GC_Jump_Right");
+					// 점프 공격
+					if (StateName == "JumpAttack") set_Ani("GC_Jump_Attack", "GC_JumpAttack_Right");
+					// 추락
+					if (StateName == "Fall") set_Ani("GC_Fall", "GC_Fall_Right");
+					// 추락중
+					if (StateName == "Falling") set_Ani("GC_Falling", "GC_Falling_Right");
+					// 대쉬
+					if (StateName == "Dash") set_Ani("GC_Dash", "GC_Dash_Right");
+					// 공격 A
+					if (StateName == "Attack_A") set_Ani("GC_Attack_A", "GC_Attack_A_Right");
+					// 공격 B
+					if (StateName == "Attack_B") set_Ani("GC_Attack_B", "GC_Attack_B_Right");
+					// 공격 C
+					if (StateName == "Attack_C") set_Ani("GC_Attack_C", "GC_Attack_C_Right");
+					// 스킬 A
+					if (StateName == "Skill_A") set_Ani("GC_Skill_A", "GC_Skill_A_Right");
+					// 스킬 B
+					//if (StateName == "SkillB") set_Ani("GC_Skill_B", "");
+				}
+				break;
 		}
 		
 

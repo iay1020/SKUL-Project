@@ -72,6 +72,15 @@ void DataManager::update()
 		_skul->set_Info()->ani_Changer("Idle", _skul->get_InputKey());
 		_skul->set_Info()->img.ani->start();
 	}
+
+	if (KEYMANAGER->isOnceKeyDown('U'))
+	{
+		_skul->set_Info()->type.skul_Type = SKUL_TYPE::SKUL_NIGHT;
+		_skul->set_Info()->ani_Changer("Idle", _skul->get_InputKey());
+		_skul->set_Info()->img.ani->start();
+
+	}
+
 }
 
 void DataManager::map_Save(vector<tagTileInfo> tileList, tagMapInfo* mapInfo, vector<tagSaveBackGround>* vMapInfo)
@@ -843,15 +852,39 @@ void DataManager::skul_Attack_Range_Enemy(Enemy* enemy_Address)
 
 				if (_skul->get_InputKey() == PRESS_RIGHT)
 				{
-					EFFECTMANAGER->play("skul_Base_Attack_Right",
-						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON ||
+						_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+					{
+						EFFECTMANAGER->play("skul_Base_Attack_Right",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+					{
+						EFFECTMANAGER->play("GC_Skill_A_Effect",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
 				}
 				if (_skul->get_InputKey() == PRESS_LEFT)
 				{
-					EFFECTMANAGER->play("skul_Base_Attack_Left",
-						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON ||
+						_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+					{
+						EFFECTMANAGER->play("skul_Base_Attack_Left",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+					{
+						EFFECTMANAGER->play("GC_Skill_A_Effect",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
 				}
 
 				// 최소 공격력 ~ 최대 공격력까지 랜덤으로 받는다.
@@ -875,21 +908,45 @@ void DataManager::skul_Attack_Range_Enemy(Enemy* enemy_Address)
 
 				if (_skul->get_InputKey() == PRESS_RIGHT)
 				{
-					if (RNum == 0) EFFECTMANAGER->play("skul_Base_Attack_Cri_1", 
-						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
-					if(RNum == 1) EFFECTMANAGER->play("skul_Base_Attack_Cri_2", 
-						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON ||
+						_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+					{
+						if (RNum == 0) EFFECTMANAGER->play("skul_Base_Attack_Cri_1",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+						if (RNum == 1) EFFECTMANAGER->play("skul_Base_Attack_Cri_2",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+					{
+						EFFECTMANAGER->play("GC_Skill_A_Effect",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
 				}
 				if (_skul->get_InputKey() == PRESS_LEFT)
 				{
-					if (RNum == 0) EFFECTMANAGER->play("skul_Base_Attack_Cri_1",
-						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
-					if (RNum == 1) EFFECTMANAGER->play("skul_Base_Attack_Cri_2",
-						enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
-						enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON ||
+						_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_WEAPON_NOHEAD)
+					{
+						if (RNum == 0) EFFECTMANAGER->play("skul_Base_Attack_Cri_1",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+						if (RNum == 1) EFFECTMANAGER->play("skul_Base_Attack_Cri_2",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
+					if (_skul->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
+					{
+						EFFECTMANAGER->play("GC_Skill_A_Effect",
+							enemy_Address->info_Address()->pos.center.x - CAMERAMANAGER->Use_Func()->get_CameraXY().x,
+							enemy_Address->info_Address()->pos.center.y - CAMERAMANAGER->Use_Func()->get_CameraXY().y);
+					}
+
 				}
 
 				// 최소 공격력 ~ 최대 공격력까지 랜덤으로 받는다.
