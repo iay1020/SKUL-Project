@@ -15,7 +15,7 @@ HRESULT Stage_2::init()
 	DATAMANAGER->map_Load_Datamanager("Stage_2.map", "Stage_2_Info.map");
 
 	_skul = DATAMANAGER->skul_Address();	// 스컬 데이터 연결
-	_skul->update_Pos(4, 20);
+	_skul->update_Pos(4, 25);
 
 	// 이벤트 매니저 생성
 	eventM = new eventManager;
@@ -50,7 +50,7 @@ void Stage_2::update()
 	eventM->update();
 
 	// 캐릭터 타일 위치
-	//cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
+	cout << "x : " << (int)(_skul->get_Info().pos.center.x / TILE_SIZE_X) << ", y : " << (int)(_skul->get_Info().pos.center.y / TILE_SIZE_Y) << endl;
 
 }
 

@@ -269,7 +269,7 @@ struct CharacterInfo
 
 		case SKUL_TYPE::SKUL_NIGHT:
 			status.HP = 200;
-			status.Atk = 30;
+			status.Atk = 35;
 			status.Def = 0;
 
 			break;

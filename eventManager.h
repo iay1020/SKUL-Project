@@ -79,7 +79,7 @@ struct eventInfo
 			aniName = "GC_Deadbody";
 			ani = KEYANIMANAGER->findAnimation(aniName);
 
-			findRC = RectMake(center.x - 105, center.y - 40, 50, 90);
+			findRC = RectMake(center.x - 110, center.y - 40, 55, 90);
 
 			rc = RectMakeCenter(center.x, center.y + 20,
 				img->getFrameWidth(), img->getFrameHeight());

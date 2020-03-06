@@ -1219,12 +1219,10 @@ void DataManager::Lerp_Enemy(Enemy* enemy, float time_, float range_)
 		// 이동 (벽이 없을때만 이동 연산을 한다.)
 		if (DATAMANAGER->enemy_Move_Wall(enemy, enemy->info_Address()->status.dir, true))
 		{
-			//if (enemy->info_Address()->status.dir == EnemyDirection::LEFT)
 			if(_skul->get_Info().status.direction == CharacterDirection::DIRECTION_RIGHT)
 			{
 				enemy->info_Address()->pos.center.x += cosf(0) * lerp_Speed;
 			}
-			//if (enemy->info_Address()->status.dir == EnemyDirection::RIGHT)
 			if (_skul->get_Info().status.direction == CharacterDirection::DIRECTION_LEFT)
 			{
 				enemy->info_Address()->pos.center.x += cosf(3.14) * lerp_Speed;

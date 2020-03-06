@@ -379,19 +379,6 @@ void IdleState::Event(Player * player)
 		player->set_Info()->img.ani->start();
 	}
 
-	// 타입에 따른 스텟 변경
-	player->set_Info()->setting_Type_Status();
-	if (DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP < player->get_Info().status.HP)
-	{
-		DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP = player->get_Info().status.HP;
-		DATAMANAGER->ui_Address()->get_UI_Address()->hp.state = HP_UPDATE_STATE::HEAL;
-	}
-	if (DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP > player->get_Info().status.HP)
-	{
-		DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP = player->get_Info().status.HP;
-		DATAMANAGER->ui_Address()->get_UI_Address()->hp.state = HP_UPDATE_STATE::HIT;
-	}
-
 	// 이벤트 상태로 교체
 	player->set_State(Event_State::getInstance());
 	player->get_State()->update(player);
@@ -3133,6 +3120,19 @@ void Event_State::Idle(Player * player)
 {
 	if(player->get_Info().type.skul_Type == SKUL_TYPE::SKUL_NIGHT)
 		player->set_Info()->pos.center.x -= 20;
+
+	// 타입에 따른 스텟 변경
+	player->set_Info()->setting_Type_Status();
+	if (DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP < player->get_Info().status.HP)
+	{
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP = player->get_Info().status.HP;
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.state = HP_UPDATE_STATE::HEAL;
+	}
+	if (DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP > player->get_Info().status.HP)
+	{
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.curHP = player->get_Info().status.HP;
+		DATAMANAGER->ui_Address()->get_UI_Address()->hp.state = HP_UPDATE_STATE::HIT;
+	}
 
 	// 사용했던 변수 초기화
 	player->set_Info()->bool_State_Reset();

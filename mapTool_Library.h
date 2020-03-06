@@ -1166,12 +1166,6 @@ public:
 							if (PtInRect(&button.BT_Up, _ptMouse) || PtInRect(&button.BT_Down, _ptMouse) || PtInRect(&button.BT_Minus, _ptMouse)) continue;
 							if (PtInRect(&(*TileList)[i].rc, _ptMouse_Ver2) && !draw_Ready_BG)
 							{
-
-								// 그 타일의 좌표를 얻어서 그냥 그려버리는건 어떨까?
-								// 그 좌표를 벡터에 저장하고 이미지 정보도 가지고 있는 벡터
-								// 지울때는 뒤에서부터 하나씩 지우는것으로 
-								// 클릭할때마다 늘어나기만 하고 
-								// 한번씩만 클릭하게 바꿔야함
 								draw_Ready_BG = true;
 
 								tagSaveBackGround BG_Info;
